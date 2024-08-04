@@ -1,141 +1,89 @@
 package com.example.flora1.core.uikit.buttons
 
-
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.flora1.core.uikit.buttons.ButtonMode.Active
-import com.example.flora1.core.uikit.buttons.ButtonMode.InProgress
-import androidx.compose.material3.Button as Material3Button
+import com.example.flora1.R
+import com.example.flora1.ui.theme.PrimaryHorizontalBrush
+import com.example.flora1.ui.theme.PurpleGrey40
+import com.example.flora1.ui.theme.PurpleGrey80
+import com.example.flora1.ui.theme.conditionalPrimaryBrush
 
 @Composable
-internal fun Button(
+fun Button(
     text: String,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    textColor: Color,
+    leadingIcon: (@Composable () -> Unit)? = null,
     enabled: Boolean = true,
-    border: BorderStroke? = null,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    brush: Brush,
+    paddingValues: PaddingValues = PaddingValues(
+        horizontal = 0.dp,
+        vertical = 0.dp,
+    ),
 ) {
-    Button(
-        text = text,
-        onClick = onClick,
-        mode = enabled.toButtonMode(),
-        border = border,
-        colors = colors,
-    )
-}
 
-@Composable
-internal fun Button(
-    modifier: Modifier = Modifier,
-    text: String,
-    onClick: () -> Unit,
-    mode: ButtonMode = Active,
-    border: BorderStroke? = null,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
-) {
-    Button(
-        modifier = modifier,
-        onClick = onClick,
-        mode = mode,
-        border = border,
-        colors = colors,
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleLarge,
-        )
-    }
-}
-
-@Composable
-internal fun Button(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    mode: ButtonMode = Active,
-    border: BorderStroke? = null,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
-    content: @Composable RowScope.() -> Unit,
-) {
-    Button(
-        modifier = modifier,
-        onClick = onClick,
-        enabled = mode.enabled,
-        border = border,
-        colors = colors,
-    ) {
-        if (mode == InProgress) {
-            ProgressIndicator(
-                color = colors.disabledContentColor,
+    Box(
+        modifier = modifier
+            .clip(CircleShape)
+            .background(
+                brush = brush,
+                shape = CircleShape
             )
-            Spacer(
+            .clickable(
+                enabled = enabled,
+                onClick = onClick,
+            )
+            .padding(
+                horizontal = 20.dp,
+                vertical = 15.dp
+            )
+
+    ) {
+        Row(
+            modifier = Modifier.padding(paddingValues = paddingValues),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+
+            if (leadingIcon != null) {
+                leadingIcon.invoke()
+
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+
+            Text(
                 modifier = Modifier
-                    .width(3.dp),
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically),
+                text = text,
+                textAlign = TextAlign.Center,
+                color = textColor,
+                fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                style = MaterialTheme.typography.titleMedium
             )
         }
 
-        content()
     }
 }
-
-@Composable
-internal fun Button(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    enabled: Boolean = true,
-    border: BorderStroke? = null,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
-    content: @Composable RowScope.() -> Unit,
-) {
-    val material3Colors = colors.toMaterial3()
-
-    Material3Button(
-        modifier = Modifier
-            .then(modifier),
-        shape = RoundedCornerShape(size = 4.dp),
-        border = border,
-        colors = material3Colors,
-        enabled = enabled,
-        onClick = onClick,
-        content = content,
-    )
-}
-
-@Composable
-private fun ProgressIndicator(
-    color: Color = MaterialTheme.colorScheme.onPrimary,
-) {
-    CircularProgressIndicator(
-        modifier = Modifier
-            .width(18.dp)
-            .height(18.dp),
-        color = color,
-        strokeWidth = 3.dp,
-    )
-}
-
-@Composable
-internal fun ButtonColors.toMaterial3(): ButtonColors =
-    ButtonDefaults.buttonColors(
-        containerColor = containerColor,
-        contentColor = contentColor,
-        disabledContainerColor = disabledContainerColor,
-        disabledContentColor = disabledContentColor,
-    )
-

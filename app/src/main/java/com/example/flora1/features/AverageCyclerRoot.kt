@@ -111,7 +111,7 @@ fun AverageCycleRoot(
                 )
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
                 text = "How long is your average cycle?",
@@ -121,7 +121,7 @@ fun AverageCycleRoot(
                 textAlign = TextAlign.Center,
             )
 
-            Spacer(modifier = Modifier.height(35.dp))
+            Spacer(modifier = Modifier.height(15.dp))
 
             Text(
                 text = "A little hint - cycles usually last 24-35 days.",
@@ -131,6 +131,7 @@ fun AverageCycleRoot(
                 textAlign = TextAlign.Start,
             )
         }
+        Spacer(modifier = Modifier.height(35.dp))
 
         Column(
             modifier = Modifier

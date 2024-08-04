@@ -1,5 +1,6 @@
 package com.example.flora1.features
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -32,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flora1.R
 import com.example.flora1.ui.theme.PrimaryHorizontalBrush
-import com.example.flora1.ui.theme.PrimaryVerticalBrush
 
 @Composable
 fun SplashScreenRoot(
@@ -70,6 +70,8 @@ fun SplashScreenRoot(
             onFinishedAnimation()
         },
     )
+
+    BackHandler {}
 
 
     LaunchedEffect(key1 = Unit) {

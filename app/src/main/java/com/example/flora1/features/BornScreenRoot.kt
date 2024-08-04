@@ -1,24 +1,19 @@
 package com.example.flora1.features
 
 import android.annotation.SuppressLint
-import android.text.format.DateFormat
-import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -39,17 +33,16 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.flora1.R
 import com.example.flora1.core.uikit.buttons.PrimaryButton
 import com.example.flora1.isCurrentDateLessThanYears
-import java.text.SimpleDateFormat
-import java.util.Date
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BornScreenRoot(
-    onNext : (Boolean) -> Unit,
+    onNext: (isEligible: Boolean) -> Unit,
 ) {
 
     val datePickerState = rememberDatePickerState()
+    BackHandler {}
 
     ConstraintLayout(
         modifier =
@@ -60,6 +53,7 @@ fun BornScreenRoot(
             .padding(WindowInsets.systemBars.asPaddingValues()),
     ) {
         val (column, datePicker, button, spacer) = createRefs()
+
 
         Column(
             modifier = Modifier.constrainAs(column) {
@@ -74,7 +68,7 @@ fun BornScreenRoot(
                 painter = painterResource(id = R.drawable.flora_logo),
                 contentDescription = ""
             )
-            Spacer(modifier = Modifier.height(70.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
                 text = "When were you born?",
@@ -92,13 +86,14 @@ fun BornScreenRoot(
                 color = Color.Black,
                 textAlign = TextAlign.Center,
             )
+            Spacer(modifier = Modifier.height(30.dp))
 
         }
 
         DatePicker(
             modifier = Modifier.constrainAs(datePicker) {
                 top.linkTo(column.bottom, margin = 20.dp)
-                bottom.linkTo(button.top,)
+                bottom.linkTo(button.top)
             },
             state = datePickerState,
         )
@@ -108,8 +103,7 @@ fun BornScreenRoot(
                 .fillMaxWidth()
                 .constrainAs(button) {
                     bottom.linkTo(spacer.top)
-                }
-                ,
+                },
             enabled =
             if (datePickerState.selectedDateMillis == null)
                 false
@@ -118,17 +112,21 @@ fun BornScreenRoot(
             text = "Next",
             onClick = {
                 if (isCurrentDateLessThanYears(datePickerState.selectedDateMillis!!, 13))
-                    onNext(true)
-                else
                     onNext(false)
+                else
+                    onNext(true)
             },
         )
 
         Spacer(modifier = Modifier
-            .constrainAs(spacer){
+            .constrainAs(spacer) {
                 bottom.linkTo(parent.bottom)
             }
-            .height(WindowInsets.ime.asPaddingValues().calculateBottomPadding()))
+            .height(
+                WindowInsets.ime
+                    .asPaddingValues()
+                    .calculateBottomPadding()
+            ))
 
     }
 }

@@ -38,3 +38,8 @@ else
     Brush.linearGradient(listOf(PurpleGrey40, PurpleGrey80))
 
 val disableBrush = Brush.linearGradient(listOf(PurpleGrey40, PurpleGrey80))
+val secondaryBrush = Brush.linearGradient(listOf(
+    Color(0xFFF7F2F2),
+    Color(0xFFFFFFFF),
+    )
+)

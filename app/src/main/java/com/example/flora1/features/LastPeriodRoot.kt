@@ -111,7 +111,7 @@ fun LastPeriodRoot(
                     contentDescription = ""
                 )
             }
-            Spacer(modifier = Modifier.height(70.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
                 text = "When did your last period start?",
@@ -129,7 +129,6 @@ fun LastPeriodRoot(
                 color = Color.Black,
                 textAlign = TextAlign.Center,
             )
-
         }
 
         DatePicker(

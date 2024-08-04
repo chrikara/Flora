@@ -5,8 +5,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.flora1.core.Screen
+import com.example.flora1.core.navigation.popAllPreviousDestinations
 import com.example.flora1.features.AverageCycleRoot
 import com.example.flora1.features.BornScreenRoot
+import com.example.flora1.features.GetStartedRoot
 import com.example.flora1.features.LastPeriodRoot
 import com.example.flora1.features.MinorAgeRoot
 import com.example.flora1.features.SplashScreenRoot
@@ -20,7 +22,7 @@ fun NavigationRoot(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.AverageCycle.name,
+        startDestination = Screen.Splash.name,
     ) {
         composable(Screen.Splash.name) {
             SplashScreenRoot(
@@ -63,7 +65,22 @@ fun NavigationRoot(
         }
 
         composable(Screen.GetStarted.name) {
-
+            GetStartedRoot(
+                onPrimaryClicked = {
+                    navController.popAllPreviousDestinations()
+                    navController.navigate(Screen.GetStarted.name)
+                },
+                onSecondaryClicked = {
+                    navController.navigate(
+                        route = Screen.Born.name,
+                        builder = {
+                            popUpTo(Screen.Born.name){
+                                inclusive = true
+                            }
+                        }
+                    )
+                }
+            )
 
         }
     }
