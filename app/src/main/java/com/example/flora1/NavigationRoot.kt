@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.example.flora1.core.Screen
 import com.example.flora1.features.AverageCycleRoot
 import com.example.flora1.features.BornScreenRoot
+import com.example.flora1.features.LastPeriodRoot
 import com.example.flora1.features.MinorAgeRoot
 import com.example.flora1.features.SplashScreenRoot
 import com.example.flora1.features.yearsToMillis
@@ -19,7 +20,7 @@ fun NavigationRoot(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.name,
+        startDestination = Screen.AverageCycle.name,
     ) {
         composable(Screen.Splash.name) {
             SplashScreenRoot(
@@ -32,11 +33,11 @@ fun NavigationRoot(
 
         composable(Screen.Born.name) {
             BornScreenRoot(
-                onNext = { dateSelected ->
-                    if(isCurrentDateLessThanYears(dateSelected, 13))
-                        navController.navigate(Screen.MinorAge.name)
-                    else
+                onNext = { isEligibleForFlora ->
+                    if (isEligibleForFlora)
                         navController.navigate(Screen.AverageCycle.name)
+                    else
+                        navController.navigate(Screen.MinorAge.name)
                 }
             )
         }
@@ -46,11 +47,28 @@ fun NavigationRoot(
         }
 
         composable(Screen.AverageCycle.name) {
-            AverageCycleRoot(onBack = { navController.popBackStack() })
+            AverageCycleRoot(
+                onNext = { navController.navigate(Screen.LastPeriod.name) },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.LastPeriod.name) {
+            LastPeriodRoot(
+                onNext = {
+                    navController.navigate(Screen.GetStarted.name)
+                },
+                onBack = { navController.popBackStack() },
+            )
+        }
+
+        composable(Screen.GetStarted.name) {
+
+
         }
     }
 }
 
-private fun isCurrentDateLessThanYears(dateSelected: Long, years: Int)=
+ fun isCurrentDateLessThanYears(dateSelected: Long, years: Int) =
     System.currentTimeMillis() - dateSelected <= yearsToMillis(years = years)
 

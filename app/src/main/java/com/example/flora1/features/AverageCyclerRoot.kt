@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -53,17 +50,16 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.flora1.R
 import com.example.flora1.core.uikit.buttons.PrimaryButton
-import com.example.flora1.ui.theme.PrimaryHorizontalBrush
-import com.example.flora1.ui.theme.PurpleGrey40
-import com.example.flora1.ui.theme.PurpleGrey80
 import com.example.flora1.ui.theme.conditionalPrimaryBrush
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun AverageCycleRoot(
     onBack: () -> Unit,
+    onNext: () -> Unit,
 ) {
     var selectedNumber: Int? by remember { mutableStateOf(null) }
+
 
 
     ConstraintLayout(
@@ -76,12 +72,12 @@ fun AverageCycleRoot(
     ) {
         val (topBar, numberFlowRow, bottomBar) = createRefs()
         Column(
-            modifier = Modifier.constrainAs(topBar){
+            modifier = Modifier.constrainAs(topBar) {
                 top.linkTo(parent.top)
             },
             horizontalAlignment = Alignment.CenterHorizontally,
 
-        ) {
+            ) {
             Spacer(modifier = Modifier.height(10.dp))
 
             Row(
@@ -138,14 +134,14 @@ fun AverageCycleRoot(
 
         Column(
             modifier = Modifier
-                .constrainAs(numberFlowRow){
+                .constrainAs(numberFlowRow) {
                     top.linkTo(topBar.bottom, margin = 15.dp)
                     bottom.linkTo(bottomBar.top, margin = 5.dp)
                     height = Dimension.fillToConstraints
                 }
                 .verticalScroll(rememberScrollState()),
 
-        ) {
+            ) {
             NumbersFlowRow(
                 enabled = {
                     selectedNumber == it
@@ -162,7 +158,7 @@ fun AverageCycleRoot(
 
 
         Row(
-            modifier = Modifier.constrainAs(bottomBar){
+            modifier = Modifier.constrainAs(bottomBar) {
                 bottom.linkTo(parent.bottom)
             },
             verticalAlignment = Alignment.CenterVertically,
@@ -170,7 +166,7 @@ fun AverageCycleRoot(
         ) {
             Text(
                 modifier = Modifier
-                    .clickable(onClick = {})
+                    .clickable(onClick = onNext)
                     .weight(1f),
                 color = MaterialTheme.colorScheme.primary,
                 text = "No idea",
@@ -186,7 +182,8 @@ fun AverageCycleRoot(
                 enabled = selectedNumber != null,
                 text = "Next",
                 onClick = {
-
+                    // TODO: Save to prefs
+                    onNext()
                 }
             )
         }
@@ -229,7 +226,7 @@ private fun PickNumber(
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
-            .background(brush = conditionalPrimaryBrush(enabled = enabled) )
+            .background(brush = conditionalPrimaryBrush(enabled = enabled))
             .clickable(onClick = {
                 onClick(num)
             }),

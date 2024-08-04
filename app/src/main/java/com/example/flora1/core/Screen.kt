@@ -7,4 +7,6 @@ sealed class Screen(val name : String) {
     data object Born : Screen("born")
     data object MinorAge : Screen("minorAge")
     data object AverageCycle : Screen("averageCycle")
+    data object LastPeriod : Screen("lastPeriod")
+    data object GetStarted : Screen("getStarted")
 }

@@ -5,7 +5,10 @@ import android.text.format.DateFormat
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -20,13 +23,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -38,17 +48,18 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.flora1.R
 import com.example.flora1.core.uikit.buttons.PrimaryButton
-import com.example.flora1.isCurrentDateLessThanYears
 import java.text.SimpleDateFormat
 import java.util.Date
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BornScreenRoot(
-    onNext : (Boolean) -> Unit,
+fun LastPeriodRoot(
+    onNext : () -> Unit,
+    onBack : () -> Unit,
 ) {
 
+    println("Mpike1")
     val datePickerState = rememberDatePickerState()
 
     ConstraintLayout(
@@ -60,6 +71,7 @@ fun BornScreenRoot(
             .padding(WindowInsets.systemBars.asPaddingValues()),
     ) {
         val (column, datePicker, button, spacer) = createRefs()
+        println("Mpike2")
 
         Column(
             modifier = Modifier.constrainAs(column) {
@@ -69,15 +81,40 @@ fun BornScreenRoot(
         ) {
             Spacer(modifier = Modifier.height(10.dp))
 
-            Image(
-                modifier = Modifier.size(75.dp),
-                painter = painterResource(id = R.drawable.flora_logo),
-                contentDescription = ""
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                val size = 30.dp
+                Icon(
+                    modifier = Modifier
+                        .size(size)
+                        .clip(CircleShape)
+                        .clickable(onClick = onBack)
+                        .align(Alignment.Top),
+                    tint = MaterialTheme.colorScheme.primary,
+                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                    contentDescription = "",
+                )
+                Image(
+                    modifier = Modifier.size(75.dp),
+                    painter = painterResource(id = R.drawable.flora_logo),
+                    contentDescription = ""
+                )
+
+                Icon(
+                    modifier = Modifier
+                        .size(size)
+                        .alpha(0f),
+                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                    contentDescription = ""
+                )
+            }
             Spacer(modifier = Modifier.height(70.dp))
 
             Text(
-                text = "When were you born?",
+                text = "When did your last period start?",
                 fontFamily = FontFamily(Font(R.font.raleway_bold)),
                 fontSize = 24.sp,
                 color = Color.Black,
@@ -86,7 +123,7 @@ fun BornScreenRoot(
             Spacer(modifier = Modifier.height(15.dp))
 
             Text(
-                text = "Since cycles can change over time, this helps us customize the app for you.",
+                text = "We can then predict your next period.",
                 fontFamily = FontFamily(Font(R.font.raleway_regular)),
                 fontSize = 14.sp,
                 color = Color.Black,
@@ -116,12 +153,7 @@ fun BornScreenRoot(
             else
                 datePickerState.selectedDateMillis!! < System.currentTimeMillis(),
             text = "Next",
-            onClick = {
-                if (isCurrentDateLessThanYears(datePickerState.selectedDateMillis!!, 13))
-                    onNext(true)
-                else
-                    onNext(false)
-            },
+            onClick = onNext,
         )
 
         Spacer(modifier = Modifier
@@ -131,10 +163,4 @@ fun BornScreenRoot(
             .height(WindowInsets.ime.asPaddingValues().calculateBottomPadding()))
 
     }
-}
-
-fun yearsToMillis(years: Int): Long {
-    val daysInYear = 365.25 // Average days in a year, accounting for leap years
-    val millisInDay = 24 * 60 * 60 * 1000L // Hours * Minutes * Seconds * Milliseconds
-    return (years * daysInYear * millisInDay).toLong()
 }
