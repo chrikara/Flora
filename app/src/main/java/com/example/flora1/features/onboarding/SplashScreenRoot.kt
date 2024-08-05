@@ -1,4 +1,4 @@
-package com.example.flora1.features
+package com.example.flora1.features.onboarding
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState

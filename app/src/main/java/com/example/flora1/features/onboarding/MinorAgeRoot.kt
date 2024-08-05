@@ -1,4 +1,4 @@
-package com.example.flora1.features
+package com.example.flora1.features.onboarding
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -20,8 +20,6 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

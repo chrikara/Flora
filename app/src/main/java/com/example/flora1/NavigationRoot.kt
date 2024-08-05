@@ -6,20 +6,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.flora1.core.Screen
 import com.example.flora1.core.navigation.popAllPreviousDestinations
-import com.example.flora1.features.AverageCycleRoot
-import com.example.flora1.features.BornScreenRoot
-import com.example.flora1.features.GetStartedRoot
-import com.example.flora1.features.LastPeriodRoot
-import com.example.flora1.features.MinorAgeRoot
-import com.example.flora1.features.SplashScreenRoot
-import com.example.flora1.features.yearsToMillis
+import com.example.flora1.features.onboarding.averagecycle.AverageCycleRoot
+import com.example.flora1.features.onboarding.born.BornScreenRoot
+import com.example.flora1.features.onboarding.GetStartedRoot
+import com.example.flora1.features.onboarding.LastPeriodRoot
+import com.example.flora1.features.onboarding.MinorAgeRoot
+import com.example.flora1.features.onboarding.SplashScreenRoot
 
 
 @Composable
 fun NavigationRoot(
     navController: NavHostController,
 ) {
-
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.name,
@@ -57,9 +55,7 @@ fun NavigationRoot(
 
         composable(Screen.LastPeriod.name) {
             LastPeriodRoot(
-                onNext = {
-                    navController.navigate(Screen.GetStarted.name)
-                },
+                onNext = { navController.navigate(Screen.GetStarted.name) },
                 onBack = { navController.popBackStack() },
             )
         }
@@ -74,7 +70,7 @@ fun NavigationRoot(
                     navController.navigate(
                         route = Screen.Born.name,
                         builder = {
-                            popUpTo(Screen.Born.name){
+                            popUpTo(Screen.Born.name) {
                                 inclusive = true
                             }
                         }
@@ -85,7 +81,4 @@ fun NavigationRoot(
         }
     }
 }
-
- fun isCurrentDateLessThanYears(dateSelected: Long, years: Int) =
-    System.currentTimeMillis() - dateSelected <= yearsToMillis(years = years)
 

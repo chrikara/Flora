@@ -16,7 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.flora1.ui.theme.Flora1Theme
+import dagger.hilt.android.AndroidEntryPoint
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

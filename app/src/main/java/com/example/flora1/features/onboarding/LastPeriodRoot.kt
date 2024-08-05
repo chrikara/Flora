@@ -1,27 +1,35 @@
-package com.example.flora1.features
+package com.example.flora1.features.onboarding
 
 import android.annotation.SuppressLint
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material3.DatePicker
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -32,17 +40,17 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.flora1.R
 import com.example.flora1.core.uikit.buttons.PrimaryButton
-import com.example.flora1.isCurrentDateLessThanYears
+import com.example.flora1.core.uikit.datepickers.rememberFloraRangeDatePickerState
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BornScreenRoot(
-    onNext: (isEligible: Boolean) -> Unit,
+fun LastPeriodRoot(
+    onNext : () -> Unit,
+    onBack : () -> Unit,
 ) {
 
-    val datePickerState = rememberDatePickerState()
-    BackHandler {}
+    val datePickerState = rememberFloraRangeDatePickerState()
 
     ConstraintLayout(
         modifier =
@@ -50,10 +58,10 @@ fun BornScreenRoot(
             .fillMaxSize()
             .background(Color.White)
             .padding(horizontal = 20.dp, vertical = 10.dp)
-            .padding(WindowInsets.systemBars.asPaddingValues()),
+            .padding(WindowInsets.statusBars.asPaddingValues()),
     ) {
         val (column, datePicker, button, spacer) = createRefs()
-
+        println("Mpike2")
 
         Column(
             modifier = Modifier.constrainAs(column) {
@@ -63,15 +71,40 @@ fun BornScreenRoot(
         ) {
             Spacer(modifier = Modifier.height(10.dp))
 
-            Image(
-                modifier = Modifier.size(75.dp),
-                painter = painterResource(id = R.drawable.flora_logo),
-                contentDescription = ""
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                val size = 30.dp
+                Icon(
+                    modifier = Modifier
+                        .size(size)
+                        .clip(CircleShape)
+                        .clickable(onClick = onBack)
+                        .align(Alignment.Top),
+                    tint = MaterialTheme.colorScheme.primary,
+                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                    contentDescription = "",
+                )
+                Image(
+                    modifier = Modifier.size(75.dp),
+                    painter = painterResource(id = R.drawable.flora_logo),
+                    contentDescription = ""
+                )
+
+                Icon(
+                    modifier = Modifier
+                        .size(size)
+                        .alpha(0f),
+                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                    contentDescription = ""
+                )
+            }
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = "When were you born?",
+                text = "When did your last period start?",
                 fontFamily = FontFamily(Font(R.font.raleway_bold)),
                 fontSize = 24.sp,
                 color = Color.Black,
@@ -80,42 +113,36 @@ fun BornScreenRoot(
             Spacer(modifier = Modifier.height(15.dp))
 
             Text(
-                text = "Since cycles can change over time, this helps us customize the app for you.",
+                text = "We can then predict your next period.",
                 fontFamily = FontFamily(Font(R.font.raleway_regular)),
                 fontSize = 14.sp,
                 color = Color.Black,
                 textAlign = TextAlign.Center,
             )
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
+            DateRangePicker(
+                state = datePickerState,
+                title = null,
+                headline = null,
+                showModeToggle = false,
+            )
         }
-
-        DatePicker(
-            modifier = Modifier.constrainAs(datePicker) {
-                top.linkTo(column.bottom, margin = 20.dp)
-                bottom.linkTo(button.top)
-            },
-            state = datePickerState,
-        )
 
         PrimaryButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .constrainAs(button) {
                     bottom.linkTo(spacer.top)
-                },
+                }
+                ,
             enabled =
-            if (datePickerState.selectedDateMillis == null)
+            if (datePickerState.selectedStartDateMillis == null)
                 false
             else
-                datePickerState.selectedDateMillis!! < System.currentTimeMillis(),
+                datePickerState.selectedStartDateMillis!! < System.currentTimeMillis(),
             text = "Next",
-            onClick = {
-                if (isCurrentDateLessThanYears(datePickerState.selectedDateMillis!!, 13))
-                    onNext(false)
-                else
-                    onNext(true)
-            },
+            onClick = onNext,
         )
 
         Spacer(modifier = Modifier
@@ -123,16 +150,10 @@ fun BornScreenRoot(
                 bottom.linkTo(parent.bottom)
             }
             .height(
-                WindowInsets.ime
+                WindowInsets.navigationBars
                     .asPaddingValues()
                     .calculateBottomPadding()
             ))
 
     }
-}
-
-fun yearsToMillis(years: Int): Long {
-    val daysInYear = 365.25 // Average days in a year, accounting for leap years
-    val millisInDay = 24 * 60 * 60 * 1000L // Hours * Minutes * Seconds * Milliseconds
-    return (years * daysInYear * millisInDay).toLong()
 }

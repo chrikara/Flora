@@ -1,4 +1,4 @@
-package com.example.flora1.features
+package com.example.flora1.features.onboarding.averagecycle
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flora1.R
 import com.example.flora1.core.uikit.buttons.PrimaryButton
 import com.example.flora1.ui.theme.conditionalPrimaryBrush
@@ -57,9 +58,10 @@ import com.example.flora1.ui.theme.conditionalPrimaryBrush
 fun AverageCycleRoot(
     onBack: () -> Unit,
     onNext: () -> Unit,
+    viewModel: AverageCycleViewModel = hiltViewModel(),
 ) {
-    var selectedNumber: Int? by remember { mutableStateOf(null) }
 
+    val selectedNumber = viewModel.selectedNumber
 
 
     ConstraintLayout(
@@ -148,11 +150,8 @@ fun AverageCycleRoot(
                     selectedNumber == it
                 },
                 onClick = {
-                    selectedNumber =
-                        if (selectedNumber == it)
-                            null
-                        else
-                            it
+                    viewModel.onSelectedNumberChange(number = it)
+
                 }
             )
         }
@@ -183,7 +182,7 @@ fun AverageCycleRoot(
                 enabled = selectedNumber != null,
                 text = "Next",
                 onClick = {
-                    // TODO: Save to prefs
+                    viewModel.onSaveAverageCycleDays(selectedNumber!!)
                     onNext()
                 }
             )
