@@ -37,7 +37,10 @@ class LastPeriodViewModel @Inject constructor(
         callback: (Result<Boolean>) -> Unit = {}
     ) {
         /*
-        Αυτό θα αλλάξει όταν βάλω και Repository
+        Αυτό θα αλλάξει όταν βάλω και Repository.
+
+        Θα βάλω και Resource sealed class αντί για Result να έχω το
+        isRunning.
          */
 
         viewModelScope.launch {
@@ -62,13 +65,13 @@ class LastPeriodViewModel @Inject constructor(
 
         performActionBetweenTwoDates(
             startingDate = startingDate, endingDate = endingDate,
-        ) { currentDateIterated ->
+        ) { dateIterated ->
             onSaveLastPeriod(
                 PeriodEntity(
                     flow = "heavy",
-                    day = currentDateIterated.dayOfMonth,
-                    month = currentDateIterated.monthValue,
-                    year = currentDateIterated.year,
+                    day = dateIterated.dayOfMonth,
+                    month = dateIterated.monthValue,
+                    year = dateIterated.year,
                 )
             )
         }

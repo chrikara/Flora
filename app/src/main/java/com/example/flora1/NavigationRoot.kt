@@ -5,12 +5,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.flora1.core.Screen
+import com.example.flora1.core.navigation.navigateAndPopUpTo
 import com.example.flora1.core.navigation.popAllPreviousDestinations
+import com.example.flora1.features.main.MainRoot
 import com.example.flora1.features.onboarding.GetStartedRoot
 import com.example.flora1.features.onboarding.MinorAgeRoot
 import com.example.flora1.features.onboarding.SplashScreenRoot
 import com.example.flora1.features.onboarding.averagecycle.AverageCycleRoot
 import com.example.flora1.features.onboarding.born.BornScreenRoot
+import com.example.flora1.features.onboarding.calendar.CalendarRoot
 import com.example.flora1.features.onboarding.lastperiod.LastPeriodRoot
 
 
@@ -18,10 +21,19 @@ import com.example.flora1.features.onboarding.lastperiod.LastPeriodRoot
 fun NavigationRoot(
     navController: NavHostController,
 ) {
+//    LaunchedEffect(key1 = navController) {
+//        navController.currentBackStackEntryFlow.collectLatest {
+//            /*
+//            Εκτελείται κάθε φορά που αλλάζει navigation root
+//             */
+//        }
+//    }
+
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.name,
+        startDestination = Screen.Main.name,
     ) {
+
         composable(Screen.Splash.name) {
             SplashScreenRoot(
                 onFinishedAnimation = {
@@ -64,20 +76,22 @@ fun NavigationRoot(
             GetStartedRoot(
                 onPrimaryClicked = {
                     navController.popAllPreviousDestinations()
-                    navController.navigate(Screen.GetStarted.name)
+                    navController.navigate(Screen.Main.name)
                 },
                 onSecondaryClicked = {
-                    navController.navigate(
-                        route = Screen.Born.name,
-                        builder = {
-                            popUpTo(Screen.Born.name) {
-                                inclusive = true
-                            }
-                        }
-                    )
+                    navController.navigateAndPopUpTo(route = Screen.Born.name)
                 }
             )
+        }
 
+        composable(Screen.Main.name) {
+            MainRoot(
+                onTextPeriodTrackClick = { navController.navigate(Screen.Calendar.name) }
+            )
+        }
+
+        composable(Screen.Calendar.name) {
+            CalendarRoot()
         }
     }
 }
