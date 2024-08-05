@@ -3,7 +3,9 @@ package com.example.flora1.di
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import com.example.flora1.data.DefaultSharedPreferences
+import androidx.room.Room
+import com.example.flora1.data.db.PeriodDatabase
+import com.example.flora1.data.preferences.DefaultSharedPreferences
 import com.example.flora1.domain.Preferences
 import dagger.Module
 import dagger.Provides
@@ -27,4 +29,14 @@ object FloraModule {
     fun providesPreferences(
         sharedPrefs : SharedPreferences
     ) : Preferences = DefaultSharedPreferences(sharedPrefs)
+
+    @Provides
+    @Singleton
+    fun providesDatabase(app:Application) : PeriodDatabase =
+        Room.databaseBuilder(
+            app.applicationContext,
+            PeriodDatabase::class.java,
+            "food-database"
+        ).build()
+
 }

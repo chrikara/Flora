@@ -1,4 +1,4 @@
-package com.example.flora1.features.onboarding
+package com.example.flora1.features.onboarding.lastperiod
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -38,9 +38,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flora1.R
+import com.example.flora1.core.date.toDate
 import com.example.flora1.core.uikit.buttons.PrimaryButton
 import com.example.flora1.core.uikit.datepickers.rememberFloraRangeDatePickerState
+import com.example.flora1.data.db.PeriodEntity
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,6 +54,7 @@ import com.example.flora1.core.uikit.datepickers.rememberFloraRangeDatePickerSta
 fun LastPeriodRoot(
     onNext : () -> Unit,
     onBack : () -> Unit,
+    viewModel: LastPeriodViewModel = hiltViewModel(),
 ) {
 
     val datePickerState = rememberFloraRangeDatePickerState()
@@ -60,7 +67,7 @@ fun LastPeriodRoot(
             .padding(horizontal = 20.dp, vertical = 10.dp)
             .padding(WindowInsets.statusBars.asPaddingValues()),
     ) {
-        val (column, datePicker, button, spacer) = createRefs()
+        val (column, button, spacer) = createRefs()
         println("Mpike2")
 
         Column(
@@ -142,7 +149,10 @@ fun LastPeriodRoot(
             else
                 datePickerState.selectedStartDateMillis!! < System.currentTimeMillis(),
             text = "Next",
-            onClick = onNext,
+            onClick = {
+                viewModel.onNextClicked(datePickerState)
+             //   onNext()
+            },
         )
 
         Spacer(modifier = Modifier

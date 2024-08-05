@@ -1,4 +1,4 @@
-package com.example.flora1.data
+package com.example.flora1.data.preferences
 
 import android.content.SharedPreferences
 import com.example.flora1.domain.Preferences
