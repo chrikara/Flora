@@ -20,8 +20,26 @@ class LastPeriodViewModel @Inject constructor(
     private val db: PeriodDatabase,
 ) : ViewModel() {
 
+    /*
+    Αν και δε θα χρειαστεί εδώ ακριβώς, το κρατάω γιατί κάτι παρόμοιο
+    θα γίνει σε επόμενα screens.
+     */
 
-    private fun onSaveLastPeriod(periodEntity: PeriodEntity, callback: (Result<Boolean>) -> Unit = {}) {
+//    val savedPeriodLogDates = db.dao.getAllPeriodLogs()
+//        .stateIn(
+//            scope = viewModelScope,
+//            started = SharingStarted.Lazily,
+//            initialValue = emptyList(),
+//        )
+
+    private fun onSaveLastPeriod(
+        periodEntity: PeriodEntity,
+        callback: (Result<Boolean>) -> Unit = {}
+    ) {
+        /*
+        Αυτό θα αλλάξει όταν βάλω και Repository
+         */
+
         viewModelScope.launch {
             val result = try {
                 withContext(Dispatchers.IO) {
@@ -36,36 +54,24 @@ class LastPeriodViewModel @Inject constructor(
         }
     }
 
-    fun onNextClicked(
+    fun onSavePeriodForSelectedDates(
         datePickerState: DateRangePickerState,
     ) {
         val startingDate = datePickerState.selectedStartDateMillis!!.toDate()
         val endingDate = datePickerState.selectedEndDateMillis?.toDate()
 
-        if (endingDate != null) {
-            performActionBetweenTwoDates(
-                startingDate = startingDate, endingDate = endingDate,
-            ) { currentDateIterated ->
-                onSaveLastPeriod(
-                    PeriodEntity(
-                        flow = "heavy",
-                        day = currentDateIterated.dayOfMonth,
-                        month = currentDateIterated.monthValue,
-                        year = currentDateIterated.year,
-                    )
+        performActionBetweenTwoDates(
+            startingDate = startingDate, endingDate = endingDate,
+        ) { currentDateIterated ->
+            onSaveLastPeriod(
+                PeriodEntity(
+                    flow = "heavy",
+                    day = currentDateIterated.dayOfMonth,
+                    month = currentDateIterated.monthValue,
+                    year = currentDateIterated.year,
                 )
-            }
-            return
-        }
-
-        onSaveLastPeriod(
-            PeriodEntity(
-                flow = "heavy",
-                day = startingDate.dayOfMonth,
-                month = startingDate.monthValue,
-                year = startingDate.year,
             )
-        )
+        }
     }
 }
 

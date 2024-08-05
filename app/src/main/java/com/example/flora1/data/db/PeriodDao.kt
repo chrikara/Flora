@@ -33,4 +33,6 @@ interface PeriodDao {
 //    )
 //    fun getFoodsForDate(day : Int, month : Int, year: Int) : Flow<List<FoodEntity>>
 
+    @Query("SELECT * FROM periodentity")
+    fun getAllPeriodLogs() : Flow<List<PeriodEntity>>
 }

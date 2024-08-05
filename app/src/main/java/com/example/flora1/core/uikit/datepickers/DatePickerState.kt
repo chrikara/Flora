@@ -15,7 +15,13 @@ fun rememberFloraDatePickerState() = rememberDatePickerState(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun rememberFloraRangeDatePickerState() = rememberDateRangePickerState(
+fun rememberFloraRangeDatePickerState(
+    initialSelectedStartDateMillis : Long? = null,
+    initialSelectedEndDateMillis : Long? = null,
+
+) = rememberDateRangePickerState(
+    initialSelectedStartDateMillis = initialSelectedStartDateMillis,
+    initialSelectedEndDateMillis = initialSelectedEndDateMillis,
     selectableDates = floraSelectableDates,
 )
 

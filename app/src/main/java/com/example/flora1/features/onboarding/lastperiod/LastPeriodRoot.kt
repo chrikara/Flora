@@ -40,13 +40,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flora1.R
-import com.example.flora1.core.date.toDate
 import com.example.flora1.core.uikit.buttons.PrimaryButton
 import com.example.flora1.core.uikit.datepickers.rememberFloraRangeDatePickerState
-import com.example.flora1.data.db.PeriodEntity
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -150,8 +145,8 @@ fun LastPeriodRoot(
                 datePickerState.selectedStartDateMillis!! < System.currentTimeMillis(),
             text = "Next",
             onClick = {
-                viewModel.onNextClicked(datePickerState)
-             //   onNext()
+                viewModel.onSavePeriodForSelectedDates(datePickerState = datePickerState)
+                onNext()
             },
         )
 

@@ -20,7 +20,7 @@ fun NavigationRoot(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.LastPeriod.name,
+        startDestination = Screen.Splash.name,
     ) {
         composable(Screen.Splash.name) {
             SplashScreenRoot(
