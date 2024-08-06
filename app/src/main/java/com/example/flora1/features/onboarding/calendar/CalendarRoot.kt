@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.flora1.features.main.components.PeriodSphere
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.atStartOfMonth
@@ -25,9 +26,6 @@ import java.time.YearMonth
 @Composable
 fun CalendarRoot(modifier: Modifier = Modifier) {
 
+    PeriodSphere(onTextPeriodTrackClick = { /*TODO*/ }, selectedDay = 1, onArcClicked = {_,_,_ ->})
 }
 
-@Composable
-fun Day(day: WeekDay) {
-
-}

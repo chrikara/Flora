@@ -1,5 +1,9 @@
 package com.example.flora1
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -86,11 +90,28 @@ fun NavigationRoot(
 
         composable(Screen.Main.name) {
             MainRoot(
-                onTextPeriodTrackClick = { navController.navigate(Screen.Calendar.name) }
+                onCalendarClick = { navController.navigate(Screen.Calendar.name) },
+                onTextPeriodTrackClick = { navController.navigate(Screen.Calendar.name) },
+                onSettingsClick = {}
             )
         }
 
-        composable(Screen.Calendar.name) {
+        composable(
+            route = Screen.Calendar.name,
+            enterTransition = {
+                slideIntoContainer(
+                    animationSpec = tween(300, easing = EaseIn),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Start
+                )
+
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    animationSpec = tween(300, easing = EaseOut),
+                    towards = AnimatedContentTransitionScope.SlideDirection.End
+                )
+            },
+        ) {
             CalendarRoot()
         }
     }

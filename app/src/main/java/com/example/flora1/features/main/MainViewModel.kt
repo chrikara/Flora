@@ -4,6 +4,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flora1.core.date.toFloraText
+import com.example.flora1.data.db.PeriodDatabase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,15 +18,31 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import javax.inject.Inject
 import kotlin.math.abs
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class MainViewModel : ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    db: PeriodDatabase,
+) : ViewModel() {
 
     private val _selectedDay = MutableStateFlow(LocalDate.now().dayOfMonth)
     val selectedDay: StateFlow<Int> = _selectedDay
 
+    val periodDates = db.dao.getPeriodLogsForMonth(LocalDate.now().monthValue)
+        .mapLatest { fetchedCurrentMonthPeriodLogs ->
+            fetchedCurrentMonthPeriodLogs.map {
+                it.day
+            }
+        }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )
 
 
     val selectedDate = selectedDay.mapLatest {

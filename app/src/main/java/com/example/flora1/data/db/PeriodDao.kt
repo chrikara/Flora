@@ -35,4 +35,7 @@ interface PeriodDao {
 
     @Query("SELECT * FROM periodentity")
     fun getAllPeriodLogs() : Flow<List<PeriodEntity>>
+
+    @Query("SELECT * FROM periodentity WHERE month = :specifiedMonth ORDER BY day ASC")
+    fun getPeriodLogsForMonth(specifiedMonth: Int): Flow<List<PeriodEntity>>
 }

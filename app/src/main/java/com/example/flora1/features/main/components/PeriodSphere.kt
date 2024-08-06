@@ -10,11 +10,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -51,7 +48,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flora1.R
 import com.example.flora1.ui.theme.Flora1Theme
-import com.example.flora1.ui.theme.PrimaryHorizontalBrush
 import java.time.Month
 import kotlin.math.abs
 import kotlin.math.cos
@@ -127,53 +123,56 @@ fun PeriodSphere(
         dayIndicatorSizeFloat.toDp()
     }
 
-
-
-
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .alpha(0.6f)
-            .background(PrimaryHorizontalBrush)
-    )
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 10.dp)
+            .fillMaxWidth(),
+        contentAlignment = Alignment.Center,
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Box(
-            modifier = Modifier
-                .safeDrawingPadding()
+        Canvas(
+            modifier =
+            Modifier
                 .fillMaxWidth()
-                .height(screenWidth),
-            contentAlignment = Alignment.Center,
+                .height(screenWidth)
+                .pointerInput(Unit) {
+                    detectTapGestures { offsetClicked ->
+                        println(circlePositions)
+                        onArcClicked(offsetClicked, circlePositions, dayIndicatorSizeFloat / 2f)
+                    }
+                }
         ) {
 
-            Canvas(
-                modifier =
-                Modifier
-                    .fillMaxSize()
-                    .pointerInput(Unit) {
-                        detectTapGestures { offsetClicked ->
+            drawCircle(
+                color = primaryColor,
+                center = this.center,
+                radius = radius,
+            )
 
-                            onArcClicked(offsetClicked, circlePositions, dayIndicatorSizeFloat / 2f)
-
-                        }
-                    }
-            ) {
-
-                drawCircle(
-                    color = primaryColor,
-                    center = this.center,
-                    radius = radius,
+            drawArc(
+                color = White,
+                startAngle = startAngle,
+                sweepAngle = totalSweep,
+                useCenter = false,
+                topLeft = this.center.copy(
+                    x = this.center.x - radius + offset,
+                    y = this.center.y - radius + offset
+                ),
+                size = androidx.compose.ui.geometry.Size(
+                    width = radius * 2 - offset * 2,
+                    height = radius * 2 - offset * 2
+                ),
+                style = Stroke(
+                    width = radius * 0.1f,
+                    cap = StrokeCap.Round
                 )
+            )
 
+
+
+            if (ovulationDays.isNotEmpty())
                 drawArc(
-                    color = White,
-                    startAngle = startAngle,
-                    sweepAngle = totalSweep,
+                    color = Color(0xFF1C7DE6),
+                    startAngle = (ovulationDays[0] - 1) * totalSweep / (currentMonth.maxLength()).toFloat(),
+                    sweepAngle = ovulationDays.size * totalSweep / (currentMonth.maxLength()).toFloat(),
                     useCenter = false,
                     topLeft = this.center.copy(
                         x = this.center.x - radius + offset,
@@ -189,146 +188,123 @@ fun PeriodSphere(
                     )
                 )
 
-
-
-                if (ovulationDays.isNotEmpty())
-                    drawArc(
-                        color = Color(0xFF1C7DE6),
-                        startAngle = (ovulationDays[0] - 1) * totalSweep / (currentMonth.maxLength()).toFloat(),
-                        sweepAngle = ovulationDays.size * totalSweep / (currentMonth.maxLength()).toFloat(),
-                        useCenter = false,
-                        topLeft = this.center.copy(
-                            x = this.center.x - radius + offset,
-                            y = this.center.y - radius + offset
-                        ),
-                        size = androidx.compose.ui.geometry.Size(
-                            width = radius * 2 - offset * 2,
-                            height = radius * 2 - offset * 2
-                        ),
-                        style = Stroke(
-                            width = radius * 0.1f,
-                            cap = StrokeCap.Round
-                        )
+            if (periodDays.isNotEmpty())
+                drawArc(
+                    color = Color(0xFFA01C1C),
+                    startAngle = (periodDays[0] - 1) * totalSweep / (currentMonth.maxLength()).toFloat(),
+                    sweepAngle = periodDays.size * totalSweep / (currentMonth.maxLength()).toFloat(),
+                    useCenter = false,
+                    topLeft = this.center.copy(
+                        x = this.center.x - radius + offset,
+                        y = this.center.y - radius + offset
+                    ),
+                    size = androidx.compose.ui.geometry.Size(
+                        width = radius * 2 - offset * 2,
+                        height = radius * 2 - offset * 2
+                    ),
+                    style = Stroke(
+                        width = radius * 0.1f,
+                        cap = StrokeCap.Round
                     )
-
-                if (periodDays.isNotEmpty())
-                    drawArc(
-                        color = Color(0xFFA01C1C),
-                        startAngle = (periodDays[0] - 1) * totalSweep / (currentMonth.maxLength()).toFloat(),
-                        sweepAngle = periodDays.size * totalSweep / (currentMonth.maxLength()).toFloat(),
-                        useCenter = false,
-                        topLeft = this.center.copy(
-                            x = this.center.x - radius + offset,
-                            y = this.center.y - radius + offset
-                        ),
-                        size = androidx.compose.ui.geometry.Size(
-                            width = radius * 2 - offset * 2,
-                            height = radius * 2 - offset * 2
-                        ),
-                        style = Stroke(
-                            width = radius * 0.1f,
-                            cap = StrokeCap.Round
-                        )
-                    )
-            }
+                )
+        }
 
 
-            Box(
-                modifier = Modifier
-                    .width(innerCircleWidth)
-                    .height(innerCircleWidth)
-                    .clip(CircleShape)
-                    .background(White),
-                contentAlignment = Alignment.Center,
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        text = dateText,
-                        fontFamily = FontFamily(Font(R.font.raleway_regular)),
-                        fontSize = 14.sp,
-                        color = Color.Black,
-                        textAlign = TextAlign.Center,
-                    )
-
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    Text(
-                        text = secondaryText,
-                        fontFamily = FontFamily(Font(R.font.raleway_bold)),
-                        fontSize = 14.sp,
-                        color = Color.Black,
-                        textAlign = TextAlign.Center,
-                    )
-
-                    Text(
-                        text = primaryText,
-                        fontFamily = FontFamily(Font(R.font.raleway_extrabold)),
-                        fontSize = 36.sp,
-                        color = primaryColor,
-                        textAlign = TextAlign.Center,
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Text(
-                        modifier = Modifier.clickable(
-                            indication = null,
-                            onClick = onTextPeriodTrackClick,
-                            interactionSource = remember {
-                                MutableInteractionSource()
-                            }
-
-                        ),
-                        text = "Click to track your period\n" + "\u2304",
-                        lineHeight = 18.sp,
-                        fontFamily = FontFamily(Font(R.font.raleway_bolditalic)),
-                        fontSize = 14.sp,
-                        style = TextStyle(
-                            shadow = Shadow(
-                                color = Color.Black,
-                                blurRadius = 1f
-                            )
-                        ),
-                        color = Color(0xFF1822EE),
-                        textAlign = TextAlign.Center,
-                    )
-                }
-            }
-
-            // Adjust this to change the position dynamically
-            val (xPosition, yPosition) = calculateCirclePosition(
-                day = selectedDay - 1,
-                totalDays = currentMonth.maxLength(),
-                totalSweep = totalSweep,
-                radius = radius - offset,
-                density = density,
-            )
-
-            Box(
-                modifier = Modifier
-                    .size(dayIndicatorSize)
-                    .offset(
-                        x = xPosition,
-                        y = yPosition
-                    )
-                    .clip(CircleShape)
-                    .border(
-                        width = 1.dp,
-                        color = Color.Black,
-                        shape = CircleShape,
-                    )
-                    .background(White),
-                contentAlignment = Alignment.Center,
+        Box(
+            modifier = Modifier
+                .width(innerCircleWidth)
+                .height(innerCircleWidth)
+                .clip(CircleShape)
+                .background(White),
+            contentAlignment = Alignment.Center,
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = selectedDay.toString(),
-                    fontFamily = FontFamily(Font(R.font.opensans_regular)),
-                    fontSize = 20.sp,
+                    text = dateText,
+                    fontFamily = FontFamily(Font(R.font.raleway_regular)),
+                    fontSize = 14.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                )
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Text(
+                    text = secondaryText,
+                    fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                    fontSize = 14.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                )
+
+                Text(
+                    text = primaryText,
+                    fontFamily = FontFamily(Font(R.font.raleway_extrabold)),
+                    fontSize = 36.sp,
+                    color = primaryColor,
+                    textAlign = TextAlign.Center,
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    modifier = Modifier.clickable(
+                        indication = null,
+                        onClick = onTextPeriodTrackClick,
+                        interactionSource = remember {
+                            MutableInteractionSource()
+                        }
+
+                    ),
+                    text = "Click to track your period\n" + "\u2304",
+                    lineHeight = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.raleway_bolditalic)),
+                    fontSize = 14.sp,
+                    style = TextStyle(
+                        shadow = Shadow(
+                            color = Color.Black,
+                            blurRadius = 1f
+                        )
+                    ),
+                    color = Color(0xFF1822EE),
+                    textAlign = TextAlign.Center,
                 )
             }
+        }
+
+        // Adjust this to change the position dynamically
+        val (xPosition, yPosition) = calculateCirclePosition(
+            day = selectedDay - 1,
+            totalDays = currentMonth.maxLength(),
+            totalSweep = totalSweep,
+            radius = radius - offset,
+            density = density,
+        )
+
+        Box(
+            modifier = Modifier
+                .size(dayIndicatorSize)
+                .offset(
+                    x = xPosition,
+                    y = yPosition
+                )
+                .clip(CircleShape)
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = CircleShape,
+                )
+                .background(White),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = selectedDay.toString(),
+                fontFamily = FontFamily(Font(R.font.opensans_regular)),
+                fontSize = 20.sp,
+            )
         }
     }
 }
