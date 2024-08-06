@@ -39,7 +39,8 @@ fun MainRoot(
 
     val selectedDay by viewModel.selectedDay.collectAsState()
     val selectedDate by viewModel.selectedDate.collectAsState()
-    val periodDays by viewModel.periodDates.collectAsState()
+    val periodDays by viewModel.periodDaysForCurrentMonth.collectAsState()
+    val primaryText by viewModel.primaryText.collectAsState()
 
     CustomBackgroundSurface()
 
@@ -69,7 +70,7 @@ fun MainRoot(
                     .size(size)
                     .clip(CircleShape)
                     .clickable(onClick = onCalendarClick)
-                    .padding(10.dp),
+                    .padding(15.dp),
                 imageVector = Icons.Filled.DateRange,
                 contentDescription = "",
             )
@@ -80,6 +81,7 @@ fun MainRoot(
             onTextPeriodTrackClick = onTextPeriodTrackClick,
             selectedDay = selectedDay,
             dateText = selectedDate,
+            primaryText = primaryText,
             periodDays = periodDays,
             ovulationDays = emptyList(),
             onArcClicked = viewModel::onArcClicked,

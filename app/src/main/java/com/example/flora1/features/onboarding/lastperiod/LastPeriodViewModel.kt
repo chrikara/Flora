@@ -20,18 +20,6 @@ class LastPeriodViewModel @Inject constructor(
     private val db: PeriodDatabase,
 ) : ViewModel() {
 
-    /*
-    Αν και δε θα χρειαστεί εδώ ακριβώς, το κρατάω γιατί κάτι παρόμοιο
-    θα γίνει σε επόμενα screens.
-     */
-
-//    val savedPeriodLogDates = db.dao.getAllPeriodLogs()
-//        .stateIn(
-//            scope = viewModelScope,
-//            started = SharingStarted.Lazily,
-//            initialValue = emptyList(),
-//        )
-
     private fun onSaveLastPeriod(
         periodEntity: PeriodEntity,
         callback: (Result<Boolean>) -> Unit = {}

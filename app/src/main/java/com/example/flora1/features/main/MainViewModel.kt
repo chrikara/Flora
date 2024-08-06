@@ -11,6 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -31,7 +32,7 @@ class MainViewModel @Inject constructor(
     private val _selectedDay = MutableStateFlow(LocalDate.now().dayOfMonth)
     val selectedDay: StateFlow<Int> = _selectedDay
 
-    val periodDates = db.dao.getPeriodLogsForMonth(LocalDate.now().monthValue)
+    val periodDaysForCurrentMonth = db.dao.getPeriodLogsForMonth(LocalDate.now().monthValue)
         .mapLatest { fetchedCurrentMonthPeriodLogs ->
             fetchedCurrentMonthPeriodLogs.map {
                 it.day
@@ -44,13 +45,39 @@ class MainViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
+    val primaryText = combine(
+        selectedDay, periodDaysForCurrentMonth
+    ) { selectedDay, periodDaysForCurrentMonth ->
 
-    val selectedDate = selectedDay.mapLatest {
+        if (selectedDay in periodDaysForCurrentMonth) {
+            if (periodDaysForCurrentMonth.last() - selectedDay == 1)
+                "1 Day Left"
+            else if (periodDaysForCurrentMonth.last() == selectedDay)
+                "Last Day"
+            else
+                "${periodDaysForCurrentMonth.last() - selectedDay} days left"
+        } else if (periodDaysForCurrentMonth.isNotEmpty() && periodDaysForCurrentMonth[0] - selectedDay == 1)
+            "Your next period is on 1 day"
+        else if (periodDaysForCurrentMonth.isNotEmpty() && periodDaysForCurrentMonth[0] > selectedDay)
+            "Your next period\nstarts on ${periodDaysForCurrentMonth[0] - selectedDay} days"
+        else
+            "Nothing else\nfor this month"
+
+    }
+        .flowOn(Dispatchers.Default)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = "",
+        )
+
+
+    val selectedDate = selectedDay.mapLatest { day ->
         val localDate = LocalDate.now()
         LocalDate.of(
             localDate.year,
             localDate.monthValue,
-            it,
+            day,
         ).toFloraText()
     }
         .flowOn(Dispatchers.Default)
@@ -68,8 +95,8 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
                 circlePositions.forEachIndexed { index, position ->
-                    if (abs(offsetClicked.x - position.first) < circleRadius
-                        && abs(offsetClicked.y - position.second) < circleRadius
+                    if (abs(offsetClicked.x - position.first) < circleRadius *2f
+                        && abs(offsetClicked.y - position.second) < circleRadius *2f
                     ) {
                         _selectedDay.update { index + 1 }
                         return@forEachIndexed

@@ -61,7 +61,6 @@ fun PeriodSphere(
     ovulationDays: List<Int> = buildList { (1..3).forEach { add(it) } },
     periodDays: List<Int> = listOf(11, 12, 13, 14, 15, 16, 17),
     dateText: String = "Thu, 12 May",
-    secondaryText: String = "Period In",
     primaryText: String = "1 Day",
     onArcClicked: (offsetClicked: Offset, circlePositions: List<Pair<Float, Float>>, circleRadius: Float) -> Unit,
 ) {
@@ -233,17 +232,9 @@ fun PeriodSphere(
                 Spacer(modifier = Modifier.height(5.dp))
 
                 Text(
-                    text = secondaryText,
-                    fontFamily = FontFamily(Font(R.font.raleway_bold)),
-                    fontSize = 14.sp,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                )
-
-                Text(
                     text = primaryText,
                     fontFamily = FontFamily(Font(R.font.raleway_extrabold)),
-                    fontSize = 36.sp,
+                    fontSize = 25.sp,
                     color = primaryColor,
                     textAlign = TextAlign.Center,
                 )

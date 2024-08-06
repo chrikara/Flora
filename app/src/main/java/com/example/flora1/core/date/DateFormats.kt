@@ -64,7 +64,7 @@ fun LocalDate.toFloraText() : String {
         today -> "Today"
         today.plusDays(1) -> "Tomorrow"
         today.minusDays(1) -> "Yesterday"
-        else -> DateTimeFormatter.ofPattern("dd LLL yyyy").withLocale(Locale.getDefault()).format(this)
+        else -> DateTimeFormatter.ofPattern("dd LLL, yyyy").withLocale(Locale.getDefault()).format(this)
     }
 }
 
