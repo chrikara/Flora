@@ -1,8 +1,12 @@
 package com.example.flora1.core.date
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 fun Long.toDate(): LocalDate = Instant.ofEpochMilli(this).atZone(
     ZoneId.systemDefault()
@@ -52,3 +56,15 @@ fun performActionBetweenTwoDates(
         )
     )
 }
+
+fun LocalDate.toFloraText() : String {
+    val today = LocalDate.now()
+
+    return when(this){
+        today -> "Today"
+        today.plusDays(1) -> "Tomorrow"
+        today.minusDays(1) -> "Yesterday"
+        else -> DateTimeFormatter.ofPattern("dd LLL yyyy").withLocale(Locale.getDefault()).format(this)
+    }
+}
+

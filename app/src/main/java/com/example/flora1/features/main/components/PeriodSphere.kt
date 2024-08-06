@@ -24,9 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,12 +44,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flora1.R
+import com.example.flora1.ui.theme.Flora1Theme
 import com.example.flora1.ui.theme.PrimaryHorizontalBrush
+import java.time.Month
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -58,14 +60,19 @@ import kotlin.math.sin
 @Composable
 fun PeriodSphere(
     onTextPeriodTrackClick: () -> Unit,
+    selectedDay: Int,
+    currentMonth: Month = Month.AUGUST,
+    ovulationDays: List<Int> = buildList { (1..3).forEach { add(it) } },
+    periodDays: List<Int> = listOf(11, 12, 13, 14, 15, 16, 17),
+    dateText: String = "Thu, 12 May",
+    secondaryText: String = "Period In",
+    primaryText: String = "1 Day",
+    onArcClicked: (offsetClicked: Offset, circlePositions: List<Pair<Float, Float>>, circleRadius: Float) -> Unit,
 ) {
 
     val context = LocalContext.current
     val density = LocalDensity.current
 
-    var day by rememberSaveable {
-        mutableStateOf(17)
-    }
 
     var circlePositions: List<Pair<Float, Float>> = emptyList()
 
@@ -94,7 +101,7 @@ fun PeriodSphere(
     LaunchedEffect(key1 = Unit) {
 
         circlePositions = buildList {
-            (1..30).forEach {
+            (1..currentMonth.maxLength()).forEach {
                 add(
                     calculateCirclePosition(
                         day = it,
@@ -115,8 +122,8 @@ fun PeriodSphere(
         }
     }
 
-    val dayIndicatorSizeFloat = radius * 0.25f
-    var dayIndicatorSize: Dp = with(density) {
+    val dayIndicatorSizeFloat = radius * 0.3f
+    val dayIndicatorSize: Dp = with(density) {
         dayIndicatorSizeFloat.toDp()
     }
 
@@ -151,13 +158,8 @@ fun PeriodSphere(
                     .pointerInput(Unit) {
                         detectTapGestures { offsetClicked ->
 
-                            circlePositions.forEachIndexed { index, position ->
-                                if(abs(offsetClicked.x - position.first) < dayIndicatorSizeFloat/2f
-                                    && abs(offsetClicked.y - position.second) < dayIndicatorSizeFloat/2f){
-                                    day = index + 1
-                                    return@forEachIndexed
-                                }
-                            }
+                            onArcClicked(offsetClicked, circlePositions, dayIndicatorSizeFloat / 2f)
+
                         }
                     }
             ) {
@@ -189,43 +191,45 @@ fun PeriodSphere(
 
 
 
-                drawArc(
-                    color = Color(0xFF1C7DE6),
-                    startAngle = startAngle,
-                    sweepAngle = 130f,
-                    useCenter = false,
-                    topLeft = this.center.copy(
-                        x = this.center.x - radius + offset,
-                        y = this.center.y - radius + offset
-                    ),
-                    size = androidx.compose.ui.geometry.Size(
-                        width = radius * 2 - offset * 2,
-                        height = radius * 2 - offset * 2
-                    ),
-                    style = Stroke(
-                        width = radius * 0.1f,
-                        cap = StrokeCap.Round
+                if (ovulationDays.isNotEmpty())
+                    drawArc(
+                        color = Color(0xFF1C7DE6),
+                        startAngle = (ovulationDays[0] - 1) * totalSweep / (currentMonth.maxLength()).toFloat(),
+                        sweepAngle = ovulationDays.size * totalSweep / (currentMonth.maxLength()).toFloat(),
+                        useCenter = false,
+                        topLeft = this.center.copy(
+                            x = this.center.x - radius + offset,
+                            y = this.center.y - radius + offset
+                        ),
+                        size = androidx.compose.ui.geometry.Size(
+                            width = radius * 2 - offset * 2,
+                            height = radius * 2 - offset * 2
+                        ),
+                        style = Stroke(
+                            width = radius * 0.1f,
+                            cap = StrokeCap.Round
+                        )
                     )
-                )
 
-                drawArc(
-                    color = Color(0xFFA01C1C),
-                    startAngle = startAngle + 200f,
-                    sweepAngle = 50f,
-                    useCenter = false,
-                    topLeft = this.center.copy(
-                        x = this.center.x - radius + offset,
-                        y = this.center.y - radius + offset
-                    ),
-                    size = androidx.compose.ui.geometry.Size(
-                        width = radius * 2 - offset * 2,
-                        height = radius * 2 - offset * 2
-                    ),
-                    style = Stroke(
-                        width = radius * 0.1f,
-                        cap = StrokeCap.Round
+                if (periodDays.isNotEmpty())
+                    drawArc(
+                        color = Color(0xFFA01C1C),
+                        startAngle = (periodDays[0] - 1) * totalSweep / (currentMonth.maxLength()).toFloat(),
+                        sweepAngle = periodDays.size * totalSweep / (currentMonth.maxLength()).toFloat(),
+                        useCenter = false,
+                        topLeft = this.center.copy(
+                            x = this.center.x - radius + offset,
+                            y = this.center.y - radius + offset
+                        ),
+                        size = androidx.compose.ui.geometry.Size(
+                            width = radius * 2 - offset * 2,
+                            height = radius * 2 - offset * 2
+                        ),
+                        style = Stroke(
+                            width = radius * 0.1f,
+                            cap = StrokeCap.Round
+                        )
                     )
-                )
             }
 
 
@@ -242,7 +246,7 @@ fun PeriodSphere(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = "Thu, 12 May",
+                        text = dateText,
                         fontFamily = FontFamily(Font(R.font.raleway_regular)),
                         fontSize = 14.sp,
                         color = Color.Black,
@@ -252,7 +256,7 @@ fun PeriodSphere(
                     Spacer(modifier = Modifier.height(5.dp))
 
                     Text(
-                        text = "Period In",
+                        text = secondaryText,
                         fontFamily = FontFamily(Font(R.font.raleway_bold)),
                         fontSize = 14.sp,
                         color = Color.Black,
@@ -260,7 +264,7 @@ fun PeriodSphere(
                     )
 
                     Text(
-                        text = "1 Day",
+                        text = primaryText,
                         fontFamily = FontFamily(Font(R.font.raleway_extrabold)),
                         fontSize = 36.sp,
                         color = primaryColor,
@@ -295,10 +299,9 @@ fun PeriodSphere(
             }
 
             // Adjust this to change the position dynamically
-            val totalDays = 30
             val (xPosition, yPosition) = calculateCirclePosition(
-                day = day,
-                totalDays = totalDays,
+                day = selectedDay - 1,
+                totalDays = currentMonth.maxLength(),
                 totalSweep = totalSweep,
                 radius = radius - offset,
                 density = density,
@@ -317,16 +320,14 @@ fun PeriodSphere(
                         color = Color.Black,
                         shape = CircleShape,
                     )
-                    .background(Color.White),
+                    .background(White),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = day.toString(),
+                    text = selectedDay.toString(),
                     fontFamily = FontFamily(Font(R.font.opensans_regular)),
                     fontSize = 20.sp,
-
-                    )
-
+                )
             }
         }
     }
@@ -340,7 +341,7 @@ fun calculateCirclePosition(
     density: Density
 ): Pair<Dp, Dp> {
     val sweepAnglePerDay = totalSweep / totalDays.toFloat()
-    val angleInDegrees = 0 + sweepAnglePerDay * day
+    val angleInDegrees = 0 + sweepAnglePerDay * day + 5f
     val angleInRadians = Math.toRadians(angleInDegrees.toDouble())
 
     val x = (radius * cos(angleInRadians)).toFloat()
@@ -349,6 +350,37 @@ fun calculateCirclePosition(
     return with(density) {
         Pair(x.toDp(), y.toDp())
     }
+}
+
+@Preview(name = "")
+@Composable
+fun SpherePreview() {
+
+    var day by remember {
+        mutableIntStateOf(0)
+    }
+
+    Flora1Theme {
+        PeriodSphere(
+            onTextPeriodTrackClick = { },
+            selectedDay = day,
+            ovulationDays = buildList { (1..3).forEach { add(it) } },
+            periodDays = listOf(11, 12, 13, 14, 15, 16, 17),
+            currentMonth = Month.FEBRUARY,
+            onArcClicked = { offsetClicked, circlePositions, arcSize ->
+                circlePositions.forEachIndexed { index, position ->
+                    if (abs(offsetClicked.x - position.first) < arcSize / 2f
+                        && abs(offsetClicked.y - position.second) < arcSize / 2f
+                    ) {
+                        day = index + 1
+                        return@forEachIndexed
+                    }
+                }
+            }
+        )
+    }
+
+
 }
 
 
