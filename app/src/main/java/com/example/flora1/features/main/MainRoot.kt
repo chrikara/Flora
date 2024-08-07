@@ -41,6 +41,8 @@ fun MainRoot(
     val selectedDate by viewModel.selectedDate.collectAsState()
     val periodDays by viewModel.periodDaysForCurrentMonth.collectAsState()
     val primaryText by viewModel.primaryText.collectAsState()
+    val ovulationDay by viewModel.ovulationDay.collectAsState()
+    val fertileDays by viewModel.fertileDays.collectAsState()
 
     CustomBackgroundSurface()
 
@@ -74,16 +76,16 @@ fun MainRoot(
                 imageVector = Icons.Filled.DateRange,
                 contentDescription = "",
             )
-
-
         }
+
         PeriodSphere(
             onTextPeriodTrackClick = onTextPeriodTrackClick,
             selectedDay = selectedDay,
             dateText = selectedDate,
+            ovulationDay = ovulationDay,
             primaryText = primaryText,
             periodDays = periodDays,
-            ovulationDays = emptyList(),
+            fertileDays = fertileDays,
             onArcClicked = viewModel::onArcClicked,
         )
     }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -48,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flora1.R
 import com.example.flora1.ui.theme.Flora1Theme
-import java.time.Month
+import java.time.LocalDate
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -57,8 +56,8 @@ import kotlin.math.sin
 fun PeriodSphere(
     onTextPeriodTrackClick: () -> Unit,
     selectedDay: Int,
-    currentMonth: Month = Month.AUGUST,
-    ovulationDays: List<Int> = buildList { (1..3).forEach { add(it) } },
+    fertileDays: List<Int> = buildList { (1..3).forEach { add(it) } },
+    ovulationDay: Int? = null,
     periodDays: List<Int> = listOf(11, 12, 13, 14, 15, 16, 17),
     dateText: String = "Thu, 12 May",
     primaryText: String = "1 Day",
@@ -70,18 +69,20 @@ fun PeriodSphere(
 
 
     var circlePositions: List<Pair<Float, Float>> = emptyList()
+    val currentDate = remember {
+        LocalDate.now()
+    }
 
 
     /*
     I can find a better solution for getting the screen's width
      */
     val displayMetrics = context.resources.displayMetrics
-    val screenWidthPx = displayMetrics.widthPixels
-    val screenWidth = with(density) {
-        (screenWidthPx).toDp()
-    }
+    val diameter = displayMetrics.widthPixels
+    val radius = ((diameter.toFloat()) / 2f)
+
     val innerCircleWidth = with(density) {
-        (screenWidthPx.toFloat() / (1.7f)).toDp()
+        (diameter.toFloat() / (1.7f)).toDp()
     }
 
     val primaryColor = MaterialTheme.colorScheme.primary
@@ -89,14 +90,14 @@ fun PeriodSphere(
     val totalSweep = 300f
     val startAngle = 0f
 
-    val radius = (screenWidthPx.toFloat()) / 2f
+
     val offsetFactor = 0.2f // Adjust this factor to change the offset
 
     val offset = radius * offsetFactor
     LaunchedEffect(key1 = Unit) {
 
         circlePositions = buildList {
-            (1..currentMonth.maxLength()).forEach {
+            (1..currentDate.month.maxLength()).forEach {
                 add(
                     calculateCirclePosition(
                         day = it,
@@ -121,7 +122,9 @@ fun PeriodSphere(
     val dayIndicatorSize: Dp = with(density) {
         dayIndicatorSizeFloat.toDp()
     }
-
+    val todayRadius: Dp = with(density) {
+        (radius * 0.1f).toDp()
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth(),
@@ -131,7 +134,7 @@ fun PeriodSphere(
             modifier =
             Modifier
                 .fillMaxWidth()
-                .height(screenWidth)
+                .height(with(density){diameter.toDp()})
                 .pointerInput(Unit) {
                     detectTapGestures { offsetClicked ->
                         println(circlePositions)
@@ -139,6 +142,7 @@ fun PeriodSphere(
                     }
                 }
         ) {
+
 
             drawCircle(
                 color = primaryColor,
@@ -166,12 +170,11 @@ fun PeriodSphere(
             )
 
 
-
-            if (ovulationDays.isNotEmpty())
+            if (fertileDays.isNotEmpty())
                 drawArc(
                     color = Color(0xFF1C7DE6),
-                    startAngle = (ovulationDays[0] - 1) * totalSweep / (currentMonth.maxLength()).toFloat(),
-                    sweepAngle = ovulationDays.size * totalSweep / (currentMonth.maxLength()).toFloat(),
+                    startAngle = (fertileDays[0] - 1) * totalSweep / (currentDate.month.maxLength()).toFloat(),
+                    sweepAngle = fertileDays.size * totalSweep / (currentDate.month.maxLength()).toFloat(),
                     useCenter = false,
                     topLeft = this.center.copy(
                         x = this.center.x - radius + offset,
@@ -190,8 +193,8 @@ fun PeriodSphere(
             if (periodDays.isNotEmpty())
                 drawArc(
                     color = Color(0xFFA01C1C),
-                    startAngle = (periodDays[0] - 1) * totalSweep / (currentMonth.maxLength()).toFloat(),
-                    sweepAngle = periodDays.size * totalSweep / (currentMonth.maxLength()).toFloat(),
+                    startAngle = (periodDays[0] - 1) * totalSweep / (currentDate.month.maxLength()).toFloat(),
+                    sweepAngle = (periodDays.size) * totalSweep / (currentDate.month.maxLength()).toFloat(),
                     useCenter = false,
                     topLeft = this.center.copy(
                         x = this.center.x - radius + offset,
@@ -206,6 +209,8 @@ fun PeriodSphere(
                         cap = StrokeCap.Round
                     )
                 )
+
+
         }
 
 
@@ -269,11 +274,60 @@ fun PeriodSphere(
         // Adjust this to change the position dynamically
         val (xPosition, yPosition) = calculateCirclePosition(
             day = selectedDay - 1,
-            totalDays = currentMonth.maxLength(),
+            totalDays = currentDate.month.maxLength(),
             totalSweep = totalSweep,
             radius = radius - offset,
             density = density,
         )
+
+        val (todayX, todayY) = remember(Unit) {
+            calculateCirclePosition(
+                day = currentDate.dayOfMonth -1,
+                totalDays = currentDate.month.maxLength(),
+                totalSweep = totalSweep,
+                radius = radius - offset,
+                density = density,
+            )
+        }
+
+
+        Box(
+            modifier = Modifier
+                .size(todayRadius * 0.9f)
+                .offset(
+                    x = todayX,
+                    y = todayY
+                )
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primary)
+            ,
+        )
+
+        ovulationDay?.let { ovulationDay ->
+            val (ovulationX, ovulationY) = remember {
+                calculateCirclePosition(
+                    day = ovulationDay -1,
+                    totalDays = currentDate.month.maxLength(),
+                    totalSweep = totalSweep,
+                    radius = radius - offset,
+                    density = density,
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .size(todayRadius * 0.9f)
+                    .offset(
+                        x = ovulationX,
+                        y = ovulationY,
+                    )
+                    .clip(CircleShape)
+                    .background(Color(0xFF03A9F4))
+                ,
+            )
+        }
+
+
 
         Box(
             modifier = Modifier
@@ -285,7 +339,11 @@ fun PeriodSphere(
                 .clip(CircleShape)
                 .border(
                     width = 1.dp,
-                    color = Color.Black,
+                    color = when(selectedDay){
+                        in fertileDays -> Color(0xFF1822EE)
+                        in periodDays -> Color(0xFFA01C1C)
+                        else -> Color.Black
+                    },
                     shape = CircleShape,
                 )
                 .background(White),
@@ -297,6 +355,8 @@ fun PeriodSphere(
                 fontSize = 20.sp,
             )
         }
+
+
     }
 }
 
@@ -308,7 +368,7 @@ fun calculateCirclePosition(
     density: Density
 ): Pair<Dp, Dp> {
     val sweepAnglePerDay = totalSweep / totalDays.toFloat()
-    val angleInDegrees = 0 + sweepAnglePerDay * day + 5f
+    val angleInDegrees = 0 + sweepAnglePerDay * day
     val angleInRadians = Math.toRadians(angleInDegrees.toDouble())
 
     val x = (radius * cos(angleInRadians)).toFloat()
@@ -331,9 +391,9 @@ fun SpherePreview() {
         PeriodSphere(
             onTextPeriodTrackClick = { },
             selectedDay = day,
-            ovulationDays = buildList { (1..3).forEach { add(it) } },
-            periodDays = listOf(11, 12, 13, 14, 15, 16, 17),
-            currentMonth = Month.FEBRUARY,
+            ovulationDay = 14,
+            fertileDays = buildList { (11..15).forEach { add(it) } },
+            periodDays = listOf(4,5,6),
             onArcClicked = { offsetClicked, circlePositions, arcSize ->
                 circlePositions.forEachIndexed { index, position ->
                     if (abs(offsetClicked.x - position.first) < arcSize / 2f

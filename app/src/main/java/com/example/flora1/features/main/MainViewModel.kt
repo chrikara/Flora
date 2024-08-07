@@ -32,6 +32,8 @@ class MainViewModel @Inject constructor(
     private val _selectedDay = MutableStateFlow(LocalDate.now().dayOfMonth)
     val selectedDay: StateFlow<Int> = _selectedDay
 
+
+
     val periodDaysForCurrentMonth = db.dao.getPeriodLogsForMonth(LocalDate.now().monthValue)
         .mapLatest { fetchedCurrentMonthPeriodLogs ->
             fetchedCurrentMonthPeriodLogs.map {
@@ -45,11 +47,54 @@ class MainViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
-    val primaryText = combine(
-        selectedDay, periodDaysForCurrentMonth
-    ) { selectedDay, periodDaysForCurrentMonth ->
+    val fertileDays = periodDaysForCurrentMonth.mapLatest { periodDays ->
+        val daysOfMonth = LocalDate.now().month.maxLength()
 
-        if (selectedDay in periodDaysForCurrentMonth) {
+        when{
+            periodDays.isEmpty() -> emptyList<Int>()
+            daysOfMonth - periodDays.last() < 10 -> emptyList()
+            else -> {
+                buildList<Int> {
+                    (periodDays.last() + 6..periodDays.last() + 11).forEach {candidateDay ->
+                        if(candidateDay <= daysOfMonth){
+                            add(candidateDay)
+                        }else{
+                            return@forEach
+                        }
+                    }
+                }
+            }
+        }
+    }  .flowOn(Dispatchers.Default)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )
+
+    val ovulationDay: StateFlow<Int?> = fertileDays.mapLatest { fertileDays ->
+        when{
+            fertileDays.isEmpty() -> null
+            fertileDays.size < 6 -> null
+            else -> fertileDays[4]
+        }
+    }  .flowOn(Dispatchers.Default)
+        .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = null
+    )
+
+
+    val primaryText = combine(
+        selectedDay, periodDaysForCurrentMonth, ovulationDay, fertileDays,
+    ) { selectedDay, periodDaysForCurrentMonth, ovulationDay, fertileDays ->
+
+        if (selectedDay == ovulationDay)
+            "Ovulation Day"
+        else if(selectedDay in fertileDays)
+            "Fertile days"
+        else if (selectedDay in periodDaysForCurrentMonth) {
             if (periodDaysForCurrentMonth.last() - selectedDay == 1)
                 "1 Day Left"
             else if (periodDaysForCurrentMonth.last() == selectedDay)
@@ -95,8 +140,8 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
                 circlePositions.forEachIndexed { index, position ->
-                    if (abs(offsetClicked.x - position.first) < circleRadius *2f
-                        && abs(offsetClicked.y - position.second) < circleRadius *2f
+                    if (abs(offsetClicked.x - position.first) < circleRadius * 2f
+                        && abs(offsetClicked.y - position.second) < circleRadius * 2f
                     ) {
                         _selectedDay.update { index + 1 }
                         return@forEachIndexed
