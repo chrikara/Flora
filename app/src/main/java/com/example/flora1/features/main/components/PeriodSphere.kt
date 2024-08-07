@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -332,21 +333,27 @@ fun PeriodSphere(
         Box(
             modifier = Modifier
                 .size(dayIndicatorSize)
+
                 .offset(
                     x = xPosition,
                     y = yPosition
                 )
-                .clip(CircleShape)
                 .border(
-                    width = 1.dp,
+                    width = if(selectedDay !in periodDays
+                        && selectedDay !in fertileDays) 1.dp else 4.dp,
                     color = when(selectedDay){
-                        in fertileDays -> Color(0xFF1822EE)
+                        in fertileDays -> Color(0xFF1C7DE6)
                         in periodDays -> Color(0xFFA01C1C)
                         else -> Color.Black
                     },
                     shape = CircleShape,
                 )
-                .background(White),
+                // This padding if for the outer white colour in border to disappear
+                // so that colours of arc and selected day can blend.
+                .padding(1.dp)
+                .clip(CircleShape)
+                .background(White)
+           ,
             contentAlignment = Alignment.Center,
         ) {
             Text(
