@@ -33,7 +33,6 @@ class MainViewModel @Inject constructor(
     val selectedDay: StateFlow<Int> = _selectedDay
 
 
-
     val periodDaysForCurrentMonth = db.dao.getPeriodLogsForMonth(LocalDate.now().monthValue)
         .mapLatest { fetchedCurrentMonthPeriodLogs ->
             fetchedCurrentMonthPeriodLogs.map {
@@ -50,22 +49,23 @@ class MainViewModel @Inject constructor(
     val fertileDays = periodDaysForCurrentMonth.mapLatest { periodDays ->
         val daysOfMonth = LocalDate.now().month.maxLength()
 
-        when{
+        when {
             periodDays.isEmpty() -> emptyList<Int>()
             daysOfMonth - periodDays.last() < 10 -> emptyList()
             else -> {
                 buildList<Int> {
-                    (periodDays.last() + 6..periodDays.last() + 11).forEach {candidateDay ->
-                        if(candidateDay <= daysOfMonth){
+                    (periodDays.last() + 6..periodDays.last() + 11).forEach { candidateDay ->
+                        if (candidateDay <= daysOfMonth) {
                             add(candidateDay)
-                        }else{
+                        } else {
                             return@forEach
                         }
                     }
                 }
             }
         }
-    }  .flowOn(Dispatchers.Default)
+    }
+        .flowOn(Dispatchers.Default)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -73,17 +73,18 @@ class MainViewModel @Inject constructor(
         )
 
     val ovulationDay: StateFlow<Int?> = fertileDays.mapLatest { fertileDays ->
-        when{
+        when {
             fertileDays.isEmpty() -> null
             fertileDays.size < 6 -> null
             else -> fertileDays[4]
         }
-    }  .flowOn(Dispatchers.Default)
+    }
+        .flowOn(Dispatchers.Default)
         .stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = null
-    )
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = null
+        )
 
 
     val primaryText = combine(
@@ -92,7 +93,7 @@ class MainViewModel @Inject constructor(
 
         if (selectedDay == ovulationDay)
             "Ovulation Day"
-        else if(selectedDay in fertileDays)
+        else if (selectedDay in fertileDays)
             "Fertile days"
         else if (selectedDay in periodDaysForCurrentMonth) {
             if (periodDaysForCurrentMonth.last() - selectedDay == 1)
