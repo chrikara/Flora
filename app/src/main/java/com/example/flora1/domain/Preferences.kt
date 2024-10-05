@@ -6,10 +6,10 @@ interface Preferences {
     fun saveShouldShowOnBoarding(shouldShowOnBoarding: Boolean)
     fun saveDateOfBirth(dateOfBirth: Long)
     fun saveUsername(username: String)
-    fun saveAge(age: Int)
+    fun saveHeight(height: Float)
 
     val username: String
-    val age: Int
+    val height: Float
     val averageCycleDays: Int
     val shouldShowOnBoarding: Boolean
     val dateOfBirth: String
