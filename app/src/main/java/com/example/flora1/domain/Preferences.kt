@@ -7,9 +7,11 @@ interface Preferences {
     fun saveDateOfBirth(dateOfBirth: Long)
     fun saveUsername(username: String)
     fun saveHeight(height: Float)
+    fun saveWeight(weight: Float)
 
     val username: String
     val height: Float
+    val weight: Float
     val averageCycleDays: Int
     val shouldShowOnBoarding: Boolean
     val dateOfBirth: String

@@ -20,24 +20,17 @@ import com.example.flora1.features.onboarding.born.BornScreenRoot
 import com.example.flora1.features.onboarding.calendar.CalendarRoot
 import com.example.flora1.features.onboarding.lastperiod.LastPeriodRoot
 import com.example.flora1.features.onboarding.usernameage.HeightRoot
+import com.example.flora1.features.onboarding.weight.WeightRoot
 import com.example.flora1.features.usernameage.UsernameAgeRoot
-
 
 @Composable
 fun NavigationRoot(
     navController: NavHostController,
 ) {
-//    LaunchedEffect(key1 = navController) {
-//        navController.currentBackStackEntryFlow.collectLatest {
-//            /*
-//            Εκτελείται κάθε φορά που αλλάζει navigation root
-//             */
-//        }
-//    }
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Height.name,
+        startDestination = Screen.Weight.name,
     ) {
 
         composable(Screen.Splash.name) {
@@ -59,6 +52,14 @@ fun NavigationRoot(
 
         composable(Screen.Height.name) {
             HeightRoot(
+                onNext = {
+                    navController.navigate(Screen.Weight.name)
+                }
+            )
+        }
+
+        composable(Screen.Weight.name) {
+            WeightRoot(
                 onNext = {
                     navController.navigate(Screen.Born.name)
                 }
