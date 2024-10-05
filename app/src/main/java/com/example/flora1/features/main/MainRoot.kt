@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.features.main.components.PeriodSphere
 import com.example.flora1.ui.theme.PrimaryHorizontalBrush
 
@@ -38,11 +39,11 @@ fun MainRoot(
 ) {
 
     val selectedDay by viewModel.selectedDay.collectAsState()
-    val selectedDate by viewModel.selectedDate.collectAsState()
-    val periodDays by viewModel.periodDaysForCurrentMonth.collectAsState()
-    val primaryText by viewModel.primaryText.collectAsState()
-    val ovulationDay by viewModel.ovulationDay.collectAsState()
-    val fertileDays by viewModel.fertileDays.collectAsState()
+    val selectedDate by viewModel.selectedDate.collectAsStateWithLifecycle()
+    val periodDays by viewModel.periodDaysForCurrentMonth.collectAsStateWithLifecycle()
+    val primaryText by viewModel.primaryText.collectAsStateWithLifecycle()
+    val ovulationDay by viewModel.ovulationDay.collectAsStateWithLifecycle()
+    val fertileDays by viewModel.fertileDays.collectAsStateWithLifecycle()
 
     CustomBackgroundSurface()
 

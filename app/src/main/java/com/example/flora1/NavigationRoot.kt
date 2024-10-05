@@ -19,6 +19,7 @@ import com.example.flora1.features.onboarding.averagecycle.AverageCycleRoot
 import com.example.flora1.features.onboarding.born.BornScreenRoot
 import com.example.flora1.features.onboarding.calendar.CalendarRoot
 import com.example.flora1.features.onboarding.lastperiod.LastPeriodRoot
+import com.example.flora1.features.usernameage.UsernameAgeRoot
 
 
 @Composable
@@ -35,13 +36,21 @@ fun NavigationRoot(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.name,
+        startDestination = Screen.UsernameAge.name,
     ) {
 
         composable(Screen.Splash.name) {
             SplashScreenRoot(
                 onFinishedAnimation = {
                     navController.popBackStack()
+                    navController.navigate(Screen.UsernameAge.name)
+                }
+            )
+        }
+
+        composable(Screen.UsernameAge.name) {
+            UsernameAgeRoot(
+                onNext = {
                     navController.navigate(Screen.Born.name)
                 }
             )
@@ -59,7 +68,11 @@ fun NavigationRoot(
         }
 
         composable(Screen.MinorAge.name) {
-            MinorAgeRoot(onBack = { navController.popBackStack() })
+            MinorAgeRoot(onBack = {
+                println("Nav current ${navController.currentDestination?.route}")
+                println("Nav Action ${navController.currentDestination?.id}")
+                navController.navigateUp()
+            })
         }
 
         composable(Screen.AverageCycle.name) {
