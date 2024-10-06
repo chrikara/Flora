@@ -19,6 +19,7 @@ import com.example.flora1.features.onboarding.SplashScreenRoot
 import com.example.flora1.features.onboarding.averagecycle.AverageCycleRoot
 import com.example.flora1.features.onboarding.born.BornScreenRoot
 import com.example.flora1.features.onboarding.calendar.CalendarRoot
+import com.example.flora1.features.onboarding.contraceptives.ContraceptivesRoot
 import com.example.flora1.features.onboarding.gynosurgery.GynosurgeryRoot
 import com.example.flora1.features.onboarding.lastperiod.LastPeriodRoot
 import com.example.flora1.features.onboarding.medvits.MedVitsRoot
@@ -36,7 +37,7 @@ fun NavigationRoot(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.PregnancyStats.name,
+        startDestination = Screen.Splash.name,
     ) {
 
         composable(Screen.Splash.name) {
@@ -112,6 +113,15 @@ fun NavigationRoot(
 
         composable(Screen.Gynecosurgery.name) {
             GynosurgeryRoot(
+                onNext = {
+                    navController.navigate(Screen.Contraceptives.name)
+                },
+                onBack = navController::navigateUp,
+            )
+        }
+
+        composable(Screen.Contraceptives.name) {
+            ContraceptivesRoot(
                 onNext = {
                     navController.navigate(Screen.Born.name)
                 },

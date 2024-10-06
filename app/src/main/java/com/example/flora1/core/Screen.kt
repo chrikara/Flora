@@ -11,6 +11,7 @@ sealed class Screen(val name : String) {
     data object Race : Screen("race")
     data object MedVits : Screen("medvits")
     data object Gynecosurgery : Screen("gynecosurgery")
+    data object Contraceptives : Screen("contraceptives")
     data object Born : Screen("born")
     data object MinorAge : Screen("minorAge")
     data object AverageCycle : Screen("averageCycle")
