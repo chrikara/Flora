@@ -23,14 +23,14 @@ import com.example.flora1.features.onboarding.contraceptives.ContraceptivesRoot
 import com.example.flora1.features.onboarding.gynosurgery.GynosurgeryRoot
 import com.example.flora1.features.onboarding.lastperiod.LastPeriodRoot
 import com.example.flora1.features.onboarding.medvits.MedVitsRoot
-import com.example.flora1.features.onboarding.pregnancystats.PregnancyStatsRoot
 import com.example.flora1.features.onboarding.pregnancy.PregnancyRoot
+import com.example.flora1.features.onboarding.pregnancystats.PregnancyStatsRoot
 import com.example.flora1.features.onboarding.race.RaceRoot
 import com.example.flora1.features.onboarding.sleepqualitytilllastperiod.SleepQualityTillLastPeriodRoot
 import com.example.flora1.features.onboarding.stresstilllastperiod.StressTillLastPeriodRoot
 import com.example.flora1.features.onboarding.usernameage.HeightRoot
-import com.example.flora1.features.onboarding.weight.WeightRoot
 import com.example.flora1.features.onboarding.usernameage.UsernameAgeRoot
+import com.example.flora1.features.onboarding.weight.WeightRoot
 
 @Composable
 fun NavigationRoot(
@@ -39,7 +39,7 @@ fun NavigationRoot(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.AverageCycle.name,
+        startDestination = Screen.Splash.name,
     ) {
 
         composable(Screen.Splash.name) {

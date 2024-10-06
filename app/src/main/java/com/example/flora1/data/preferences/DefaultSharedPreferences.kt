@@ -83,8 +83,20 @@ class DefaultSharedPreferences(
         }
     }
 
+    override fun saveShouldShowPredictionDialog(shouldShowPredictionDialog: Boolean) {
+        sharedPref.edit().putBoolean(KEY_SHOULD_SHOW_PREDICTION_DIALOG, shouldShowPredictionDialog)
+            .apply()
+    }
+
+    override val shouldShowPredictionDialog: Boolean
+        get() = sharedPref.getBoolean(KEY_SHOULD_SHOW_PREDICTION_DIALOG, true)
+
     override fun saveHeight(height: Float) {
         sharedPref.edit().putFloat(KEY_HEIGHT, height).apply()
+    }
+
+    override fun saveShouldShowPredictions(shouldShowPredictions: Boolean) {
+        sharedPref.edit().putBoolean(KEY_SHOULD_SHOW_PREDICTIONS, shouldShowPredictions).apply()
     }
 
 
@@ -100,6 +112,12 @@ class DefaultSharedPreferences(
         get() = NumericalOptions.fromString(sharedPref.getString(KEY_TOTAL_MISCARRIAGES, "") ?: "")
     override val totalAbortions: NumericalOptions?
         get() = NumericalOptions.fromString(sharedPref.getString(KEY_TOTAL_ABORTIONS, "") ?: "")
+
+
+    override val shouldShowPredictions: Boolean
+        get() = sharedPref.getBoolean(KEY_SHOULD_SHOW_PREDICTIONS, false)
+
+
     override val averageCycleDays get() = sharedPref.getInt(KEY_AVERAGE_CYCLE, 0)
 
     override val contraceptiveMethods: List<ContraceptiveMethod>
@@ -177,6 +195,9 @@ class DefaultSharedPreferences(
         private const val KEY_AVERAGE_CYCLE = "averageCycleDays"
         private const val KEY_SHOULD_SHOW_ONBOARDING = "shouldShowOnBoarding"
         private const val KEY_DATE_OF_BIRTH = "dateOfBirth"
+
+        private const val KEY_SHOULD_SHOW_PREDICTION_DIALOG = "shouldShowPredictionDialog"
+        private const val KEY_SHOULD_SHOW_PREDICTIONS = "shouldShowPredictions"
 
         private fun getKeyOfContraceptiveMethod(number: Int) = "contraceptiveMethod$number"
     }

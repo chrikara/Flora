@@ -29,6 +29,9 @@ interface Preferences {
     fun saveStressLevelTillLastPeriod(stressLevel: StressLevelTillLastPeriod)
     fun saveSleepQualityTillLastPeriod(sleepQuality: SleepQuality)
 
+    fun saveShouldShowPredictionDialog(shouldShowPredictionDialog: Boolean)
+    fun saveShouldShowPredictions(shouldShowPredictions: Boolean)
+
     val username: String
     val height: Float
     val weight: Float
@@ -48,4 +51,7 @@ interface Preferences {
     val averageCycleDays: Int
     val shouldShowOnBoarding: Boolean
     val dateOfBirth: String
+
+    val shouldShowPredictionDialog: Boolean
+    val shouldShowPredictions: Boolean
 }

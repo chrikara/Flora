@@ -102,45 +102,42 @@ fun GetStartedRoot(
         modifier = Modifier
             .fillMaxSize()
             .alpha(alphaAsAnimations)
-            .background(brush = PrimaryVerticalBrush)
-        ,
+            .background(brush = PrimaryVerticalBrush),
     ) {
         val (image, middleButtons, infoTexts) = createRefs()
 
 
+        if (!hasClickedGetStarted)
+            Column(
+                modifier = Modifier
+                    .constrainAs(middleButtons) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+            ) {
 
+                val horizontalPadding = 40.dp
+                val verticalPadding = 10.dp
+                PrimaryButton(
+                    modifier = Modifier.padding(horizontal = horizontalPadding),
+                    onClick = {
+                        alpha = 0f
+                        hasClickedGetStarted = true
+                        sizeGirl = 2000.dp
+                    },
+                    paddingValues = PaddingValues(vertical = verticalPadding),
+                    text = "Get Started!"
+                )
 
-        if(!hasClickedGetStarted)
-        Column(
-            modifier = Modifier
-                .constrainAs(middleButtons) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        ) {
-
-            val horizontalPadding = 40.dp
-            val verticalPadding = 10.dp
-            PrimaryButton(
-                modifier = Modifier.padding(horizontal = horizontalPadding),
-                onClick = {
-                    alpha = 0f
-                    hasClickedGetStarted = true
-                    sizeGirl = 2000.dp
-                },
-                paddingValues = PaddingValues(vertical = verticalPadding),
-                text = "Get Started!"
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
-            SecondaryButton(
-                onClick = onSecondaryClicked,
-                modifier = Modifier.padding(horizontal = horizontalPadding),
-                text = "Delete and Re-OnBoard"
-            )
-        }
+                Spacer(modifier = Modifier.height(15.dp))
+                SecondaryButton(
+                    onClick = onSecondaryClicked,
+                    modifier = Modifier.padding(horizontal = horizontalPadding),
+                    text = "Delete and Re-OnBoard"
+                )
+            }
 
         Column(
             modifier = Modifier

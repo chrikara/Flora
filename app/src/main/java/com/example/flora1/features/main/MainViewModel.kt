@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flora1.core.date.toFloraText
 import com.example.flora1.data.db.PeriodDatabase
+import com.example.flora1.domain.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,10 +29,41 @@ import kotlin.math.abs
 @HiltViewModel
 class MainViewModel @Inject constructor(
     db: PeriodDatabase,
+    private val preferences: Preferences,
 ) : ViewModel() {
-
     private val _selectedDay = MutableStateFlow(LocalDate.now().dayOfMonth)
     val selectedDay: StateFlow<Int> = _selectedDay
+
+    private val _shouldShowPredictionDialog =
+        MutableStateFlow(preferences.shouldShowPredictionDialog)
+    val shouldShowPredictionDialog: StateFlow<Boolean> = _shouldShowPredictionDialog
+        .onEach {
+            preferences.saveShouldShowPredictionDialog(it)
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            preferences.shouldShowPredictionDialog
+        )
+
+    fun onShouldShowPredictionDialogChanged(shouldShow: Boolean) {
+        _shouldShowPredictionDialog.value = shouldShow
+    }
+
+    private val _shouldShowPredictions = MutableStateFlow(preferences.shouldShowPredictions)
+    val shouldShowPredictions: StateFlow<Boolean> = _shouldShowPredictions
+        .onEach {
+            preferences.saveShouldShowPredictions(it)
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            preferences.shouldShowPredictionDialog
+        )
+
+    fun onShouldShowPredictionsChanged(shouldShow: Boolean) {
+        _shouldShowPredictions.value = shouldShow
+    }
 
 
     val periodDaysForCurrentMonth = db.dao.getPeriodLogsForMonth(LocalDate.now().monthValue)
@@ -132,6 +165,7 @@ class MainViewModel @Inject constructor(
             started = SharingStarted.Lazily,
             initialValue = ""
         )
+
 
     fun onArcClicked(
         offsetClicked: Offset,

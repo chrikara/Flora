@@ -18,22 +18,28 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.flora1.core.uikit.dialogs.PredictionDialog
 import com.example.flora1.features.main.components.PeriodSphere
 import com.example.flora1.ui.theme.PrimaryHorizontalBrush
 
 @Composable
 fun MainRoot(
     onTextPeriodTrackClick: () -> Unit,
-    onCalendarClick : () -> Unit,
+    onCalendarClick: () -> Unit,
     onSettingsClick: () -> Unit,
     viewModel: MainViewModel = hiltViewModel(),
 ) {
@@ -44,6 +50,8 @@ fun MainRoot(
     val primaryText by viewModel.primaryText.collectAsStateWithLifecycle()
     val ovulationDay by viewModel.ovulationDay.collectAsStateWithLifecycle()
     val fertileDays by viewModel.fertileDays.collectAsStateWithLifecycle()
+    val shouldShowPredictionDialog by viewModel.shouldShowPredictionDialog.collectAsStateWithLifecycle()
+    val shouldShowPredictions by viewModel.shouldShowPredictions.collectAsStateWithLifecycle()
 
     CustomBackgroundSurface()
 
@@ -84,10 +92,53 @@ fun MainRoot(
             selectedDay = selectedDay,
             dateText = selectedDate,
             ovulationDay = ovulationDay,
+            shouldShowPredictions = shouldShowPredictions,
             primaryText = primaryText,
             periodDays = periodDays,
             fertileDays = fertileDays,
             onArcClicked = viewModel::onArcClicked,
+        )
+    }
+
+    if (shouldShowPredictionDialog) {
+        PredictionDialog(
+            title = "Enable Prediction Mode",
+            desc = buildAnnotatedString {
+                append("Would you like to enable Flora's ")
+
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    append("Prediction Mode")
+                }
+
+                append(
+                    "? This will allow us to predict your" +
+                            " next period and fertile days based on the information you've presented us with. " +
+                            "You can always enable "
+                )
+
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    append("Prediction Mode")
+                }
+
+                append(" in Settings whenever you like.")
+            },
+            onAccept = {
+                viewModel.onShouldShowPredictionsChanged(shouldShow = true)
+                viewModel.onShouldShowPredictionDialogChanged(shouldShow = false)
+            },
+            onDismiss = {
+                viewModel.onShouldShowPredictionDialogChanged(shouldShow = false)
+            }
         )
     }
 

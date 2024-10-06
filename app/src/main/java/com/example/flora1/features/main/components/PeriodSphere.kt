@@ -59,6 +59,7 @@ fun PeriodSphere(
     selectedDay: Int,
     fertileDays: List<Int> = buildList { (1..3).forEach { add(it) } },
     ovulationDay: Int? = null,
+    shouldShowPredictions: Boolean = true,
     periodDays: List<Int> = listOf(11, 12, 13, 14, 15, 16, 17),
     dateText: String = "Thu, 12 May",
     primaryText: String = "1 Day",
@@ -135,7 +136,7 @@ fun PeriodSphere(
             modifier =
             Modifier
                 .fillMaxWidth()
-                .height(with(density){diameter.toDp()})
+                .height(with(density) { diameter.toDp() })
                 .pointerInput(Unit) {
                     detectTapGestures { offsetClicked ->
                         println(circlePositions)
@@ -171,7 +172,7 @@ fun PeriodSphere(
             )
 
 
-            if (fertileDays.isNotEmpty())
+            if (fertileDays.isNotEmpty() && shouldShowPredictions)
                 drawArc(
                     color = Color(0xFF1C7DE6),
                     startAngle = (fertileDays[0] - 1) * totalSweep / (currentDate.month.maxLength()).toFloat(),
@@ -283,7 +284,7 @@ fun PeriodSphere(
 
         val (todayX, todayY) = remember(Unit) {
             calculateCirclePosition(
-                day = currentDate.dayOfMonth -1,
+                day = currentDate.dayOfMonth - 1,
                 totalDays = currentDate.month.maxLength(),
                 totalSweep = totalSweep,
                 radius = radius - offset,
@@ -300,14 +301,13 @@ fun PeriodSphere(
                     y = todayY
                 )
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary)
-            ,
+                .background(MaterialTheme.colorScheme.primary),
         )
 
         ovulationDay?.let { ovulationDay ->
             val (ovulationX, ovulationY) = remember {
                 calculateCirclePosition(
-                    day = ovulationDay -1,
+                    day = ovulationDay - 1,
                     totalDays = currentDate.month.maxLength(),
                     totalSweep = totalSweep,
                     radius = radius - offset,
@@ -323,8 +323,7 @@ fun PeriodSphere(
                         y = ovulationY,
                     )
                     .clip(CircleShape)
-                    .background(Color(0xFF03A9F4))
-                ,
+                    .background(Color(0xFF03A9F4)),
             )
         }
 
@@ -339,9 +338,10 @@ fun PeriodSphere(
                     y = yPosition
                 )
                 .border(
-                    width = if(selectedDay !in periodDays
-                        && selectedDay !in fertileDays) 1.dp else 4.dp,
-                    color = when(selectedDay){
+                    width = if (selectedDay !in periodDays
+                        && selectedDay !in fertileDays
+                    ) 1.dp else 4.dp,
+                    color = when (selectedDay) {
                         in fertileDays -> Color(0xFF1C7DE6)
                         in periodDays -> Color(0xFFA01C1C)
                         else -> Color.Black
@@ -352,8 +352,7 @@ fun PeriodSphere(
                 // so that colours of arc and selected day can blend.
                 .padding(1.dp)
                 .clip(CircleShape)
-                .background(White)
-           ,
+                .background(White),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -400,7 +399,7 @@ fun SpherePreview() {
             selectedDay = day,
             ovulationDay = 14,
             fertileDays = buildList { (11..15).forEach { add(it) } },
-            periodDays = listOf(4,5,6),
+            periodDays = listOf(4, 5, 6),
             onArcClicked = { offsetClicked, circlePositions, arcSize ->
                 circlePositions.forEachIndexed { index, position ->
                     if (abs(offsetClicked.x - position.first) < arcSize / 2f
