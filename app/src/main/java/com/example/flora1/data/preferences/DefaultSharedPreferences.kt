@@ -2,6 +2,7 @@ package com.example.flora1.data.preferences
 
 import android.content.SharedPreferences
 import com.example.flora1.domain.Preferences
+import com.example.flora1.features.onboarding.weight.PregnancyStatus
 
 class DefaultSharedPreferences(
     private val sharedPref : SharedPreferences
@@ -27,6 +28,10 @@ class DefaultSharedPreferences(
         sharedPref.edit().putFloat(KEY_WEIGHT, weight).apply()
     }
 
+    override fun savePregnancyStatus(pregnancyStatus: PregnancyStatus) {
+        sharedPref.edit().putString(KEY_PREGNANCY_STATUS, pregnancyStatus.value).apply()
+    }
+
     override fun saveHeight(height: Float) {
         sharedPref.edit().putFloat(KEY_HEIGHT, height).apply()
     }
@@ -34,6 +39,8 @@ class DefaultSharedPreferences(
     override val height: Float get() = sharedPref.getFloat(KEY_HEIGHT, 0f)
     override val username: String get() = sharedPref.getString(KEY_USERNAME, "") ?: ""
     override val weight: Float get() = sharedPref.getFloat(KEY_WEIGHT, 0f)
+    override val pregnancyStatus: PregnancyStatus get() =
+        PregnancyStatus.fromString(sharedPref.getString(KEY_PREGNANCY_STATUS, "") ?: "")
     override val averageCycleDays get() = sharedPref.getInt(KEY_AVERAGE_CYCLE, 0)
     override val shouldShowOnBoarding get() = sharedPref.getBoolean(KEY_SHOULD_SHOW_ONBOARDING, true)
     override val dateOfBirth get() = sharedPref.getString(KEY_DATE_OF_BIRTH, "") ?: ""
@@ -42,6 +49,7 @@ class DefaultSharedPreferences(
         private const val KEY_USERNAME = "username"
         private const val KEY_HEIGHT = "height"
         private const val KEY_WEIGHT = "weight"
+        private const val KEY_PREGNANCY_STATUS = "pregnancyStatus"
         private const val KEY_AVERAGE_CYCLE = "averageCycleDays"
         private const val KEY_SHOULD_SHOW_ONBOARDING = "shouldShowOnBoarding"
         private const val KEY_DATE_OF_BIRTH = "dateOfBirth"

@@ -20,6 +20,7 @@ import com.example.flora1.features.onboarding.born.BornScreenRoot
 import com.example.flora1.features.onboarding.calendar.CalendarRoot
 import com.example.flora1.features.onboarding.lastperiod.LastPeriodRoot
 import com.example.flora1.features.onboarding.usernameage.HeightRoot
+import com.example.flora1.features.onboarding.pregnancy.PregnancyRoot
 import com.example.flora1.features.onboarding.weight.WeightRoot
 import com.example.flora1.features.usernameage.UsernameAgeRoot
 
@@ -30,7 +31,7 @@ fun NavigationRoot(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Weight.name,
+        startDestination = Screen.Splash.name,
     ) {
 
         composable(Screen.Splash.name) {
@@ -60,6 +61,14 @@ fun NavigationRoot(
 
         composable(Screen.Weight.name) {
             WeightRoot(
+                onNext = {
+                    navController.navigate(Screen.Pregnancy.name)
+                }
+            )
+        }
+
+        composable(Screen.Pregnancy.name) {
+            PregnancyRoot(
                 onNext = {
                     navController.navigate(Screen.Born.name)
                 }

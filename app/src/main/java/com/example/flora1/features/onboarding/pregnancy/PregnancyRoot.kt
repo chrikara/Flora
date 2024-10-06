@@ -1,4 +1,4 @@
-package com.example.flora1.features.onboarding.weight
+package com.example.flora1.features.onboarding.pregnancy
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
@@ -32,17 +32,18 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.R
+import com.example.flora1.core.uikit.buttons.MultipleOptionsButton
 import com.example.flora1.core.uikit.buttons.PrimaryButton
-import com.example.flora1.core.uikit.textfields.UnitTextField
+import com.example.flora1.features.onboarding.weight.PregnancyStatus
+import com.example.flora1.features.onboarding.weight.PregnancyViewModel
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun WeightRoot(
+fun PregnancyRoot(
     onNext: () -> Unit,
-    viewModel: WeightViewModel = hiltViewModel(),
+    viewModel: PregnancyViewModel = hiltViewModel(),
 ) {
-    val height by viewModel.weight.collectAsStateWithLifecycle()
-    val enabled by viewModel.enabled.collectAsStateWithLifecycle()
+    val selectedPregnancyStatus by viewModel.pregnancyStatus.collectAsStateWithLifecycle()
 
     BackHandler {}
 
@@ -75,7 +76,7 @@ fun WeightRoot(
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = "What is your weight?",
+                text = "Have you ever been pregnant (or are you right now) ?",
                 fontFamily = FontFamily(Font(R.font.raleway_bold)),
                 fontSize = 24.sp,
                 color = Color.Black,
@@ -97,12 +98,13 @@ fun WeightRoot(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            UnitTextField(
-                value = height,
-                onValueChange = {
-                    viewModel.onHeightChanged(it)
+            MultipleOptionsButton(
+                selectedOption = selectedPregnancyStatus,
+                options = PregnancyStatus.entries,
+                onSelectedOption = { pregnancyStatus: PregnancyStatus ->
+                    viewModel.onPregnancyStatusChanged(pregnancyStatus)
                 },
-                unit = "kg"
+                text = PregnancyStatus::value,
             )
         }
 
@@ -115,9 +117,8 @@ fun WeightRoot(
                     bottom.linkTo(spacer.top)
                 },
             text = "Next",
-            enabled = enabled,
             onClick = {
-                viewModel.onSaveHeight(height.toFloat())
+                viewModel.onSavePregnancyStatus(selectedPregnancyStatus)
                 onNext()
             },
         )
