@@ -1,11 +1,16 @@
 package com.example.flora1.core.uikit.dialogs
 
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -17,8 +22,6 @@ import com.example.flora1.R
 @Composable
 fun PredictionDialog(
     modifier: Modifier = Modifier,
-    title: String? = null,
-    desc: AnnotatedString? = null,
     onAccept: () -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -26,8 +29,36 @@ fun PredictionDialog(
         modifier = modifier,
         onAccept = onAccept,
         onDismiss = onDismiss,
-        title = title,
-        desc = desc,
+        title = "Enable Prediction Mode",
+        desc = buildAnnotatedString {
+            append("Would you like to enable Flora's ")
+
+            withStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                append("Prediction Mode")
+            }
+
+            append(
+                "? This will allow us to predict your" +
+                        " next period and fertile days based on the information you've presented us with. " +
+                        "You can always enable "
+            )
+
+            withStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                append("Prediction Mode")
+            }
+
+            append(" in Settings whenever you like.")
+        },
         headerImage = {
             HeaderImage(
                 modifier = Modifier

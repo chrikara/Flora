@@ -42,7 +42,6 @@ import com.example.flora1.R
 fun MinorAgeRoot(
     onBack : () -> Unit,
 ) {
-
     Column(
         modifier =
         Modifier
@@ -97,8 +96,8 @@ fun MinorAgeRoot(
         Spacer(modifier = Modifier.height(35.dp))
 
         Text(
-            text = "You must be at least 13 years old to use Flora as per the European instructions. Sorry for any" +
-                    " inconvenience but everyone should abide by the law for a happy life :) \n \nIn the meantime, you can...",
+            text = "You must be at least 13 years old to use Flora as per European instructions. Sorry for any" +
+                    " inconvenience but everyone should abide by the law for a happy life :)",
             fontFamily = FontFamily(Font(R.font.raleway_regular)),
             fontSize = 14.sp,
             color = Color.Black,

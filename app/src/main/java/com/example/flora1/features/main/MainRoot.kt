@@ -102,36 +102,6 @@ fun MainRoot(
 
     if (shouldShowPredictionDialog) {
         PredictionDialog(
-            title = "Enable Prediction Mode",
-            desc = buildAnnotatedString {
-                append("Would you like to enable Flora's ")
-
-                withStyle(
-                    style = SpanStyle(
-                        fontWeight = FontWeight.ExtraBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    append("Prediction Mode")
-                }
-
-                append(
-                    "? This will allow us to predict your" +
-                            " next period and fertile days based on the information you've presented us with. " +
-                            "You can always enable "
-                )
-
-                withStyle(
-                    style = SpanStyle(
-                        fontWeight = FontWeight.ExtraBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    append("Prediction Mode")
-                }
-
-                append(" in Settings whenever you like.")
-            },
             onAccept = {
                 viewModel.onShouldShowPredictionsChanged(shouldShow = true)
                 viewModel.onShouldShowPredictionDialogChanged(shouldShow = false)
