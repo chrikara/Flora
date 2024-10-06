@@ -26,6 +26,7 @@ import com.example.flora1.features.onboarding.medvits.MedVitsRoot
 import com.example.flora1.features.onboarding.pregnancystats.PregnancyStatsRoot
 import com.example.flora1.features.onboarding.pregnancy.PregnancyRoot
 import com.example.flora1.features.onboarding.race.RaceRoot
+import com.example.flora1.features.onboarding.sleepqualitytilllastperiod.SleepQualityTillLastPeriodRoot
 import com.example.flora1.features.onboarding.stresstilllastperiod.StressTillLastPeriodRoot
 import com.example.flora1.features.onboarding.usernameage.HeightRoot
 import com.example.flora1.features.onboarding.weight.WeightRoot
@@ -38,7 +39,7 @@ fun NavigationRoot(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.StressLevelTillLastPeriod.name,
+        startDestination = Screen.Splash.name,
     ) {
 
         composable(Screen.Splash.name) {
@@ -53,9 +54,26 @@ fun NavigationRoot(
         composable(Screen.UsernameAge.name) {
             UsernameAgeRoot(
                 onNext = {
-                    navController.navigate(Screen.Height.name)
+                    navController.navigate(Screen.Born.name)
                 }
             )
+        }
+
+        composable(Screen.Born.name) {
+            BornScreenRoot(
+                onNext = { isEligibleForFlora ->
+                    if (isEligibleForFlora)
+                        navController.navigate(Screen.Height.name)
+                    else
+                        navController.navigate(Screen.MinorAge.name)
+                }
+            )
+        }
+
+        composable(Screen.MinorAge.name) {
+            MinorAgeRoot(onBack = {
+                navController.navigateUp()
+            })
         }
 
         composable(Screen.Height.name) {
@@ -133,28 +151,19 @@ fun NavigationRoot(
         composable(Screen.StressLevelTillLastPeriod.name) {
             StressTillLastPeriodRoot(
                 onNext = {
-                    navController.navigate(Screen.Born.name)
+                    navController.navigate(Screen.SleepQualityTillLastPeriod.name)
                 },
                 onBack = navController::navigateUp,
             )
         }
 
-
-        composable(Screen.Born.name) {
-            BornScreenRoot(
-                onNext = { isEligibleForFlora ->
-                    if (isEligibleForFlora)
-                        navController.navigate(Screen.AverageCycle.name)
-                    else
-                        navController.navigate(Screen.MinorAge.name)
-                }
+        composable(Screen.SleepQualityTillLastPeriod.name) {
+            SleepQualityTillLastPeriodRoot(
+                onNext = {
+                    navController.navigate(Screen.AverageCycle.name)
+                },
+                onBack = navController::navigateUp,
             )
-        }
-
-        composable(Screen.MinorAge.name) {
-            MinorAgeRoot(onBack = {
-                navController.navigateUp()
-            })
         }
 
         composable(Screen.AverageCycle.name) {

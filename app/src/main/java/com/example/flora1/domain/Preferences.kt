@@ -2,6 +2,7 @@ package com.example.flora1.domain
 
 import com.example.flora1.features.onboarding.contraceptives.ContraceptiveMethod
 import com.example.flora1.features.onboarding.race.Race
+import com.example.flora1.features.onboarding.sleepqualitytilllastperiod.SleepQuality
 import com.example.flora1.features.onboarding.stresstilllastperiod.StressLevelTillLastPeriod
 import com.example.flora1.features.onboarding.weight.NumericalOptions
 import com.example.flora1.features.onboarding.weight.PregnancyStatus
@@ -26,6 +27,7 @@ interface Preferences {
     fun saveIsBreastfeeding(isBreastfeeding: Boolean)
     fun saveContraceptiveMethods(contraceptiveMethods: List<ContraceptiveMethod>)
     fun saveStressLevelTillLastPeriod(stressLevel: StressLevelTillLastPeriod)
+    fun saveSleepQualityTillLastPeriod(sleepQuality: SleepQuality)
 
     val username: String
     val height: Float
@@ -42,6 +44,7 @@ interface Preferences {
     val isBreastfeeding: Boolean
     val contraceptiveMethods: List<ContraceptiveMethod>
     val stressLevelTillLastPeriod: StressLevelTillLastPeriod
+    val sleepQualityTillLastPeriod: SleepQuality
     val averageCycleDays: Int
     val shouldShowOnBoarding: Boolean
     val dateOfBirth: String

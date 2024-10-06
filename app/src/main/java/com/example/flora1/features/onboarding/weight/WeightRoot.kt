@@ -100,7 +100,7 @@ fun WeightRoot(
             UnitTextField(
                 value = height,
                 onValueChange = {
-                    viewModel.onHeightChanged(it)
+                    viewModel.onWeightChanged(it)
                 },
                 unit = "kg"
             )
@@ -117,7 +117,7 @@ fun WeightRoot(
             text = "Next",
             enabled = enabled,
             onClick = {
-                viewModel.onSaveHeight(height.toFloat())
+                viewModel.onSaveWeight(height.toFloat())
                 onNext()
             },
         )

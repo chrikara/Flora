@@ -16,8 +16,6 @@ class StressTillLastPeriodViewModel @Inject constructor(
         MutableStateFlow(StressLevelTillLastPeriod.MEDIUM)
     val selectedStressLevel : StateFlow<StressLevelTillLastPeriod> = _selectedStressLevel
 
-
-
     fun onSelectedStressLevelChanged(stressLevel :StressLevelTillLastPeriod) {
         _selectedStressLevel.value = stressLevel
     }

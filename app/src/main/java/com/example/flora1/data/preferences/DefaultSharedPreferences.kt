@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.example.flora1.domain.Preferences
 import com.example.flora1.features.onboarding.contraceptives.ContraceptiveMethod
 import com.example.flora1.features.onboarding.race.Race
+import com.example.flora1.features.onboarding.sleepqualitytilllastperiod.SleepQuality
 import com.example.flora1.features.onboarding.stresstilllastperiod.StressLevelTillLastPeriod
 import com.example.flora1.features.onboarding.weight.NumericalOptions
 import com.example.flora1.features.onboarding.weight.PregnancyStatus
@@ -129,6 +130,19 @@ class DefaultSharedPreferences(
                 ""
             ) ?: ""
         )
+
+    override fun saveSleepQualityTillLastPeriod(sleepQuality: SleepQuality) {
+        sharedPref.edit().putString(KEY_SLEEP_QUALITY_TILL_LAST_PERIOD, sleepQuality.text).apply()
+    }
+
+    override val sleepQualityTillLastPeriod: SleepQuality
+        get() = SleepQuality.fromString(
+            sharedPref.getString(
+                KEY_SLEEP_QUALITY_TILL_LAST_PERIOD,
+                ""
+            ) ?: ""
+        )
+
     override val hasTakenMedVits: Boolean
         get() = sharedPref.getBoolean(KEY_HAS_TAKEN_MEDVITS, false)
     override val medVitsDescription: String
@@ -159,6 +173,7 @@ class DefaultSharedPreferences(
         private const val KEY_GYNECOSURGERY_DESCRIPTION = "gynecosurgeryDescription"
         private const val KEY_IS_BREASTFEEDING = "isBreastfeeding"
         private const val KEY_STRESS_LEVEL_TILL_LAST_PERIOD = "stressLevelTillLastPeriod"
+        private const val KEY_SLEEP_QUALITY_TILL_LAST_PERIOD = "sleepQualityTillLastPeriod"
         private const val KEY_AVERAGE_CYCLE = "averageCycleDays"
         private const val KEY_SHOULD_SHOW_ONBOARDING = "shouldShowOnBoarding"
         private const val KEY_DATE_OF_BIRTH = "dateOfBirth"

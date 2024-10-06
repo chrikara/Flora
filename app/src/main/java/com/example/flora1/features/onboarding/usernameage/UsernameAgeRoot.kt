@@ -86,15 +86,7 @@ fun UsernameAgeRoot(
                 color = Color.Black,
                 textAlign = TextAlign.Center,
             )
-            Spacer(modifier = Modifier.height(15.dp))
 
-            Text(
-                text = "What is your age",
-                fontFamily = FontFamily(Font(R.font.raleway_regular)),
-                fontSize = 14.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-            )
             Spacer(modifier = Modifier.height(30.dp))
 
         }

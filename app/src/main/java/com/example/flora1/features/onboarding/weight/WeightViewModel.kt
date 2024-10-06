@@ -1,6 +1,5 @@
 package com.example.flora1.features.onboarding.weight
 
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flora1.domain.Preferences
@@ -39,12 +38,12 @@ class WeightViewModel @Inject constructor(
             false,
         )
 
-    fun onHeightChanged(height: String) {
-        _weight.value = height
+    fun onWeightChanged(weight: String) {
+        _weight.value = weight
     }
 
-    fun onSaveHeight(height: Float) {
-        preferences.saveHeight(height)
+    fun onSaveWeight(weight: Float) {
+        preferences.saveWeight(weight)
     }
 
     private fun String.hasAtMostOneDot() = count { it == '.' } <= 1
