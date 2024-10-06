@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -49,14 +50,19 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.flora1.R
 import com.example.flora1.core.uikit.buttons.PrimaryButton
 import com.example.flora1.core.uikit.buttons.SecondaryButton
+import com.example.flora1.domain.Preferences
 import com.example.flora1.ui.theme.PrimaryVerticalBrush
+import javax.inject.Inject
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun GetStartedRoot(
     onPrimaryClicked: () -> Unit,
     onSecondaryClicked: () -> Unit,
+    viewModel: GetStartedViewModel = hiltViewModel(),
 ) {
+
+
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.girl_walking_lottie))
 
     val progress = animateLottieCompositionAsState(
@@ -123,6 +129,7 @@ fun GetStartedRoot(
                 PrimaryButton(
                     modifier = Modifier.padding(horizontal = horizontalPadding),
                     onClick = {
+                        viewModel.onSaveShouldNotShowOnBoarding()
                         alpha = 0f
                         hasClickedGetStarted = true
                         sizeGirl = 2000.dp

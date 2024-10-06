@@ -46,7 +46,12 @@ fun NavigationRoot(
             SplashScreenRoot(
                 onFinishedAnimation = {
                     navController.popBackStack()
-                    navController.navigate(Screen.UsernameAge.name)
+                    navController.navigate(
+                        if (viewModel.shouldShowOnBoarding)
+                            Screen.UsernameAge.name
+                        else
+                            Screen.Main.name
+                    )
                 }
             )
         }

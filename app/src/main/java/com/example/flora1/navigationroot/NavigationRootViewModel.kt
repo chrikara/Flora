@@ -7,6 +7,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NavigationRootViewModel @Inject constructor(
-    private val preferences: Preferences,
+    preferences: Preferences,
 ) : ViewModel() {
+
+    val shouldShowOnBoarding = preferences.shouldShowOnBoarding
 }
