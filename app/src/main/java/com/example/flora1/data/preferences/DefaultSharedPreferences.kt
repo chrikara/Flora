@@ -42,6 +42,19 @@ class DefaultSharedPreferences(
         sharedPref.edit().putString(KEY_TOTAL_MISCARRIAGES, number.text).apply()
     }
 
+    override fun saveHasTakenMedVits(hasTakenMedVits: Boolean) {
+        sharedPref.edit().putBoolean(KEY_HAS_TAKEN_MEDVITS, hasTakenMedVits).apply()
+    }
+
+    override fun saveMedVitsDescription(description: String) {
+        sharedPref.edit().putString(KEY_MEDVITS_DESCRIPTION, description).apply()
+    }
+
+    override val hasTakenMedVits: Boolean
+        get() = sharedPref.getBoolean(KEY_HAS_TAKEN_MEDVITS, false)
+    override val medVitsDescription: String
+        get() = sharedPref.getString(KEY_MEDVITS_DESCRIPTION, "") ?: ""
+
     override fun saveRace(race: Race) {
         sharedPref.edit().putString(KEY_RACE, race.text).apply()
     }
@@ -86,6 +99,8 @@ class DefaultSharedPreferences(
         private const val KEY_TOTAL_MISCARRIAGES = "totalMiscarriages"
         private const val KEY_TOTAL_ABORTIONS = "totalAbortions"
         private const val KEY_RACE = "race"
+        private const val KEY_HAS_TAKEN_MEDVITS = "hasTakenMedVits"
+        private const val KEY_MEDVITS_DESCRIPTION = "medVitsDescription"
         private const val KEY_AVERAGE_CYCLE = "averageCycleDays"
         private const val KEY_SHOULD_SHOW_ONBOARDING = "shouldShowOnBoarding"
         private const val KEY_DATE_OF_BIRTH = "dateOfBirth"

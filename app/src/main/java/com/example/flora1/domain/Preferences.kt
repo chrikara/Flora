@@ -17,6 +17,8 @@ interface Preferences {
     fun saveTotalMiscarriages(number: NumericalOptions)
     fun saveTotalAbortions(number: NumericalOptions)
     fun saveRace(race: Race)
+    fun saveHasTakenMedVits(hasTakenMedVits: Boolean)
+    fun saveMedVitsDescription(description: String)
 
     val username: String
     val height: Float
@@ -26,6 +28,8 @@ interface Preferences {
     val totalMiscarriages: NumericalOptions?
     val totalAbortions: NumericalOptions?
     val race: Race
+    val hasTakenMedVits: Boolean
+    val medVitsDescription: String
     val averageCycleDays: Int
     val shouldShowOnBoarding: Boolean
     val dateOfBirth: String

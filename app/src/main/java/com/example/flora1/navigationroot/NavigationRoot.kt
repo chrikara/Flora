@@ -20,6 +20,7 @@ import com.example.flora1.features.onboarding.averagecycle.AverageCycleRoot
 import com.example.flora1.features.onboarding.born.BornScreenRoot
 import com.example.flora1.features.onboarding.calendar.CalendarRoot
 import com.example.flora1.features.onboarding.lastperiod.LastPeriodRoot
+import com.example.flora1.features.onboarding.medvits.MedVitsRoot
 import com.example.flora1.features.onboarding.pregnancystats.PregnancyStatsRoot
 import com.example.flora1.features.onboarding.pregnancy.PregnancyRoot
 import com.example.flora1.features.onboarding.race.RaceRoot
@@ -34,7 +35,7 @@ fun NavigationRoot(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Race.name,
+        startDestination = Screen.Splash.name,
     ) {
 
         composable(Screen.Splash.name) {
@@ -76,7 +77,7 @@ fun NavigationRoot(
                     if (hasBeenPregnant)
                         navController.navigate(Screen.PregnancyStats.name)
                     else
-                        navController.navigate(Screen.Born.name)
+                        navController.navigate(Screen.Race.name)
                 }
             )
         }
@@ -92,6 +93,15 @@ fun NavigationRoot(
 
         composable(Screen.Race.name) {
             RaceRoot(
+                onNext = {
+                    navController.navigate(Screen.MedVits.name)
+                },
+                onBack = navController::navigateUp,
+            )
+        }
+
+        composable(Screen.MedVits.name) {
+            MedVitsRoot(
                 onNext = {
                     navController.navigate(Screen.Born.name)
                 },
