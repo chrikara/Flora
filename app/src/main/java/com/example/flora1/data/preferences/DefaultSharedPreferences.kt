@@ -58,6 +58,10 @@ class DefaultSharedPreferences(
         sharedPref.edit().putString(KEY_GYNECOSURGERY_DESCRIPTION, description).apply()
     }
 
+    override fun saveIsBreastfeeding(isBreastfeeding: Boolean) {
+        sharedPref.edit().putBoolean(KEY_IS_BREASTFEEDING, isBreastfeeding).apply()
+    }
+
     override fun saveRace(race: Race) {
         sharedPref.edit().putString(KEY_RACE, race.text).apply()
     }
@@ -72,6 +76,8 @@ class DefaultSharedPreferences(
     override fun saveHeight(height: Float) {
         sharedPref.edit().putFloat(KEY_HEIGHT, height).apply()
     }
+
+
 
     override val height: Float get() = sharedPref.getFloat(KEY_HEIGHT, 0f)
     override val username: String get() = sharedPref.getString(KEY_USERNAME, "") ?: ""
@@ -97,6 +103,9 @@ class DefaultSharedPreferences(
     override val medVitsDescription: String
         get() = sharedPref.getString(KEY_MEDVITS_DESCRIPTION, "") ?: ""
 
+
+    override val isBreastfeeding: Boolean
+        get() = sharedPref.getBoolean(KEY_IS_BREASTFEEDING, false)
     override val shouldShowOnBoarding
         get() = sharedPref.getBoolean(
             KEY_SHOULD_SHOW_ONBOARDING,
@@ -117,6 +126,7 @@ class DefaultSharedPreferences(
         private const val KEY_MEDVITS_DESCRIPTION = "medVitsDescription"
         private const val KEY_HAS_DONE_GYNECOSURGERY = "hasDoneGynecosurgery"
         private const val KEY_GYNECOSURGERY_DESCRIPTION = "gynecosurgeryDescription"
+        private const val KEY_IS_BREASTFEEDING = "isBreastfeeding"
         private const val KEY_AVERAGE_CYCLE = "averageCycleDays"
         private const val KEY_SHOULD_SHOW_ONBOARDING = "shouldShowOnBoarding"
         private const val KEY_DATE_OF_BIRTH = "dateOfBirth"

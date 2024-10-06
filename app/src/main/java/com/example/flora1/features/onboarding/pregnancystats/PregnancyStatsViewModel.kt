@@ -21,6 +21,9 @@ class PregnancyStatsViewModel @Inject constructor(
     private var _abortions: MutableStateFlow<NumericalOptions?> = MutableStateFlow(null)
     val abortions: StateFlow<NumericalOptions?> = _abortions
 
+    private var _isBreastfeeding: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isBreastfeeding: StateFlow<Boolean> = _isBreastfeeding
+
     fun onPregnanciesChanged(pregnancy: NumericalOptions?) {
         _pregnancies.value = pregnancy
     }
@@ -31,6 +34,10 @@ class PregnancyStatsViewModel @Inject constructor(
 
     fun onAbortionsChanged(abortion: NumericalOptions?) {
         _abortions.value = abortion
+    }
+
+    fun onBreastfeedingChanged(isBreastfeeding: Boolean) {
+        _isBreastfeeding.value = isBreastfeeding
     }
 
     fun onSaveTotalPregnancies(option : NumericalOptions) {

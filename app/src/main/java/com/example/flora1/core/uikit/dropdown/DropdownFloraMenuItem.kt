@@ -61,11 +61,10 @@ fun <T : Enum<T>> DropdownWithBorderWithInlineLabel(
     items: Array<T>,
     onItemSelected: (T) -> Unit,
     label: String,
-    defaultExpandedValue : Boolean = false,
     labelStyle: TextStyle = MaterialTheme.typography.bodySmall,
 ) {
 
-    var expanded by remember { mutableStateOf(defaultExpandedValue) }
+    var expanded by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
     Box(
@@ -154,10 +153,10 @@ private fun <T : Enum<T>> DropdownWithInlineLabelButton(
         ) {
             Text(
                 text = if (selectedItem != null) itemText(selectedItem) else "No comment",
-                color = if (selectedItem != null)MaterialTheme.colorScheme.onBackground else
+                color = if (selectedItem != null) MaterialTheme.colorScheme.onBackground else
                     MaterialTheme.colorScheme.tertiary,
                 fontFamily = FontFamily(Font(R.font.raleway_regular)),
-                )
+            )
 
             val iconRotation by animateFloatAsState(
                 targetValue = if (expanded) 180f else 0f, label = "",

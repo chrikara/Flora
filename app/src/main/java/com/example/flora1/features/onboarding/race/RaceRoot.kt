@@ -135,7 +135,6 @@ fun RaceRoot(
                 onItemSelected = {
                     viewModel.onSelectedRaceChanged(it)
                 },
-                defaultExpandedValue = true,
                 label = "Race"
             )
         }

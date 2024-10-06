@@ -40,6 +40,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.R
+import com.example.flora1.core.uikit.buttons.MultipleOptionsButton
 import com.example.flora1.core.uikit.buttons.PrimaryButton
 import com.example.flora1.core.uikit.dropdown.DropdownWithBorderWithInlineLabel
 import com.example.flora1.features.onboarding.weight.NumericalOptions
@@ -55,6 +56,8 @@ fun PregnancyStatsRoot(
     val pregnancy by viewModel.pregnancies.collectAsStateWithLifecycle()
     val miscarriage by viewModel.miscarriages.collectAsStateWithLifecycle()
     val abortion by viewModel.abortions.collectAsStateWithLifecycle()
+    val isBreastfeeding by viewModel.isBreastfeeding.collectAsStateWithLifecycle()
+    val booleanChoices = listOf(true, false)
 
     ConstraintLayout(
         modifier =
@@ -137,11 +140,29 @@ fun PregnancyStatsRoot(
             verticalArrangement = Arrangement.spacedBy(30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Column {
+                Text(
+                    text = "Are you currently breastfeeding?",
+                    fontFamily = FontFamily(Font(R.font.raleway_regular)),
+                    fontSize = 14.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                )
+                MultipleOptionsButton(
+                    selectedOption = isBreastfeeding,
+                    options = booleanChoices,
+                    onSelectedOption = { isBreastfeeding : Boolean ->
+                        viewModel.onBreastfeedingChanged(isBreastfeeding)
+                    },
+                    text = {
+                        if(this) "Yes" else "No"
+                    },
+                )
+            }
 
             DropdownWithBorderWithInlineLabel(
                 selectedItem = pregnancy,
                 itemText = { it.text },
-                defaultExpandedValue = true,
                 items = NumericalOptions.entries.toTypedArray(),
                 onItemSelected = {
                     viewModel.onPregnanciesChanged(it)
@@ -168,7 +189,6 @@ fun PregnancyStatsRoot(
                 },
                 label = "Abortions"
             )
-
         }
 
         PrimaryButton(

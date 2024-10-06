@@ -36,7 +36,7 @@ fun NavigationRoot(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Gynecosurgery.name,
+        startDestination = Screen.PregnancyStats.name,
     ) {
 
         composable(Screen.Splash.name) {
