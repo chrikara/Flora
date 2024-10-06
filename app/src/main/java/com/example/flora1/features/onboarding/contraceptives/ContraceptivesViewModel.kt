@@ -1,4 +1,4 @@
-package com.example.flora1.features.onboarding.gynosurgery
+package com.example.flora1.features.onboarding.contraceptives
 
 import androidx.lifecycle.ViewModel
 import com.example.flora1.domain.Preferences
@@ -22,6 +22,10 @@ class ContraceptivesViewModel @Inject constructor(
         _selectedContraceptiveMethods.value = contraceptiveMethods
     }
 
+    fun onSaveContraceptiveMethods(contraceptiveMethods: List<ContraceptiveMethod>){
+        preferences.saveContraceptiveMethods(contraceptiveMethods)
+    }
+
 }
 
 enum class ContraceptiveMethod(val text: String) {
@@ -33,6 +37,21 @@ enum class ContraceptiveMethod(val text: String) {
     WITHDRAWAL("Withdrawal"),
     ABSTINENCE("Abstinence"),
     NEP("NEP"),
-    OTHER("Other")
+    OTHER("Other");
+
+    companion object {
+        fun fromString(text : String) : ContraceptiveMethod = when(text){
+            PILL.text -> PILL
+            IUD.text -> IUD
+            INJECTION.text -> INJECTION
+            BARRIER.text -> BARRIER
+            NORPLANT.text -> NORPLANT
+            WITHDRAWAL.text -> WITHDRAWAL
+            ABSTINENCE.text -> ABSTINENCE
+            NEP.text -> NEP
+            OTHER.text -> OTHER
+            else -> PILL
+        }
+    }
 }
 

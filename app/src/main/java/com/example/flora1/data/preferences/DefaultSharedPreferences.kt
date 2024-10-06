@@ -2,7 +2,9 @@ package com.example.flora1.data.preferences
 
 import android.content.SharedPreferences
 import com.example.flora1.domain.Preferences
+import com.example.flora1.features.onboarding.contraceptives.ContraceptiveMethod
 import com.example.flora1.features.onboarding.race.Race
+import com.example.flora1.features.onboarding.stresstilllastperiod.StressLevelTillLastPeriod
 import com.example.flora1.features.onboarding.weight.NumericalOptions
 import com.example.flora1.features.onboarding.weight.PregnancyStatus
 
@@ -73,10 +75,16 @@ class DefaultSharedPreferences(
         sharedPref.edit().putString(KEY_TOTAL_ABORTIONS, number.text).apply()
     }
 
+    override fun saveContraceptiveMethods(contraceptiveMethods: List<ContraceptiveMethod>) {
+        contraceptiveMethods.forEachIndexed { index, contraceptiveMethod ->
+            sharedPref.edit()
+                .putString(getKeyOfContraceptiveMethod(index), contraceptiveMethod.text).apply()
+        }
+    }
+
     override fun saveHeight(height: Float) {
         sharedPref.edit().putFloat(KEY_HEIGHT, height).apply()
     }
-
 
 
     override val height: Float get() = sharedPref.getFloat(KEY_HEIGHT, 0f)
@@ -93,11 +101,34 @@ class DefaultSharedPreferences(
         get() = NumericalOptions.fromString(sharedPref.getString(KEY_TOTAL_ABORTIONS, "") ?: "")
     override val averageCycleDays get() = sharedPref.getInt(KEY_AVERAGE_CYCLE, 0)
 
+    override val contraceptiveMethods: List<ContraceptiveMethod>
+        get() = buildList {
+            repeat(ContraceptiveMethod.entries.size) {
+                val contraceptiveMethodText =
+                    sharedPref.getString(getKeyOfContraceptiveMethod(it), "") ?: ""
+
+                if (contraceptiveMethodText.isBlank())
+                    return@buildList
+                else
+                    add(ContraceptiveMethod.fromString(contraceptiveMethodText))
+            }
+        }
     override val hasDoneGynecosurgery: Boolean
         get() = sharedPref.getBoolean(KEY_HAS_DONE_GYNECOSURGERY, false)
     override val gyncosurgeryDescription: String
         get() = sharedPref.getString(KEY_GYNECOSURGERY_DESCRIPTION, "") ?: ""
 
+    override fun saveStressLevelTillLastPeriod(stressLevel: StressLevelTillLastPeriod) {
+        sharedPref.edit().putString(KEY_STRESS_LEVEL_TILL_LAST_PERIOD, stressLevel.text).apply()
+    }
+
+    override val stressLevelTillLastPeriod: StressLevelTillLastPeriod
+        get() = StressLevelTillLastPeriod.fromString(
+            sharedPref.getString(
+                KEY_STRESS_LEVEL_TILL_LAST_PERIOD,
+                ""
+            ) ?: ""
+        )
     override val hasTakenMedVits: Boolean
         get() = sharedPref.getBoolean(KEY_HAS_TAKEN_MEDVITS, false)
     override val medVitsDescription: String
@@ -127,8 +158,11 @@ class DefaultSharedPreferences(
         private const val KEY_HAS_DONE_GYNECOSURGERY = "hasDoneGynecosurgery"
         private const val KEY_GYNECOSURGERY_DESCRIPTION = "gynecosurgeryDescription"
         private const val KEY_IS_BREASTFEEDING = "isBreastfeeding"
+        private const val KEY_STRESS_LEVEL_TILL_LAST_PERIOD = "stressLevelTillLastPeriod"
         private const val KEY_AVERAGE_CYCLE = "averageCycleDays"
         private const val KEY_SHOULD_SHOW_ONBOARDING = "shouldShowOnBoarding"
         private const val KEY_DATE_OF_BIRTH = "dateOfBirth"
+
+        private fun getKeyOfContraceptiveMethod(number: Int) = "contraceptiveMethod$number"
     }
 }

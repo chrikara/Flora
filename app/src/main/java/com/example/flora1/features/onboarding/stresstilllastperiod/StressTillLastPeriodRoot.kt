@@ -1,4 +1,4 @@
-package com.example.flora1.features.onboarding.contraceptives
+package com.example.flora1.features.onboarding.stresstilllastperiod
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,16 +22,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,23 +40,17 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.R
-import com.example.flora1.core.uikit.bottomsheets.ChoiceComboBoxBottomSheet
 import com.example.flora1.core.uikit.buttons.PrimaryButton
-import com.example.flora1.core.uikit.textfields.ClickableTextField
-import kotlinx.coroutines.launch
+import com.example.flora1.core.uikit.radio.RadioGroup
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun ContraceptivesRoot(
+fun StressTillLastPeriodRoot(
     onNext: () -> Unit,
     onBack: () -> Unit,
-    viewModel: ContraceptivesViewModel = hiltViewModel(),
+    viewModel: StressTillLastPeriodViewModel = hiltViewModel(),
 ) {
-    val selectedContraceptiveMethods by viewModel.selectedContraceptiveMethods.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
+    val selectedStressLevel by viewModel.selectedStressLevel.collectAsStateWithLifecycle()
 
     BackHandler {}
 
@@ -117,7 +105,7 @@ fun ContraceptivesRoot(
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = "Are you using any contraceptive methods?",
+                text = "What were your stress levels until your last or current period?",
                 fontFamily = FontFamily(Font(R.font.raleway_bold)),
                 fontSize = 24.sp,
                 color = Color.Black,
@@ -126,60 +114,14 @@ fun ContraceptivesRoot(
 
             Spacer(modifier = Modifier.height(60.dp))
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-
-                ClickableTextField(
-                    text = when (selectedContraceptiveMethods.count()) {
-                        0 -> "0 methods selected (Click to Add)"
-                        1 -> "1 method selected"
-                        else -> "${selectedContraceptiveMethods.count()} methods selected"
-                    },
-                    onClick = {
-                        scope.launch { sheetState.show() }
-                    },
-                    trailingIcon = {
-                        Icon(
-                            imageVector = if (sheetState.isVisible)
-                                Icons.Default.KeyboardArrowUp
-                            else
-                                Icons.Default.KeyboardArrowDown,
-                            contentDescription = ""
-                        )
-                    }
-                )
-
-                if (sheetState.isVisible)
-                    ChoiceComboBoxBottomSheet(
-                        modifier = Modifier.fillMaxHeight(0.6f),
-                        title = "Contraceptive Methods",
-                        options = ContraceptiveMethod.entries,
-                        sheetState = sheetState,
-                        onDismissRequest = {
-                            scope.launch {
-                                sheetState.hide()
-                            }
-                        },
-                        optionText = ContraceptiveMethod::text,
-                        isChecked = {
-                            it in selectedContraceptiveMethods
-                        },
-                        onOptionClicked = {
-                            if (it in selectedContraceptiveMethods)
-                                viewModel.onSelectedContraceptiveMethodsChanged(
-                                    contraceptiveMethods = selectedContraceptiveMethods - it,
-                                )
-                            else
-                                viewModel.onSelectedContraceptiveMethodsChanged(
-                                    contraceptiveMethods = selectedContraceptiveMethods + it,
-                                )
-                        }
-                    )
-            }
+            RadioGroup(
+                radioButtons = StressLevelTillLastPeriod.entries.toTypedArray(),
+                selectedRadioButton = selectedStressLevel,
+                radioButtonLabel = {
+                    it.text
+                },
+                onRadioButtonSelected = { viewModel.onSelectedStressLevelChanged(it) }
+            )
         }
 
         Column(
@@ -190,7 +132,7 @@ fun ContraceptivesRoot(
             PrimaryButton(
                 text = "Next",
                 onClick = {
-                    viewModel.onSaveContraceptiveMethods(contraceptiveMethods = selectedContraceptiveMethods)
+                    viewModel.onSaveStressLevel(selectedStressLevel)
                     onNext()
                 },
             )

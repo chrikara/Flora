@@ -26,6 +26,7 @@ import com.example.flora1.features.onboarding.medvits.MedVitsRoot
 import com.example.flora1.features.onboarding.pregnancystats.PregnancyStatsRoot
 import com.example.flora1.features.onboarding.pregnancy.PregnancyRoot
 import com.example.flora1.features.onboarding.race.RaceRoot
+import com.example.flora1.features.onboarding.stresstilllastperiod.StressTillLastPeriodRoot
 import com.example.flora1.features.onboarding.usernameage.HeightRoot
 import com.example.flora1.features.onboarding.weight.WeightRoot
 import com.example.flora1.features.onboarding.usernameage.UsernameAgeRoot
@@ -37,7 +38,7 @@ fun NavigationRoot(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.name,
+        startDestination = Screen.StressLevelTillLastPeriod.name,
     ) {
 
         composable(Screen.Splash.name) {
@@ -123,11 +124,21 @@ fun NavigationRoot(
         composable(Screen.Contraceptives.name) {
             ContraceptivesRoot(
                 onNext = {
+                    navController.navigate(Screen.StressLevelTillLastPeriod.name)
+                },
+                onBack = navController::navigateUp,
+            )
+        }
+
+        composable(Screen.StressLevelTillLastPeriod.name) {
+            StressTillLastPeriodRoot(
+                onNext = {
                     navController.navigate(Screen.Born.name)
                 },
                 onBack = navController::navigateUp,
             )
         }
+
 
         composable(Screen.Born.name) {
             BornScreenRoot(
