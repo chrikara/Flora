@@ -90,7 +90,7 @@ fun SplashScreenRoot(
     ) {
         Image(
             modifier = Modifier.size(animateToDp),
-            painter = painterResource(id = R.drawable.flora_logo),
+            painter = painterResource(id = R.drawable.flora_logo_new),
             contentDescription = ""
         )
 

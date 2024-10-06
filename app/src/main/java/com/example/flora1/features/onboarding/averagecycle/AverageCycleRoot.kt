@@ -100,7 +100,7 @@ fun AverageCycleRoot(
                 )
                 Image(
                     modifier = Modifier.size(75.dp),
-                    painter = painterResource(id = R.drawable.flora_logo),
+                    painter = painterResource(id = R.drawable.flora_logo_new),
                     contentDescription = ""
                 )
 
@@ -242,4 +242,4 @@ private fun PickNumber(
 }
 
 private const val MIN_CYCLE_DAYS = 15
-private const val MAX_CYCLE_DAYS = 40
+private const val MAX_CYCLE_DAYS = 55

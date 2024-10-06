@@ -87,7 +87,7 @@ fun SleepQualityTillLastPeriodRoot(
                 )
                 Image(
                     modifier = Modifier.size(75.dp),
-                    painter = painterResource(id = R.drawable.flora_logo),
+                    painter = painterResource(id = R.drawable.flora_logo_new),
                     contentDescription = ""
                 )
 

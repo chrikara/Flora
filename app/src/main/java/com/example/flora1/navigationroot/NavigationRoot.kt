@@ -39,7 +39,7 @@ fun NavigationRoot(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Weight.name,
+        startDestination = Screen.AverageCycle.name,
     ) {
 
         composable(Screen.Splash.name) {
