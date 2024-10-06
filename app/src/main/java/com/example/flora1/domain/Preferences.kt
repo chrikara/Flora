@@ -19,6 +19,8 @@ interface Preferences {
     fun saveRace(race: Race)
     fun saveHasTakenMedVits(hasTakenMedVits: Boolean)
     fun saveMedVitsDescription(description: String)
+    fun saveHasDoneGynecosurgery(hasDoneGynecosurgery: Boolean)
+    fun saveGyncosurgeryDescription(description: String)
 
     val username: String
     val height: Float
@@ -30,6 +32,8 @@ interface Preferences {
     val race: Race
     val hasTakenMedVits: Boolean
     val medVitsDescription: String
+    val hasDoneGynecosurgery: Boolean
+    val gyncosurgeryDescription: String
     val averageCycleDays: Int
     val shouldShowOnBoarding: Boolean
     val dateOfBirth: String

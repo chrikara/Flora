@@ -1,4 +1,4 @@
-package com.example.flora1.features.usernameage
+package com.example.flora1.features.onboarding.usernameage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

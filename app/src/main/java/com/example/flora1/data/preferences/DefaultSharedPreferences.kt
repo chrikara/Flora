@@ -50,10 +50,13 @@ class DefaultSharedPreferences(
         sharedPref.edit().putString(KEY_MEDVITS_DESCRIPTION, description).apply()
     }
 
-    override val hasTakenMedVits: Boolean
-        get() = sharedPref.getBoolean(KEY_HAS_TAKEN_MEDVITS, false)
-    override val medVitsDescription: String
-        get() = sharedPref.getString(KEY_MEDVITS_DESCRIPTION, "") ?: ""
+    override fun saveHasDoneGynecosurgery(hasDoneGynecosurgery: Boolean) {
+        sharedPref.edit().putBoolean(KEY_HAS_DONE_GYNECOSURGERY, hasDoneGynecosurgery).apply()
+    }
+
+    override fun saveGyncosurgeryDescription(description: String) {
+        sharedPref.edit().putString(KEY_GYNECOSURGERY_DESCRIPTION, description).apply()
+    }
 
     override fun saveRace(race: Race) {
         sharedPref.edit().putString(KEY_RACE, race.text).apply()
@@ -83,6 +86,17 @@ class DefaultSharedPreferences(
     override val totalAbortions: NumericalOptions?
         get() = NumericalOptions.fromString(sharedPref.getString(KEY_TOTAL_ABORTIONS, "") ?: "")
     override val averageCycleDays get() = sharedPref.getInt(KEY_AVERAGE_CYCLE, 0)
+
+    override val hasDoneGynecosurgery: Boolean
+        get() = sharedPref.getBoolean(KEY_HAS_DONE_GYNECOSURGERY, false)
+    override val gyncosurgeryDescription: String
+        get() = sharedPref.getString(KEY_GYNECOSURGERY_DESCRIPTION, "") ?: ""
+
+    override val hasTakenMedVits: Boolean
+        get() = sharedPref.getBoolean(KEY_HAS_TAKEN_MEDVITS, false)
+    override val medVitsDescription: String
+        get() = sharedPref.getString(KEY_MEDVITS_DESCRIPTION, "") ?: ""
+
     override val shouldShowOnBoarding
         get() = sharedPref.getBoolean(
             KEY_SHOULD_SHOW_ONBOARDING,
@@ -101,6 +115,8 @@ class DefaultSharedPreferences(
         private const val KEY_RACE = "race"
         private const val KEY_HAS_TAKEN_MEDVITS = "hasTakenMedVits"
         private const val KEY_MEDVITS_DESCRIPTION = "medVitsDescription"
+        private const val KEY_HAS_DONE_GYNECOSURGERY = "hasDoneGynecosurgery"
+        private const val KEY_GYNECOSURGERY_DESCRIPTION = "gynecosurgeryDescription"
         private const val KEY_AVERAGE_CYCLE = "averageCycleDays"
         private const val KEY_SHOULD_SHOW_ONBOARDING = "shouldShowOnBoarding"
         private const val KEY_DATE_OF_BIRTH = "dateOfBirth"

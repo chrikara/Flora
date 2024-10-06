@@ -1,4 +1,4 @@
-package com.example.flora1.features.usernameage
+package com.example.flora1.features.onboarding.usernameage
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
@@ -37,7 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.R
 import com.example.flora1.core.toast.showSingleToast
 import com.example.flora1.core.uikit.buttons.PrimaryButton
-import com.example.flora1.features.usernameage.UsernameAgeViewModel.Companion.MAX_USERNAME_CHARS
+import com.example.flora1.features.onboarding.usernameage.UsernameAgeViewModel.Companion.MAX_USERNAME_CHARS
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
