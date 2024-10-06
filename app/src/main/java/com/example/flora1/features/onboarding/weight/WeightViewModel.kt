@@ -1,5 +1,6 @@
 package com.example.flora1.features.onboarding.weight
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flora1.domain.Preferences
@@ -17,13 +18,13 @@ class WeightViewModel @Inject constructor(
     private val preferences: Preferences,
 ) : ViewModel() {
 
-    private var _weight = MutableStateFlow("60")
-    val weight: StateFlow<String> = _weight
+    private var _weight = MutableStateFlow(TextFieldValue("60"))
+    val weight: StateFlow<TextFieldValue> = _weight
         .filter {weight ->
           //  (weight.matches(Regex("\\d+\\.?\\d*"))) This could have been done with Regex
-           weight.hasAtMostOneDot() &&
-                   weight.isOnlyDigitsMinusDots() &&
-                   weight.hasLessThanMaxChars()
+            (weight.text.hasAtMostOneDot() &&
+                   weight.text.isOnlyDigitsMinusDots() &&
+                   weight.text.hasLessThanMaxChars()) && !weight.text.startsWith('0')
         }
         .stateIn(
             viewModelScope,
@@ -31,14 +32,14 @@ class WeightViewModel @Inject constructor(
             _weight.value,
         )
 
-    val enabled = weight.map { it.isNotBlank() && it.length > 1}
+    val enabled = weight.map { it.text.isNotBlank() && it.text.length > 1}
         .stateIn(
             viewModelScope,
             SharingStarted.Lazily,
             false,
         )
 
-    fun onWeightChanged(weight: String) {
+    fun onWeightChanged(weight: TextFieldValue) {
         _weight.value = weight
     }
 

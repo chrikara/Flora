@@ -18,11 +18,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -41,8 +46,19 @@ fun WeightRoot(
     onNext: () -> Unit,
     viewModel: WeightViewModel = hiltViewModel(),
 ) {
-    val height by viewModel.weight.collectAsStateWithLifecycle()
+    val weight by viewModel.weight.collectAsStateWithLifecycle()
     val enabled by viewModel.enabled.collectAsStateWithLifecycle()
+    val focusRequester = remember { FocusRequester() }
+
+
+    LaunchedEffect(key1 = Unit) {
+        focusRequester.requestFocus()
+        viewModel.onWeightChanged(
+            weight.copy(
+                selection = TextRange(weight.text.length) // Set cursor to the end
+            )
+        )
+    }
 
     BackHandler {}
 
@@ -98,7 +114,9 @@ fun WeightRoot(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             UnitTextField(
-                value = height,
+                modifier = Modifier
+                    .focusRequester(focusRequester),
+                value = weight,
                 onValueChange = {
                     viewModel.onWeightChanged(it)
                 },
@@ -117,7 +135,7 @@ fun WeightRoot(
             text = "Next",
             enabled = enabled,
             onClick = {
-                viewModel.onSaveWeight(height.toFloat())
+                viewModel.onSaveWeight(weight.text.toFloat())
                 onNext()
             },
         )

@@ -1,5 +1,6 @@
 package com.example.flora1.features.onboarding.height
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,10 +19,12 @@ class HeightViewModel @Inject constructor(
     private val preferences: Preferences,
 ) : ViewModel() {
 
-    private var _height = MutableStateFlow("150")
-    val height: StateFlow<String> = _height
+    private var _height = MutableStateFlow(TextFieldValue("150"))
+    val height: StateFlow<TextFieldValue> = _height
         .filter {height ->
-            height.isDigitsOnly() && height.length < 4
+            height.text.isDigitsOnly()
+                    && !height.text.startsWith('0')
+                    && height.text.length < 4
         }
         .stateIn(
             viewModelScope,
@@ -29,14 +32,14 @@ class HeightViewModel @Inject constructor(
             _height.value,
         )
 
-    val enabled = height.map { it.isNotBlank() && it.length > 1}
+    val enabled = height.map { it.text.isNotBlank() && it.text.length > 1}
         .stateIn(
             viewModelScope,
             SharingStarted.Lazily,
             false,
         )
 
-    fun onHeightChanged(height: String) {
+    fun onHeightChanged(height: TextFieldValue) {
             _height.value = height
     }
 
