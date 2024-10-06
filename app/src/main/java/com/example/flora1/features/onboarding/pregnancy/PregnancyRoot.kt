@@ -40,7 +40,7 @@ import com.example.flora1.features.onboarding.weight.PregnancyViewModel
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun PregnancyRoot(
-    onNext: () -> Unit,
+    onNext: (hasBeenPregnant : Boolean) -> Unit,
     viewModel: PregnancyViewModel = hiltViewModel(),
 ) {
     val selectedPregnancyStatus by viewModel.pregnancyStatus.collectAsStateWithLifecycle()
@@ -119,7 +119,8 @@ fun PregnancyRoot(
             text = "Next",
             onClick = {
                 viewModel.onSavePregnancyStatus(selectedPregnancyStatus)
-                onNext()
+
+                onNext(viewModel.pregnancyStatus.value == PregnancyStatus.PREGNANT)
             },
         )
 

@@ -92,7 +92,6 @@ fun GetStartedRoot(
         ),
         label = "",
         finishedListener = {
-            println("mpikewewe")
             onPrimaryClicked()
         }
     )

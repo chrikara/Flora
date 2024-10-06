@@ -63,7 +63,6 @@ fun LastPeriodRoot(
             .padding(WindowInsets.statusBars.asPaddingValues()),
     ) {
         val (column, button, spacer) = createRefs()
-        println("Mpike2")
 
         Column(
             modifier = Modifier.constrainAs(column) {

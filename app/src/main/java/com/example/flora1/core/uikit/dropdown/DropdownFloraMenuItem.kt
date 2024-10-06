@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -35,14 +34,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.example.flora1.R
 import com.example.flora1.core.modifier.width
 import com.example.flora1.ui.theme.Flora1Theme
-import kotlin.math.exp
 
 
 const val MAX_ITEMS_WE_WANT_TO_BE_DISPLAYED = 7  // 6 + the "No preference" item
@@ -61,7 +61,7 @@ fun <T : Enum<T>> DropdownWithBorderWithInlineLabel(
     items: Array<T>,
     onItemSelected: (T?) -> Unit,
     label: String,
-    labelStyle: TextStyle = MaterialTheme.typography.titleMedium,
+    labelStyle: TextStyle = MaterialTheme.typography.bodySmall,
 ) {
 
     var expanded by remember { mutableStateOf(false) }
@@ -89,22 +89,25 @@ fun <T : Enum<T>> DropdownWithBorderWithInlineLabel(
 
         DropdownMenu(
             modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
                 .width(buttonWidth, density)
                 .heightIn(max = DROPDOWN_MENU_MAX_HEIGHT.dp),
             expanded = expanded,
             onDismissRequest = { expanded = false },
             offset = DpOffset(x = 0.dp, y = 4.dp),
-            ) {
+        ) {
 
             DropdownMenuItem(
                 text = {
                     Text(
-                        text = "Χωρίς προτίμηση",
+                        text = "No comment",
+                        fontFamily = FontFamily(Font(R.font.raleway_regular)),
                     )
                 },
                 onClick = {
                     onItemSelected(null)
-                    expanded = false }
+                    expanded = false
+                }
             )
 
             items.forEach {
@@ -113,9 +116,13 @@ fun <T : Enum<T>> DropdownWithBorderWithInlineLabel(
                         onItemSelected(it)
                         expanded = false
                     },
-                    text = {  Text(
-                           text = itemText(it),
-                    )}
+                    text = {
+                        Text(
+                            text = itemText(it),
+                            fontFamily = FontFamily(Font(R.font.raleway_regular)),
+
+                            )
+                    }
                 )
             }
 
@@ -132,7 +139,7 @@ private fun <T : Enum<T>> DropdownWithInlineLabelButton(
     itemText: @Composable (T) -> String,
     onClick: () -> Unit,
     label: String,
-    labelStyle: TextStyle = MaterialTheme.typography.titleMedium,
+    labelStyle: TextStyle = MaterialTheme.typography.bodySmall,
 ) {
     val dropdownButtonShape = RoundedCornerShape(4.dp)
     Box(
@@ -145,7 +152,7 @@ private fun <T : Enum<T>> DropdownWithInlineLabelButton(
                 .clip(dropdownButtonShape)
                 .border(
                     width = 1.dp,
-                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    color = MaterialTheme.colorScheme.onBackground,
                     shape = dropdownButtonShape,
                 )
                 .clickable(onClick = onClick)
@@ -159,12 +166,14 @@ private fun <T : Enum<T>> DropdownWithInlineLabelButton(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = if (selectedItem != null) itemText(selectedItem) else "No preference",
-                color = if (selectedItem != null) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.tertiaryContainer,
-            )
+                text = if (selectedItem != null) itemText(selectedItem) else "No comment",
+                color = if (selectedItem != null)MaterialTheme.colorScheme.onBackground else
+                    MaterialTheme.colorScheme.tertiary,
+                fontFamily = FontFamily(Font(R.font.raleway_regular)),
+                )
 
             val iconRotation by animateFloatAsState(
-                targetValue = if (expanded) 180f else 0f,
+                targetValue = if (expanded) 180f else 0f, label = "",
             )
             Icon(
                 modifier = Modifier
@@ -187,12 +196,14 @@ private fun <T : Enum<T>> DropdownWithInlineLabelButton(
 }
 
 private enum class Options(val text: String) {
-    DEFAULT("hey"),
+    ONE("1"),
+    TWO("2"),
+    THREE("3"),
 }
 
 @Preview(showBackground = true)
 @Composable
-fun DropdownWithBorderWithInlineLabelPreview() {
+fun Preview1() {
     var expanded by remember { mutableStateOf(false) }
 
     Flora1Theme {
@@ -201,9 +212,34 @@ fun DropdownWithBorderWithInlineLabelPreview() {
         ) {
             DropdownWithInlineLabelButton(
                 expanded = expanded,
-                selectedItem = Options.DEFAULT,
+                selectedItem = Options.ONE,
                 itemText = { it.text },
                 onClick = { expanded = !expanded },
+                label = "This is a test label",
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DropdownWithBorderWithInlineLabelPreview2() {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedItem: Options? by remember {
+        mutableStateOf(null)
+    }
+
+    Flora1Theme {
+        Surface(
+            modifier = Modifier.padding(16.dp),
+        ) {
+            DropdownWithBorderWithInlineLabel(
+                items = Options.entries.toTypedArray(),
+                onItemSelected = {
+                    selectedItem = it
+                },
+                selectedItem = selectedItem,
+                itemText = { it.text },
                 label = "This is a test label",
             )
         }

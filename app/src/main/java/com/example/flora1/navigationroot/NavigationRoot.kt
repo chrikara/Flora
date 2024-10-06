@@ -1,10 +1,11 @@
-package com.example.flora1
+package com.example.flora1.navigationroot
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,19 +20,20 @@ import com.example.flora1.features.onboarding.averagecycle.AverageCycleRoot
 import com.example.flora1.features.onboarding.born.BornScreenRoot
 import com.example.flora1.features.onboarding.calendar.CalendarRoot
 import com.example.flora1.features.onboarding.lastperiod.LastPeriodRoot
-import com.example.flora1.features.onboarding.usernameage.HeightRoot
+import com.example.flora1.features.onboarding.pregnancystats.PregnancyStatsRoot
 import com.example.flora1.features.onboarding.pregnancy.PregnancyRoot
+import com.example.flora1.features.onboarding.usernameage.HeightRoot
 import com.example.flora1.features.onboarding.weight.WeightRoot
 import com.example.flora1.features.usernameage.UsernameAgeRoot
 
 @Composable
 fun NavigationRoot(
     navController: NavHostController,
+    viewModel: NavigationRootViewModel = hiltViewModel(),
 ) {
-
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.name,
+        startDestination = Screen.Pregnancy.name,
     ) {
 
         composable(Screen.Splash.name) {
@@ -69,9 +71,21 @@ fun NavigationRoot(
 
         composable(Screen.Pregnancy.name) {
             PregnancyRoot(
+                onNext = { hasBeenPregnant ->
+                    if (hasBeenPregnant)
+                        navController.navigate(Screen.PregnancyStats.name)
+                    else
+                        navController.navigate(Screen.Born.name)
+                }
+            )
+        }
+
+        composable(Screen.PregnancyStats.name) {
+            PregnancyStatsRoot(
                 onNext = {
                     navController.navigate(Screen.Born.name)
-                }
+                },
+                onBack = navController::navigateUp,
             )
         }
 
