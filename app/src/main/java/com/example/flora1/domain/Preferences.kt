@@ -1,5 +1,6 @@
 package com.example.flora1.domain
 
+import com.example.flora1.features.onboarding.race.Race
 import com.example.flora1.features.onboarding.weight.NumericalOptions
 import com.example.flora1.features.onboarding.weight.PregnancyStatus
 
@@ -15,6 +16,7 @@ interface Preferences {
     fun saveTotalPregnancies(number: NumericalOptions)
     fun saveTotalMiscarriages(number: NumericalOptions)
     fun saveTotalAbortions(number: NumericalOptions)
+    fun saveRace(race: Race)
 
     val username: String
     val height: Float
@@ -23,6 +25,7 @@ interface Preferences {
     val totalPregnancies: NumericalOptions?
     val totalMiscarriages: NumericalOptions?
     val totalAbortions: NumericalOptions?
+    val race: Race
     val averageCycleDays: Int
     val shouldShowOnBoarding: Boolean
     val dateOfBirth: String

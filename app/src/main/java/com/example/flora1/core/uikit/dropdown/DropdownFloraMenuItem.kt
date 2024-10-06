@@ -59,12 +59,13 @@ fun <T : Enum<T>> DropdownWithBorderWithInlineLabel(
     selectedItem: T?,
     itemText: @Composable (T) -> String = { it.name },
     items: Array<T>,
-    onItemSelected: (T?) -> Unit,
+    onItemSelected: (T) -> Unit,
     label: String,
+    defaultExpandedValue : Boolean = false,
     labelStyle: TextStyle = MaterialTheme.typography.bodySmall,
 ) {
 
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(defaultExpandedValue) }
     val focusManager = LocalFocusManager.current
 
     Box(
@@ -96,20 +97,6 @@ fun <T : Enum<T>> DropdownWithBorderWithInlineLabel(
             onDismissRequest = { expanded = false },
             offset = DpOffset(x = 0.dp, y = 4.dp),
         ) {
-
-            DropdownMenuItem(
-                text = {
-                    Text(
-                        text = "No comment",
-                        fontFamily = FontFamily(Font(R.font.raleway_regular)),
-                    )
-                },
-                onClick = {
-                    onItemSelected(null)
-                    expanded = false
-                }
-            )
-
             items.forEach {
                 DropdownMenuItem(
                     onClick = {

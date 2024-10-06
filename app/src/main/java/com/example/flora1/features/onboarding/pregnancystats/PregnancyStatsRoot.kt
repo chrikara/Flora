@@ -141,6 +141,7 @@ fun PregnancyStatsRoot(
             DropdownWithBorderWithInlineLabel(
                 selectedItem = pregnancy,
                 itemText = { it.text },
+                defaultExpandedValue = true,
                 items = NumericalOptions.entries.toTypedArray(),
                 onItemSelected = {
                     viewModel.onPregnanciesChanged(it)
