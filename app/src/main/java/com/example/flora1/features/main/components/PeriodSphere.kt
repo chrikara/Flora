@@ -305,26 +305,29 @@ fun PeriodSphere(
         )
 
         ovulationDay?.let { ovulationDay ->
-            val (ovulationX, ovulationY) = remember {
-                calculateCirclePosition(
-                    day = ovulationDay - 1,
-                    totalDays = currentDate.month.maxLength(),
-                    totalSweep = totalSweep,
-                    radius = radius - offset,
-                    density = density,
+            if(shouldShowPredictions){
+                val (ovulationX, ovulationY) = remember {
+                    calculateCirclePosition(
+                        day = ovulationDay - 1,
+                        totalDays = currentDate.month.maxLength(),
+                        totalSweep = totalSweep,
+                        radius = radius - offset,
+                        density = density,
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(todayRadius * 0.9f)
+                        .offset(
+                            x = ovulationX,
+                            y = ovulationY,
+                        )
+                        .clip(CircleShape)
+                        .background(Color(0xFF03A9F4)),
                 )
             }
 
-            Box(
-                modifier = Modifier
-                    .size(todayRadius * 0.9f)
-                    .offset(
-                        x = ovulationX,
-                        y = ovulationY,
-                    )
-                    .clip(CircleShape)
-                    .background(Color(0xFF03A9F4)),
-            )
         }
 
 

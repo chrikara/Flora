@@ -3,7 +3,7 @@ package com.example.flora1.features.main
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.flora1.core.date.toFloraText
+import com.example.flora1.core.presentation.ui.date.toFloraText
 import com.example.flora1.data.db.PeriodDatabase
 import com.example.flora1.domain.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel

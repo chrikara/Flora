@@ -46,9 +46,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.R
-import com.example.flora1.core.uikit.bottomsheets.ChoiceComboBoxBottomSheet
-import com.example.flora1.core.uikit.buttons.PrimaryButton
-import com.example.flora1.core.uikit.textfields.ClickableTextField
+import com.example.flora1.core.presentation.ui.uikit.bottomsheets.ChoiceComboBoxBottomSheet
+import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
+import com.example.flora1.core.presentation.ui.uikit.textfields.ClickableTextField
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

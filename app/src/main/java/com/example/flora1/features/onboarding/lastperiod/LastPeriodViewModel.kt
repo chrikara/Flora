@@ -4,8 +4,8 @@ import androidx.compose.material3.DateRangePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.flora1.core.date.performActionBetweenTwoDates
-import com.example.flora1.core.date.toDate
+import com.example.flora1.core.presentation.ui.date.performActionBetweenTwoDates
+import com.example.flora1.core.presentation.ui.date.toDate
 import com.example.flora1.data.db.PeriodDatabase
 import com.example.flora1.data.db.PeriodEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,7 +51,7 @@ class LastPeriodViewModel @Inject constructor(
         val startingDate = datePickerState.selectedStartDateMillis!!.toDate()
         val endingDate = datePickerState.selectedEndDateMillis?.toDate()
 
-        performActionBetweenTwoDates(
+        com.example.flora1.core.presentation.ui.date.performActionBetweenTwoDates(
             startingDate = startingDate, endingDate = endingDate,
         ) { dateIterated ->
             onSaveLastPeriod(

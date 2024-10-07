@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flora1.R
-import com.example.flora1.core.uikit.buttons.PrimaryButton
-import com.example.flora1.core.uikit.datepickers.BornDatePicker
-import com.example.flora1.core.uikit.datepickers.rememberFloraDatePickerState
+import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
+import com.example.flora1.core.presentation.ui.uikit.datepickers.BornDatePicker
+import com.example.flora1.core.presentation.ui.uikit.datepickers.rememberFloraDatePickerState
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)

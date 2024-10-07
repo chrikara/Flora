@@ -50,7 +50,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flora1.R
-import com.example.flora1.core.uikit.buttons.PrimaryButton
+import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
 import com.example.flora1.ui.theme.conditionalPrimaryBrush
 
 @SuppressLint("UnusedBoxWithConstraintsScope")

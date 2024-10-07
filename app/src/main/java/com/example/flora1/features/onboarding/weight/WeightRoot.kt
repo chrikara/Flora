@@ -37,8 +37,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.R
-import com.example.flora1.core.uikit.buttons.PrimaryButton
-import com.example.flora1.core.uikit.textfields.UnitTextField
+import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
+import com.example.flora1.core.presentation.ui.uikit.textfields.UnitTextField
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable

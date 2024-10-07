@@ -10,8 +10,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.flora1.core.Screen
-import com.example.flora1.core.navigation.navigateAndPopUpTo
-import com.example.flora1.core.navigation.popAllPreviousDestinations
+import com.example.flora1.core.presentation.ui.navigation.navigateAndPopUpTo
+import com.example.flora1.core.presentation.ui.navigation.popAllPreviousDestinations
 import com.example.flora1.features.main.MainRoot
 import com.example.flora1.features.onboarding.GetStartedRoot
 import com.example.flora1.features.onboarding.MinorAgeRoot
