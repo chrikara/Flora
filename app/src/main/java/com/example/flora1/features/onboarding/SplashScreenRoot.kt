@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flora1.R
-import com.example.flora1.ui.theme.PrimaryHorizontalBrush
+import com.example.flora1.core.presentation.designsystem.getPrimaryLinearBrush
 
 @Composable
 fun SplashScreenRoot(
@@ -83,7 +83,7 @@ fun SplashScreenRoot(
         modifier =
         Modifier
             .fillMaxSize()
-            .background(brush = PrimaryHorizontalBrush)
+            .background(brush = getPrimaryLinearBrush())
             .padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,

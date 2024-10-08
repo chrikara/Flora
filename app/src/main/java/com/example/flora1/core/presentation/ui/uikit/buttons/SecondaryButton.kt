@@ -1,15 +1,11 @@
 package com.example.flora1.core.presentation.ui.uikit.buttons
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.flora1.ui.theme.conditionalPrimaryBrush
-import com.example.flora1.ui.theme.disableBrush
-import com.example.flora1.ui.theme.secondaryBrush
+import com.example.flora1.core.presentation.designsystem.getPrimaryHorizontalBrush
 
 @Composable
 fun SecondaryButton(
@@ -30,7 +26,7 @@ fun SecondaryButton(
         enabled = enabled,
         textColor = Color(0xFF212121),
         leadingIcon = leadingIcon,
-        brush = secondaryBrush,
+        brush = getPrimaryHorizontalBrush(),
         paddingValues = paddingValues,
     )
 

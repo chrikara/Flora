@@ -41,8 +41,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.flora1.R
+import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.ui.modifier.width
-import com.example.flora1.ui.theme.Flora1Theme
 
 
 const val MAX_ITEMS_WE_WANT_TO_BE_DISPLAYED = 7  // 6 + the "No preference" item

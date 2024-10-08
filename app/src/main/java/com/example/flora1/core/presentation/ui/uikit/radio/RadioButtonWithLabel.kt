@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.flora1.R
-import com.example.flora1.ui.theme.Flora1Theme
+import com.example.flora1.core.presentation.designsystem.Flora1Theme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

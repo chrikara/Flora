@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.flora1.ui.theme.Flora1Theme
+import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import gr.xe.android.uikitv2.buttons.multipleoptions.ToggleButton
 
 @JvmName("PreselectedMultipleOptionsButton")

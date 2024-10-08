@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -48,7 +47,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flora1.R
-import com.example.flora1.ui.theme.Flora1Theme
+import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import java.time.LocalDate
 import kotlin.math.abs
 import kotlin.math.cos
@@ -306,7 +305,7 @@ fun PeriodSphere(
         )
 
         ovulationDay?.let { ovulationDay ->
-            if(shouldShowPredictions){
+            if (shouldShowPredictions) {
                 val (ovulationX, ovulationY) = remember {
                     calculateCirclePosition(
                         day = ovulationDay - 1,

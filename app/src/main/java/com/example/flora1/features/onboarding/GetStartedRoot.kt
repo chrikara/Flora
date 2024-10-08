@@ -48,11 +48,9 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.flora1.R
+import com.example.flora1.core.presentation.designsystem.PrimaryVerticalBrush
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
 import com.example.flora1.core.presentation.ui.uikit.buttons.SecondaryButton
-import com.example.flora1.domain.Preferences
-import com.example.flora1.ui.theme.PrimaryVerticalBrush
-import javax.inject.Inject
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable

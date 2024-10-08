@@ -12,8 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.navigationroot.NavigationRoot
-import com.example.flora1.ui.theme.Flora1Theme
 import dagger.hilt.android.AndroidEntryPoint
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Flora1Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {  _ ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
                     val navController = rememberNavController()
 
                     NavigationRoot(navController = navController)

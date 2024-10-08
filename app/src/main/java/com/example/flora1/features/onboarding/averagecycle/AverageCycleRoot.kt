@@ -30,10 +30,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -50,8 +46,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flora1.R
+import com.example.flora1.core.presentation.designsystem.getPrimaryHorizontalBrush
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
-import com.example.flora1.ui.theme.conditionalPrimaryBrush
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -226,7 +222,7 @@ private fun PickNumber(
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
-            .background(brush = conditionalPrimaryBrush(enabled = enabled))
+            .background(brush = getPrimaryHorizontalBrush(isEnabled = enabled))
             .clickable(onClick = {
                 onClick(num)
             }),

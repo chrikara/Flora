@@ -9,8 +9,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.flora1.navigationroot.navigation.navigateAndPopUpTo
-import com.example.flora1.navigationroot.navigation.popAllPreviousDestinations
 import com.example.flora1.features.main.MainRoot
 import com.example.flora1.features.onboarding.GetStartedRoot
 import com.example.flora1.features.onboarding.MinorAgeRoot
@@ -30,6 +28,8 @@ import com.example.flora1.features.onboarding.stresstilllastperiod.StressTillLas
 import com.example.flora1.features.onboarding.usernameage.HeightRoot
 import com.example.flora1.features.onboarding.usernameage.UsernameAgeRoot
 import com.example.flora1.features.onboarding.weight.WeightRoot
+import com.example.flora1.navigationroot.navigation.navigateAndPopUpTo
+import com.example.flora1.navigationroot.navigation.popAllPreviousDestinations
 
 @Composable
 fun NavigationRoot(
@@ -38,7 +38,7 @@ fun NavigationRoot(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.name,
+        startDestination = Screen.UsernameAge.name,
     ) {
 
         composable(Screen.Splash.name) {
@@ -46,7 +46,7 @@ fun NavigationRoot(
                 onFinishedAnimation = {
                     navController.popBackStack()
                     navController.navigate(
-                        if (viewModel.shouldShowOnBoarding)
+                        if (true)
                             Screen.UsernameAge.name
                         else
                             Screen.Main.name

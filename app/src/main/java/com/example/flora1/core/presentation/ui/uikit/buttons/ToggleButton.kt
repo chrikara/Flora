@@ -1,6 +1,5 @@
 package gr.xe.android.uikitv2.buttons.multipleoptions
 
-import androidx.annotation.StringRes
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
@@ -24,13 +23,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flora1.R
-import com.example.flora1.ui.theme.Flora1Theme
+import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import androidx.compose.material3.Button as Material3Button
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)

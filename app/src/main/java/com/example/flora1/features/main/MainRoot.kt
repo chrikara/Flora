@@ -27,9 +27,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.flora1.core.presentation.designsystem.getPrimaryHorizontalBrush
 import com.example.flora1.core.presentation.ui.uikit.dialogs.PredictionDialog
 import com.example.flora1.features.main.components.PeriodSphere
-import com.example.flora1.ui.theme.PrimaryHorizontalBrush
 
 @Composable
 fun MainRoot(
@@ -116,6 +116,6 @@ private fun CustomBackgroundSurface() {
         modifier = Modifier
             .fillMaxSize()
             .alpha(0.6f)
-            .background(PrimaryHorizontalBrush)
+            .background(getPrimaryHorizontalBrush())
     )
 }

@@ -24,10 +24,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.flora1.R
-import com.example.flora1.ui.theme.PrimaryHorizontalBrush
-import com.example.flora1.ui.theme.PurpleGrey40
-import com.example.flora1.ui.theme.PurpleGrey80
-import com.example.flora1.ui.theme.conditionalPrimaryBrush
 
 @Composable
 fun Button(
