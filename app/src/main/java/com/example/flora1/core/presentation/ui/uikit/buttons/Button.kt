@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -31,6 +32,7 @@ fun Button(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     textColor: Color,
+    textStyle: TextStyle,
     leadingIcon: (@Composable () -> Unit)? = null,
     enabled: Boolean = true,
     brush: Brush,
@@ -76,10 +78,8 @@ fun Button(
                 text = text,
                 textAlign = TextAlign.Center,
                 color = textColor,
-                fontFamily = FontFamily(Font(R.font.raleway_bold)),
-                style = MaterialTheme.typography.titleMedium
+                style = textStyle,
             )
         }
-
     }
 }

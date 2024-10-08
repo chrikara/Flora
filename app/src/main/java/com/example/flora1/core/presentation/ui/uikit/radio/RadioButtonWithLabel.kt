@@ -21,11 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,7 +32,7 @@ fun RadioButtonWithLabel(
     selected: Boolean,
     onClick: () -> Unit,
     label: String,
-    labelStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    labelStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     enforceMinTouchTarget: Boolean = false,
 ) {
     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides enforceMinTouchTarget) {
@@ -55,7 +52,7 @@ private fun DefaultRadioButtonWithLabel(
     selected: Boolean,
     onClick: () -> Unit,
     label: String,
-    labelStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    labelStyle: TextStyle = MaterialTheme.typography.bodyLarge,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -82,7 +79,6 @@ private fun DefaultRadioButtonWithLabel(
                 .align(Alignment.CenterVertically)
                 .padding(start = 10.dp),
             text = label,
-            fontFamily = FontFamily(Font(R.font.raleway_regular)),
             style = labelStyle,
         )
     }

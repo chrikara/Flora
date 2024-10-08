@@ -35,12 +35,9 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.ui.modifier.width
 
@@ -105,9 +102,8 @@ fun <T : Enum<T>> DropdownWithBorderWithInlineLabel(
                     text = {
                         Text(
                             text = itemText(it),
-                            fontFamily = FontFamily(Font(R.font.raleway_regular)),
-
-                            )
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
                     }
                 )
             }
@@ -155,7 +151,7 @@ private fun <T : Enum<T>> DropdownWithInlineLabelButton(
                 text = if (selectedItem != null) itemText(selectedItem) else "No comment",
                 color = if (selectedItem != null) MaterialTheme.colorScheme.onBackground else
                     MaterialTheme.colorScheme.tertiary,
-                fontFamily = FontFamily(Font(R.font.raleway_regular)),
+                style = MaterialTheme.typography.bodyLarge,
             )
 
             val iconRotation by animateFloatAsState(

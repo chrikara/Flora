@@ -24,11 +24,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Flora1Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
                     val navController = rememberNavController()
 
                     NavigationRoot(navController = navController)
-                }
             }
         }
     }

@@ -48,7 +48,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.flora1.R
-import com.example.flora1.core.presentation.designsystem.PrimaryVerticalBrush
+import com.example.flora1.core.presentation.designsystem.getPrimaryVerticalBrush
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
 import com.example.flora1.core.presentation.ui.uikit.buttons.SecondaryButton
 
@@ -106,7 +106,7 @@ fun GetStartedRoot(
         modifier = Modifier
             .fillMaxSize()
             .alpha(alphaAsAnimations)
-            .background(brush = PrimaryVerticalBrush),
+            .background(brush = getPrimaryVerticalBrush()),
     ) {
         val (image, middleButtons, infoTexts) = createRefs()
 

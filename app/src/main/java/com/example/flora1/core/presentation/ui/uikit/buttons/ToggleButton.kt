@@ -20,14 +20,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import androidx.compose.material3.Button as Material3Button
 
@@ -69,11 +64,11 @@ internal fun RowScope.ToggleButton(
                 modifier = Modifier.basicMarquee(),
                 text = text,
                 overflow = Ellipsis,
-                fontFamily = FontFamily(Font(R.font.raleway_regular)),
                 maxLines = 1,
-                style = TextStyle(
-                    fontSize = if (isSelected) 16.sp else 14.sp
-                )
+                style = if (isSelected)
+                    MaterialTheme.typography.labelMedium
+                else
+                    MaterialTheme.typography.labelSmall
             )
         }
     }

@@ -38,7 +38,7 @@ fun NavigationRoot(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.UsernameAge.name,
+        startDestination = Screen.LastPeriod.name,
     ) {
 
         composable(Screen.Splash.name) {
@@ -121,7 +121,6 @@ fun NavigationRoot(
                 onNext = {
                     navController.navigate(Screen.MedVits.name)
                 },
-                onBack = navController::navigateUp,
             )
         }
 
@@ -130,7 +129,6 @@ fun NavigationRoot(
                 onNext = {
                     navController.navigate(Screen.Gynecosurgery.name)
                 },
-                onBack = navController::navigateUp,
             )
         }
 
@@ -139,7 +137,6 @@ fun NavigationRoot(
                 onNext = {
                     navController.navigate(Screen.Contraceptives.name)
                 },
-                onBack = navController::navigateUp,
             )
         }
 
@@ -148,7 +145,6 @@ fun NavigationRoot(
                 onNext = {
                     navController.navigate(Screen.StressLevelTillLastPeriod.name)
                 },
-                onBack = navController::navigateUp,
             )
         }
 
@@ -157,7 +153,6 @@ fun NavigationRoot(
                 onNext = {
                     navController.navigate(Screen.SleepQualityTillLastPeriod.name)
                 },
-                onBack = navController::navigateUp,
             )
         }
 
@@ -173,14 +168,12 @@ fun NavigationRoot(
         composable(Screen.AverageCycle.name) {
             AverageCycleRoot(
                 onNext = { navController.navigate(Screen.LastPeriod.name) },
-                onBack = { navController.popBackStack() }
             )
         }
 
         composable(Screen.LastPeriod.name) {
             LastPeriodRoot(
                 onNext = { navController.navigate(Screen.GetStarted.name) },
-                onBack = { navController.popBackStack() },
             )
         }
 
