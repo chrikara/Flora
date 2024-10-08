@@ -1,4 +1,4 @@
-package com.example.flora1.core
+package com.example.flora1.navigationroot
 
 sealed class Screen(val name : String) {
 

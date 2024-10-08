@@ -1,7 +1,6 @@
-package com.example.flora1.core.presentation.ui.navigation
+package com.example.flora1.navigationroot.navigation
 
 import androidx.navigation.NavController
-import com.example.flora1.core.Screen
 
 
 fun NavController.popAllPreviousDestinations(){

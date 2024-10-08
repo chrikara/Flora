@@ -127,7 +127,7 @@ fun GynosurgeryRoot(
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = "Have you ever performed gynecomastia surgery?",
+                text = "Have you ever performed gynecology surgery?",
                 fontFamily = FontFamily(Font(R.font.raleway_bold)),
                 fontSize = 24.sp,
                 color = Color.Black,
@@ -163,13 +163,13 @@ fun GynosurgeryRoot(
                         onValueChange = { viewModel.onDescriptionChanged(it) },
                         label = {
                             Text(
-                                text = "Gynecomastia description",
+                                text = "Gynecology description",
                                 fontFamily = FontFamily(Font(R.font.raleway_regular)),
                             )
                         },
                         placeholder = {
                             Text(
-                                text = "Give a brief description about your gynecomastia surgery...",
+                                text = "Give a brief description about your gynecology surgery...",
                                 color = MaterialTheme.colorScheme.tertiary,
                                 fontFamily = FontFamily(Font(R.font.raleway_regular)),
                             )
