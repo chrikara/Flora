@@ -169,10 +169,12 @@ private fun <T : Enum<T>> DropdownWithInlineLabelButton(
             modifier = Modifier
                 .offset(x = 4.dp, y = (-8).dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(MaterialTheme.colorScheme.onPrimary)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 4.dp)
                 .align(alignment = Alignment.TopStart),
-            style = labelStyle,
+            style = labelStyle.copy(
+                color = MaterialTheme.colorScheme.onBackground,
+            ),
         )
     }
 }

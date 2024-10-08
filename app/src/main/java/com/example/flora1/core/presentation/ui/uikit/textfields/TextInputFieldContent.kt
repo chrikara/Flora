@@ -1,5 +1,6 @@
 package com.example.flora1.core.presentation.ui.uikit.textfields
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -48,9 +49,7 @@ internal fun TextInputFieldContent(
 internal fun TextFieldPlaceholder(placeholder: String) {
     Text(
         text = placeholder,
-        style = MaterialTheme.typography.bodyMedium.copy(
-            color = MaterialTheme.colorScheme.tertiary,
-        ),
+        style = MaterialTheme.typography.bodyMedium,
     )
 }
 

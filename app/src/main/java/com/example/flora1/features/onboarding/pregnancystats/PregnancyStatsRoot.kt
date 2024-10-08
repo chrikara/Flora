@@ -49,7 +49,7 @@ fun PregnancyStatsRoot(
                 Text(
                     text = "Are you currently breastfeeding?",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center,
                 )
                 MultipleOptionsButton(

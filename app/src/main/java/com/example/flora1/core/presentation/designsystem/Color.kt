@@ -8,13 +8,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 
 val FloraRed = Color(0xFFF33168)
-val FloraRed60 = Color(0x99F33168)
+val FloraRed60 = Color(0xFFE7607F)
 val FloraRed10 = Color(0x1AF33168)
 
 val FloraWhite = Color(0xFFFFFFFF)
 val FloraWhite70 = Color(0xB3FFFFFF)
 val FloraWhite30 = Color(0x4DFFFFFF)
 val FloraWhiteBackground = Color(0xFFFAFAFA)
+val FloraDarkGray = Color(0xFF302E2E)
 val FloraGray = Color(0xFF949494)
 val FloraGray30 = Color(0x4D949494)
 val FloraGray10 = Color(0x1A949494)

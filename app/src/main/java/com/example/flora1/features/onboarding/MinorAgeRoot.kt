@@ -31,7 +31,7 @@ fun MinorAgeRoot(
         Text(
             text = "You must be at least 13 years old to use Flora as per European instructions. Sorry for any inconvenience but everyone should abide by the law for a happy life :)",
             style = MaterialTheme.typography.bodyLarge,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Justify,
         )
     }

@@ -75,7 +75,7 @@ fun FloraDialog(
                 Box(
                     modifier = Modifier
                         .background(
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.background,
                             shape = RoundedCornerShape(25.dp, 10.dp, 25.dp, 10.dp)
                         )
                 ) {
@@ -106,7 +106,6 @@ fun FloraDialog(
                                 modifier = Modifier
                                     .padding(top = 10.dp, start = 25.dp, end = 25.dp)
                                     .fillMaxWidth(),
-                                fontFamily = FontFamily(Font(R.font.raleway_regular)),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )

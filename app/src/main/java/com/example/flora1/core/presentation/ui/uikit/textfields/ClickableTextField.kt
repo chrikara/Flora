@@ -55,7 +55,6 @@ fun ClickableTextField(
                 vertical = 12.dp,
                 horizontal = 8.dp,
             )
-            .background(textInputFieldContainerColor(isFocused = false, enabled = enabled))
             .fillMaxWidth(),
         inputText = text ?: "",
         placeholder = placeholder,

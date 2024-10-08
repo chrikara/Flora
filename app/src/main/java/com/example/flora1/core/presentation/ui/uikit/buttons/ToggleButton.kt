@@ -65,10 +65,7 @@ internal fun RowScope.ToggleButton(
                 text = text,
                 overflow = Ellipsis,
                 maxLines = 1,
-                style = if (isSelected)
-                    MaterialTheme.typography.labelMedium
-                else
-                    MaterialTheme.typography.labelSmall
+                style = MaterialTheme.typography.labelSmall
             )
         }
     }

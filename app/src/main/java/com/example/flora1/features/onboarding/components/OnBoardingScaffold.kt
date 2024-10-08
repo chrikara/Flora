@@ -93,7 +93,8 @@ private fun OnBoardingScaffold(
     bottomBar: @Composable () -> Unit,
     middleContent: @Composable (ColumnScope.() -> Unit),
 ) {
-    BackHandler {}
+    if(!isBackEnabled)
+        BackHandler {}
 
     Scaffold(
         modifier = Modifier
@@ -207,7 +208,7 @@ private fun OnBoardingTopBar(
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
             )
         }

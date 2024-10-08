@@ -6,6 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -31,7 +32,7 @@ val darkColorScheme = darkColorScheme(
     tertiary = FloraGray,
     background = FloraBlack,
     onBackground = FloraWhite, // Contrast to background
-    surface = FloraWhite30,
+    surface = FloraDarkGray,
 )
 
 @Composable

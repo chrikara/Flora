@@ -55,7 +55,8 @@ fun UnitTextField(
     modifier: Modifier = Modifier,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium.copy(
         fontSize = 70.sp,
-        fontFamily = FontFamily(Font(R.font.opensans_regular))
+        fontFamily = FontFamily(Font(R.font.opensans_regular)),
+        color = MaterialTheme.colorScheme.onBackground,
     )
 ) {
     Row(
