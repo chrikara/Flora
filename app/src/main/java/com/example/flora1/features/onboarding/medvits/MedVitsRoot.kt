@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.core.presentation.ui.uikit.buttons.MultipleOptionsButton
+import com.example.flora1.features.onboarding.OnBoardingScreen
 import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -46,7 +47,7 @@ fun MedVitsRoot(
     }
     OnBoardingScaffold(
         verticalArrangement = Arrangement.Top,
-        isImePaddingEnabled = false,
+        selectedScreen = OnBoardingScreen.MED_VITS,
         title = "Have you ever received any medication or vitamins?",
         onNextClick = {
             viewModel.onSaveHasTakenMedVits(isTakingMedVits)

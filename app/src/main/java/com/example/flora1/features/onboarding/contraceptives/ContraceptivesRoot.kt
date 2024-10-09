@@ -3,6 +3,7 @@ package com.example.flora1.features.onboarding.contraceptives
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -13,10 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.core.presentation.ui.uikit.bottomsheets.ChoiceComboBoxBottomSheet
 import com.example.flora1.core.presentation.ui.uikit.textfields.ClickableTextField
+import com.example.flora1.features.onboarding.OnBoardingScreen
 import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 import kotlinx.coroutines.launch
 
@@ -35,6 +40,7 @@ fun ContraceptivesRoot(
     OnBoardingScaffold(
         verticalArrangement = Arrangement.Top,
         title = "Are you using any contraceptive methods?",
+        selectedScreen = OnBoardingScreen.CONTRACEPTIVES,
         onNextClick = {
             viewModel.onSaveContraceptiveMethods(contraceptiveMethods = selectedContraceptiveMethods)
             onNext()
@@ -63,7 +69,10 @@ fun ContraceptivesRoot(
 
         if (sheetState.isVisible)
             ChoiceComboBoxBottomSheet(
-                modifier = Modifier.fillMaxHeight(0.6f),
+                modifier = Modifier
+                    .fillMaxHeight(0.6f)
+
+                ,
                 title = "Contraceptive Methods",
                 options = ContraceptiveMethod.entries,
                 sheetState = sheetState,

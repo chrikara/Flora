@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.core.presentation.ui.uikit.buttons.MultipleOptionsButton
+import com.example.flora1.features.onboarding.OnBoardingScreen
 import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -46,7 +47,7 @@ fun GynosurgeryRoot(
     }
     OnBoardingScaffold(
         verticalArrangement = Arrangement.Top,
-        isImePaddingEnabled = false,
+        selectedScreen = OnBoardingScreen.GYNECOSURGERY,
         title = "Have you ever performed gynecology surgery?",
         onNextClick = {
             viewModel.onSaveHasDoneGynecosurgery(hasDoneGynosurgery)

@@ -12,6 +12,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.core.presentation.ui.uikit.textfields.UnitTextField
+import com.example.flora1.features.onboarding.OnBoardingScreen
 import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -36,11 +37,11 @@ fun WeightRoot(
     OnBoardingScaffold(
         title = "What is your weight?",
         isNextEnabled = enabled,
+        selectedScreen = OnBoardingScreen.WEIGHT,
         onNextClick = {
             viewModel.onSaveWeight(weight.text.toFloat())
             onNext()
         },
-        isImePaddingEnabled = true,
     ) {
         UnitTextField(
             modifier = Modifier.focusRequester(focusRequester),

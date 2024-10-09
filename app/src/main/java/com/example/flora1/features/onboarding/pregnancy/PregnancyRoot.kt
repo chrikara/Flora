@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.core.presentation.ui.uikit.buttons.MultipleOptionsButton
+import com.example.flora1.features.onboarding.OnBoardingScreen
 import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 import com.example.flora1.features.onboarding.weight.PregnancyStatus
 import com.example.flora1.features.onboarding.weight.PregnancyViewModel
@@ -24,7 +25,7 @@ fun PregnancyRoot(
 
             onNext(viewModel.pregnancyStatus.value == PregnancyStatus.PREGNANT)
         },
-        isImePaddingEnabled = true,
+        selectedScreen = OnBoardingScreen.PREGNANCY,
     ) {
         MultipleOptionsButton(
             selectedOption = selectedPregnancyStatus,

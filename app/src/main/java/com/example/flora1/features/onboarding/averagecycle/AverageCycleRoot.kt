@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flora1.core.presentation.designsystem.DisabledAlphaText
 import com.example.flora1.core.presentation.designsystem.getPrimaryHorizontalBrush
+import com.example.flora1.features.onboarding.OnBoardingScreen
 import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -37,7 +38,7 @@ fun AverageCycleRoot(
         modifier = Modifier
             .verticalScroll(state = rememberScrollState()),
         verticalArrangement = Arrangement.Top,
-        isImePaddingEnabled = false,
+        selectedScreen = OnBoardingScreen.AVERAGE_CYCLE,
         title = "How long is your average cycle?",
         description = "A little hint - cycles usually last 24-35 days.",
         onNextClick = {

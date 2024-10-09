@@ -2,6 +2,7 @@ package com.example.flora1.features.onboarding.usernameage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.flora1.R
 import com.example.flora1.domain.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,18 +24,18 @@ class UsernameAgeViewModel @Inject constructor(
     val username: StateFlow<String> = _username
 
     val enabled = _username.map { username ->
-        username.isNotBlank() && username.length <= MAX_USERNAME_CHARS
+        username.isNotBlank()
     }.stateIn(
         viewModelScope,
         SharingStarted.Lazily,
         false,
     )
 
-    fun onUsernameChange(username: String, onShowMessage: () -> Unit) {
+    fun onUsernameChange(username: String, onShowMessage: (textId: Int) -> Unit) {
         if (username.length <= MAX_USERNAME_CHARS)
             _username.value = username
         else
-            onShowMessage()
+            onShowMessage(R.string.max_username_chars)
 
     }
 

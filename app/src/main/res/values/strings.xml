@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Flora1</string>
+    <string name="max_username_chars">Cannot have more than %d characters.</string>
 </resources>

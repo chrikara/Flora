@@ -7,17 +7,30 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -38,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import com.example.flora1.R
 import com.example.flora1.core.presentation.ui.modifier.applyIf
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
+import com.example.flora1.features.onboarding.OnBoardingScreen
 
 
 @Composable
@@ -45,7 +59,6 @@ fun OnBoardingScaffold(
     modifier : Modifier = Modifier,
     verticalArrangement: Arrangement. Vertical = Arrangement. Center,
     horizontalAlignment: Alignment. Horizontal = Alignment.CenterHorizontally,
-    isImePaddingEnabled: Boolean = true,
     isNextEnabled: Boolean = true,
     onNextClick: () -> Unit = {},
     isBackEnabled: Boolean = false,
@@ -53,13 +66,13 @@ fun OnBoardingScaffold(
     title: String? = null,
     description: String? = null,
     buttonText : String = "Next",
+    selectedScreen : OnBoardingScreen,
     middleContent: @Composable (ColumnScope.() -> Unit),
 ) {
     OnBoardingScaffold(
         modifier = modifier,
         verticalArrangement = verticalArrangement,
         horizontalAlignment = horizontalAlignment,
-        isImePaddingEnabled = isImePaddingEnabled,
         isNextEnabled = isNextEnabled,
         onNextClick = onNextClick,
         isBackEnabled = isBackEnabled,
@@ -67,9 +80,12 @@ fun OnBoardingScaffold(
         title = title,
         description = description,
         middleContent = middleContent,
+        selectedScreen = selectedScreen,
         bottomBar = {
             PrimaryButton(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars))
+                    .fillMaxWidth(),
                 enabled = isNextEnabled,
                 text = buttonText,
                 onClick = onNextClick,
@@ -78,12 +94,12 @@ fun OnBoardingScaffold(
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun OnBoardingScaffold(
     modifier : Modifier = Modifier,
     verticalArrangement: Arrangement. Vertical = Arrangement. Center,
     horizontalAlignment: Alignment. Horizontal = Alignment.CenterHorizontally,
-    isImePaddingEnabled: Boolean = true,
     isNextEnabled: Boolean = true,
     onNextClick: () -> Unit,
     isBackEnabled: Boolean = false,
@@ -91,21 +107,20 @@ private fun OnBoardingScaffold(
     title: String? = null,
     description: String? = null,
     bottomBar: @Composable () -> Unit,
+    selectedScreen : OnBoardingScreen,
     middleContent: @Composable (ColumnScope.() -> Unit),
 ) {
-    if(!isBackEnabled)
-        BackHandler {}
+    BackHandler(
+        enabled = !isBackEnabled,
+        onBack = {},
+    )
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 15.dp, vertical = 10.dp)
-            .padding(WindowInsets.systemBars.asPaddingValues())
-            .applyIf(
-                enabled = isImePaddingEnabled,
-                modifier = Modifier.imePadding(),
-            ),
+        ,
         topBar = {
             OnBoardingTopBar(
                 isNextEnabled = isNextEnabled,
@@ -114,6 +129,7 @@ private fun OnBoardingScaffold(
                 description = description,
                 isBackEnabled = isBackEnabled,
                 onBackClick = onBackClick,
+                selectedScreen = selectedScreen,
             )
         },
         content = { innerPadding ->
@@ -138,14 +154,22 @@ private fun OnBoardingTopBar(
     isNextEnabled: Boolean,
     onNextClick: () -> Unit,
     title: String?,
+    selectedScreen : OnBoardingScreen,
     description: String?,
 ){
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
+        OnBoardingLinearProgressIndicator(
+            selectedScreen = selectedScreen,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -157,7 +181,7 @@ private fun OnBoardingTopBar(
                 modifier = Modifier
                     .size(size)
                     .clip(CircleShape)
-                    .alpha(if(isBackEnabled) 1f else 0f)
+                    .alpha(if (isBackEnabled) 1f else 0f)
                     .applyIf(
                         enabled = isBackEnabled,
                         modifier = Modifier.clickable(onClick = onBackClick)
@@ -177,7 +201,7 @@ private fun OnBoardingTopBar(
                 modifier = Modifier
                     .size(size)
                     .clip(CircleShape)
-                    .alpha(if(isNextEnabled) 1f else 0f)
+                    .alpha(if (isNextEnabled) 1f else 0f)
                     .applyIf(
                         enabled = isNextEnabled,
                         modifier = Modifier.clickable(onClick = onNextClick)

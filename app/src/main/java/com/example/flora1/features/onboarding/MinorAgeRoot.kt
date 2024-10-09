@@ -23,6 +23,7 @@ fun MinorAgeRoot(
         isNextEnabled = false,
         isBackEnabled = true,
         onBackClick = onBack,
+        selectedScreen = OnBoardingScreen.MINOR_AGE,
         title = "Uh oh!",
 
         ) {

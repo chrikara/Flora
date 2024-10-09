@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.core.presentation.ui.uikit.dropdown.DropdownWithBorderWithInlineLabel
+import com.example.flora1.features.onboarding.OnBoardingScreen
 import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -20,6 +21,7 @@ fun RaceRoot(
     OnBoardingScaffold(
         verticalArrangement = Arrangement.Center,
         title = "What is your race?",
+        selectedScreen = OnBoardingScreen.RACE,
         onNextClick = {
             viewModel.onSaveRace(selectedRace)
             onNext()

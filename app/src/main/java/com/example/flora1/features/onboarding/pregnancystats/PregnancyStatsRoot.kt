@@ -14,6 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.core.presentation.ui.uikit.buttons.MultipleOptionsButton
 import com.example.flora1.core.presentation.ui.uikit.dropdown.DropdownWithBorderWithInlineLabel
+import com.example.flora1.features.onboarding.OnBoardingScreen
 import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 import com.example.flora1.features.onboarding.weight.NumericalOptions
 import com.example.flora1.features.onboarding.weight.PregnancyStatsViewModel
@@ -33,6 +34,7 @@ fun PregnancyStatsRoot(
 
     OnBoardingScaffold(
         verticalArrangement = Arrangement.Center,
+        selectedScreen = OnBoardingScreen.PREGNANCY_STATS,
         title = "Tell us some things about your pregnancy background",
         description = "This will help us better understand you and modify Flora according to your needs",
         onNextClick = {

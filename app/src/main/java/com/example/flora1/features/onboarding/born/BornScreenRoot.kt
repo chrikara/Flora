@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flora1.core.presentation.ui.uikit.datepickers.BornDatePicker
 import com.example.flora1.core.presentation.ui.uikit.datepickers.rememberFloraDatePickerState
+import com.example.flora1.features.onboarding.OnBoardingScreen
 import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -28,6 +29,7 @@ fun BornScreenRoot(
                 onNext(true)
             }
         },
+        selectedScreen = OnBoardingScreen.BORN,
         isNextEnabled =
         if (datePickerState.selectedDateMillis == null)
             false
