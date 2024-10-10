@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.flora1.R
 import com.example.flora1.domain.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -23,7 +25,11 @@ class UsernameAgeViewModel @Inject constructor(
     private var _username = MutableStateFlow("")
     val username: StateFlow<String> = _username
 
-    val enabled = _username.map { username ->
+    @OptIn(FlowPreview::class)
+    val enabled = _username
+        .debounce(3000L)
+        .map { username ->
+            println("mpike1")
         username.isNotBlank()
     }.stateIn(
         viewModelScope,

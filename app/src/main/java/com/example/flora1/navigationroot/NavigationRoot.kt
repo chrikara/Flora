@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,7 +18,7 @@ import com.example.flora1.features.onboarding.GetStartedRoot
 import com.example.flora1.features.onboarding.MinorAgeRoot
 import com.example.flora1.features.onboarding.SplashScreenRoot
 import com.example.flora1.features.onboarding.averagecycle.AverageCycleRoot
-import com.example.flora1.features.onboarding.born.BornScreenRoot
+import com.example.flora1.features.onboarding.born.BornRoot
 import com.example.flora1.features.onboarding.calendar.CalendarRoot
 import com.example.flora1.features.onboarding.contraceptives.ContraceptivesRoot
 import com.example.flora1.features.onboarding.gynosurgery.GynosurgeryRoot
@@ -54,7 +53,7 @@ fun NavigationRoot(
                 onFinishedAnimation = {
                     navController.popBackStack()
                     navController.navigate(
-                        if (true)
+                        if (viewModel.shouldShowOnBoarding)
                             Screen.UsernameAge.name
                         else
                             Screen.Main.name
@@ -72,7 +71,7 @@ fun NavigationRoot(
         }
 
         composable(Screen.Born.name) {
-            BornScreenRoot(
+            BornRoot(
                 onNext = { isEligibleForFlora ->
                     if (isEligibleForFlora)
                         navController.navigate(Screen.Height.name)

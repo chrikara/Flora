@@ -1,55 +1,74 @@
 package com.example.flora1.features.onboarding.weight
 
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.example.flora1.core.presentation.ui.viewmodel.ComposeViewModel
 import com.example.flora1.domain.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
+
+data class PregnancyStatsViewState(
+    val pregnancies: NumericalOptions,
+    val miscarriages: NumericalOptions,
+    val abortions: NumericalOptions,
+    val isBreastfeeding: Boolean,
+)
+
+sealed interface PregnancyStatsViewEvent {
+
+    data class OnPregnanciesClicked(val value : NumericalOptions) : PregnancyStatsViewEvent
+    data class OnMiscarriagesClicked(val value : NumericalOptions) : PregnancyStatsViewEvent
+    data class OnAbortionsClicked(val value : NumericalOptions) : PregnancyStatsViewEvent
+    data class OnIsBreastfeedingClicked(val value : Boolean) : PregnancyStatsViewEvent
+    data object OnNextClicked : PregnancyStatsViewEvent
+}
 
 @HiltViewModel
 class PregnancyStatsViewModel @Inject constructor(
     private val preferences: Preferences,
-) : ViewModel() {
+) : ComposeViewModel<PregnancyStatsViewState, PregnancyStatsViewEvent>() {
+    private var pregnancies by mutableStateOf(NumericalOptions.ZERO)
+    private var miscarriages by mutableStateOf(NumericalOptions.ZERO)
+    private var abortions by mutableStateOf(NumericalOptions.ZERO)
+    private var isBreastfeeding by mutableStateOf(false)
 
-    private var _pregnancies: MutableStateFlow<NumericalOptions?> = MutableStateFlow(null)
-    val pregnancies: StateFlow<NumericalOptions?> = _pregnancies
+    @Composable
+    override fun uiState(): PregnancyStatsViewState = PregnancyStatsViewState(
+        pregnancies = pregnancies,
+        miscarriages = miscarriages,
+        abortions = abortions,
+        isBreastfeeding = isBreastfeeding,
+    )
 
-    private var _miscarriages: MutableStateFlow<NumericalOptions?> = MutableStateFlow(null)
-    val miscarriages: StateFlow<NumericalOptions?> = _miscarriages
 
-    private var _abortions: MutableStateFlow<NumericalOptions?> = MutableStateFlow(null)
-    val abortions: StateFlow<NumericalOptions?> = _abortions
-
-    private var _isBreastfeeding: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isBreastfeeding: StateFlow<Boolean> = _isBreastfeeding
-
-    fun onPregnanciesChanged(pregnancy: NumericalOptions?) {
-        _pregnancies.value = pregnancy
+    override fun onEvent(event: PregnancyStatsViewEvent) {
+        when (event) {
+            is PregnancyStatsViewEvent.OnPregnanciesClicked -> {
+                pregnancies = event.value
+            }
+            is PregnancyStatsViewEvent.OnMiscarriagesClicked -> {
+                miscarriages = event.value
+            }
+            is PregnancyStatsViewEvent.OnAbortionsClicked -> {
+                abortions = event.value
+            }
+            is PregnancyStatsViewEvent.OnIsBreastfeedingClicked -> {
+                isBreastfeeding = event.value
+            }
+            is PregnancyStatsViewEvent.OnNextClicked -> {
+                handleNext()
+            }
+            else -> throw IllegalArgumentException("Don't know $event")
+        }
     }
 
-    fun onMiscarriagesChanged(miscarriage: NumericalOptions?) {
-        _miscarriages.value = miscarriage
-    }
 
-    fun onAbortionsChanged(abortion: NumericalOptions?) {
-        _abortions.value = abortion
-    }
-
-    fun onBreastfeedingChanged(isBreastfeeding: Boolean) {
-        _isBreastfeeding.value = isBreastfeeding
-    }
-
-    fun onSaveTotalPregnancies(option : NumericalOptions) {
-        preferences.saveTotalPregnancies(option)
-    }
-
-    fun onSaveTotalMiscarriages(option : NumericalOptions) {
-        preferences.saveTotalMiscarriages(option)
-    }
-
-    fun onSaveTotalAbortions(option : NumericalOptions) {
-        preferences.saveTotalAbortions(option)
+    private fun handleNext(){
+        preferences.saveTotalPregnancies(pregnancies)
+        preferences.saveTotalMiscarriages(miscarriages)
+        preferences.saveTotalAbortions(abortions)
     }
 
     companion object {
@@ -69,11 +88,9 @@ enum class NumericalOptions(val text: String) {
     FIVE("5"),
     MORE_THAN_SIX("6+");
 
-    fun toIntOrNull() : Int? = text.replace('+', ' ').toIntOrNull()
-
     companion object {
-        fun fromString(text : String) =
-            when(text){
+        fun fromString(text: String) =
+            when (text) {
                 "0" -> ZERO
                 "1" -> ZERO
                 "2" -> ZERO
@@ -82,7 +99,7 @@ enum class NumericalOptions(val text: String) {
                 "5" -> ZERO
                 "6+" -> ZERO
                 else -> null
-        }
+            }
     }
 }
 

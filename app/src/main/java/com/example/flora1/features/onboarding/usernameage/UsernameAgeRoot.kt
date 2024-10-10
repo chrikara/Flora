@@ -13,9 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.ui.toast.showSingleToast
 import com.example.flora1.features.onboarding.OnBoardingScreen
@@ -63,12 +66,12 @@ fun UsernameAgeRoot(
     }
 
     OnBoardingScaffold(
+        title = stringResource(R.string.username_screen_title),
         onNextClick = onNext,
         isNextEnabled = isNextEnabled,
         selectedScreen = OnBoardingScreen.USERNAME_AGE,
-        title = "What is your username?",
     ) {
-        UsernameContent(
+        UsernameRootContent(
             modifier = Modifier.focusRequester(focusRequester),
             username = username,
             onUsernameChanged = onUsernameChanged,
@@ -77,7 +80,7 @@ fun UsernameAgeRoot(
 }
 
 @Composable
-private fun UsernameContent(
+private fun UsernameRootContent(
     modifier: Modifier,
     username: String,
     onUsernameChanged: (String) -> Unit,
@@ -93,7 +96,7 @@ private fun UsernameContent(
     )
 }
 
-@Preview(name = "UsernameRoot - Light")
+@PreviewLightDark
 @Composable
 private fun Preview1() {
 
@@ -107,22 +110,4 @@ private fun Preview1() {
         )
     }
 }
-
-
-@Preview(name = "UsernameRoot - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun Preview2() {
-
-    var username by remember { mutableStateOf("") }
-
-    Flora1Theme() {
-        UsernameAgeRoot(
-            isNextEnabled = true,
-            username = username,
-            onUsernameChanged = { username = it }
-        )
-    }
-}
-
-
 

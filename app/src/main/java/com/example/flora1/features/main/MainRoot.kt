@@ -95,7 +95,7 @@ fun MainRoot(
         )
     }
 
-    if (true) {
+    if (shouldShowPredictionDialog) {
         PredictionDialog(
             onAccept = {
                 viewModel.onShouldShowPredictionsChanged(shouldShow = true)

@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Flora1</string>
     <string name="max_username_chars">Cannot have more than %d characters.</string>
+    <string name="uh_oh">Uh oh!</string>
+    <string name="must_be_less_than_eligible_age_description">You must be at least %d years old to use Flora as per European instructions. Sorry for any inconvenience but everyone should abide by the law for a happy life :)</string>
+    <string name="born_screen_title">When were you born?</string>
+    <string name="born_screen_description">Since cycles can change over time, this helps us customize the app for you.</string>
+    <string name="username_screen_title">What is your username?</string>
 </resources>
