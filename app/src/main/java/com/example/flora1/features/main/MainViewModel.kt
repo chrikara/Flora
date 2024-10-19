@@ -3,7 +3,6 @@ package com.example.flora1.features.main
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.flora1.core.presentation.ui.date.toFloraText
 import com.example.flora1.data.db.PeriodDatabase
 import com.example.flora1.domain.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -151,19 +150,19 @@ class MainViewModel @Inject constructor(
         )
 
 
-    val selectedDate = selectedDay.mapLatest { day ->
+    val selectedDate: StateFlow<LocalDate> = selectedDay.mapLatest { day ->
         val localDate = LocalDate.now()
         LocalDate.of(
             localDate.year,
             localDate.monthValue,
             day,
-        ).toFloraText()
+        )
     }
         .flowOn(Dispatchers.Default)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
-            initialValue = ""
+            initialValue = LocalDate.now()
         )
 
 

@@ -20,14 +20,18 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.core.presentation.designsystem.getPrimaryHorizontalBrush
+import com.example.flora1.core.presentation.ui.date.toFloraText
 import com.example.flora1.core.presentation.ui.uikit.dialogs.PredictionDialog
 import com.example.flora1.features.main.components.PeriodSphere
 
@@ -38,6 +42,7 @@ fun MainRoot(
     onSettingsClick: () -> Unit,
     viewModel: MainViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
 
     val selectedDay by viewModel.selectedDay.collectAsState()
     val selectedDate by viewModel.selectedDate.collectAsStateWithLifecycle()
@@ -47,6 +52,12 @@ fun MainRoot(
     val fertileDays by viewModel.fertileDays.collectAsStateWithLifecycle()
     val shouldShowPredictionDialog by viewModel.shouldShowPredictionDialog.collectAsStateWithLifecycle()
     val shouldShowPredictions by viewModel.shouldShowPredictions.collectAsStateWithLifecycle()
+
+    val selectedDateFormatted by remember {
+        derivedStateOf {
+            selectedDate.toFloraText(context)
+        }
+    }
 
     CustomBackgroundSurface()
 
@@ -85,7 +96,7 @@ fun MainRoot(
         PeriodSphere(
             onTextPeriodTrackClick = onTextPeriodTrackClick,
             selectedDay = selectedDay,
-            dateText = selectedDate,
+            dateText = selectedDateFormatted,
             ovulationDay = ovulationDay,
             shouldShowPredictions = shouldShowPredictions,
             primaryText = primaryText,

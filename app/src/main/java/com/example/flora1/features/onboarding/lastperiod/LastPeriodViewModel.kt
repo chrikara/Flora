@@ -1,5 +1,6 @@
 package com.example.flora1.features.onboarding.lastperiod
 
+import android.annotation.SuppressLint
 import androidx.compose.material3.DateRangePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
@@ -45,13 +46,14 @@ class LastPeriodViewModel @Inject constructor(
         }
     }
 
+    @SuppressLint("VisibleForTests")
     fun onSavePeriodForSelectedDates(
         datePickerState: DateRangePickerState,
     ) {
         val startingDate = datePickerState.selectedStartDateMillis!!.toDate()
         val endingDate = datePickerState.selectedEndDateMillis?.toDate()
 
-        com.example.flora1.core.presentation.ui.date.performActionBetweenTwoDates(
+        performActionBetweenTwoDates(
             startingDate = startingDate, endingDate = endingDate,
         ) { dateIterated ->
             onSaveLastPeriod(

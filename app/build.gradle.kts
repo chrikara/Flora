@@ -94,6 +94,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // test
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotest.assertions.core.jvm)
+    testImplementation(libs.kotest.assertions.core)
 }
 
 // Allow references to generated code

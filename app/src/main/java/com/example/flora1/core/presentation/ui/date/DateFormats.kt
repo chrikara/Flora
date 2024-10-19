@@ -1,7 +1,7 @@
 package com.example.flora1.core.presentation.ui.date
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
+import android.content.Context
+import com.example.flora1.R
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -57,14 +57,16 @@ fun performActionBetweenTwoDates(
     )
 }
 
-fun LocalDate.toFloraText() : String {
+
+fun LocalDate.toFloraText(context: Context): String {
     val today = LocalDate.now()
 
-    return when(this){
-        today -> "Today"
-        today.plusDays(1) -> "Tomorrow"
-        today.minusDays(1) -> "Yesterday"
-        else -> DateTimeFormatter.ofPattern("dd LLL, yyyy").withLocale(Locale.getDefault()).format(this)
+    return when (this) {
+        today -> context.getString(R.string.today)
+        today.plusDays(1) -> context.getString(R.string.tomorrow)
+        today.minusDays(1) -> context.getString(R.string.yesterday)
+        else -> DateTimeFormatter.ofPattern("dd LLL, yyyy").withLocale(Locale.getDefault())
+            .format(this)
     }
 }
 
