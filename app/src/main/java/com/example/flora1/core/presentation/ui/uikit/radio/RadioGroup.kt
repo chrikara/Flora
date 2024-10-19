@@ -22,7 +22,7 @@ fun <T : Enum<T>> RadioGroup(
     modifier: Modifier = Modifier,
     radioButtons: Array<T>,
     selectedRadioButton: T? = null,
-    radioButtonLabel: @Composable (T) -> String = { it.name },
+    radioButtonLabel:  (T) -> String = { it.name },
     onRadioButtonSelected: (T) -> Unit,
     labelStyle: TextStyle = MaterialTheme.typography.bodyLarge,
 

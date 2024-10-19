@@ -1,5 +1,6 @@
 package com.example.flora1.core.presentation.ui.uikit.dialogs
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -16,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
@@ -34,7 +37,8 @@ fun FloraDialog(
     desc: String? = null,
     onAccept: () -> Unit,
     onDismiss: () -> Unit,
-    headerImage: (@Composable BoxScope.() -> Unit)? = null
+    headerImage: (@Composable BoxScope.() -> Unit)? = null,
+    @StringRes testTag : Int = R.string.flora_dialog_test_tag,
 ) {
     FloraDialog(
         modifier = modifier,
@@ -42,7 +46,8 @@ fun FloraDialog(
         desc = buildAnnotatedString { append(desc) },
         onAccept = onAccept,
         onDismiss = onDismiss,
-        headerImage = headerImage
+        headerImage = headerImage,
+        testTag = testTag,
     )
 }
 
@@ -55,7 +60,8 @@ fun FloraDialog(
     onDismiss: () -> Unit,
     dismissOnBackPress: Boolean = false,
     dismissOnClickOutside: Boolean = false,
-    headerImage: (@Composable BoxScope.() -> Unit)? = null
+    headerImage: (@Composable BoxScope.() -> Unit)? = null,
+    @StringRes testTag : Int = R.string.flora_dialog_test_tag,
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -69,7 +75,7 @@ fun FloraDialog(
                 .heightIn(min = 15.dp)
         ) {
             Column(
-                modifier = modifier,
+                modifier = modifier.testTag(stringResource(id = testTag)),
             ) {
                 Spacer(modifier = Modifier.height(130.dp))
                 Box(

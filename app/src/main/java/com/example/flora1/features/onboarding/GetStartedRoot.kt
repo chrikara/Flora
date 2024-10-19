@@ -34,7 +34,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -51,6 +54,7 @@ import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.getPrimaryVerticalBrush
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
 import com.example.flora1.core.presentation.ui.uikit.buttons.SecondaryButton
+import com.example.flora1.data.preferences.shouldShowOnBoarding
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -59,7 +63,7 @@ fun GetStartedRoot(
     onSecondaryClicked: () -> Unit,
     viewModel: GetStartedViewModel = hiltViewModel(),
 ) {
-
+    val context = LocalContext.current
 
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.girl_walking_lottie))
 
@@ -127,7 +131,7 @@ fun GetStartedRoot(
                 PrimaryButton(
                     modifier = Modifier.padding(horizontal = horizontalPadding),
                     onClick = {
-                        viewModel.onSaveShouldNotShowOnBoarding()
+                        context.shouldShowOnBoarding = false
                         alpha = 0f
                         hasClickedGetStarted = true
                         sizeGirl = 2000.dp
@@ -207,6 +211,7 @@ fun GetStartedRoot(
             else
                 LottieAnimation(
                     modifier = Modifier
+                        .testTag(stringResource(id = R.string.lottie_elegant_woman_test_tag))
                         .size(sizeAsAnimation)
                         .align(Alignment.BottomCenter),
                     composition = composition,

@@ -1,12 +1,12 @@
 package com.example.flora1.core.presentation.ui.uikit.dialogs
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -65,7 +65,8 @@ fun PredictionDialog(
                     .size(200.dp)
                     .align(Alignment.TopCenter)
             )
-        }
+        },
+        testTag = R.string.prediction_dialog_test_tag,
     )
 
 }

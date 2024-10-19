@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.flora1.R
 import com.example.flora1.core.presentation.ui.uikit.dropdown.DropdownWithBorderWithInlineLabel
 import com.example.flora1.features.onboarding.OnBoardingScreen
 import com.example.flora1.features.onboarding.components.OnBoardingScaffold
@@ -34,7 +35,8 @@ fun RaceRoot(
             onItemSelected = {
                 viewModel.onSelectedRaceChanged(it)
             },
-            label = "Race"
+            label = "Race",
+            testTag = R.string.dropdown_race_test_tag,
         )
     }
 }

@@ -9,6 +9,9 @@ import com.example.flora1.features.onboarding.stresstilllastperiod.StressLevelTi
 import com.example.flora1.features.onboarding.weight.NumericalOptions
 import com.example.flora1.features.onboarding.weight.PregnancyStatus
 
+
+internal const val USER_PREFERENCES = "UserPreferences"
+
 class DefaultSharedPreferences(
     private val sharedPref: SharedPreferences
 
@@ -17,9 +20,6 @@ class DefaultSharedPreferences(
         sharedPref.edit().putInt(KEY_AVERAGE_CYCLE, averageCycleDays).apply()
     }
 
-    override fun saveShouldShowOnBoarding(shouldShowOnBoarding: Boolean) {
-        sharedPref.edit().putBoolean(KEY_SHOULD_SHOW_ONBOARDING, shouldShowOnBoarding).apply()
-    }
 
     override fun saveDateOfBirth(dateOfBirth: Long) {
         sharedPref.edit().putLong(KEY_DATE_OF_BIRTH, dateOfBirth).apply()
@@ -169,11 +169,7 @@ class DefaultSharedPreferences(
 
     override val isBreastfeeding: Boolean
         get() = sharedPref.getBoolean(KEY_IS_BREASTFEEDING, false)
-    override val shouldShowOnBoarding
-        get() = sharedPref.getBoolean(
-            KEY_SHOULD_SHOW_ONBOARDING,
-            true
-        )
+
     override val dateOfBirth get() = sharedPref.getString(KEY_DATE_OF_BIRTH, "") ?: ""
 
     companion object {
@@ -193,7 +189,6 @@ class DefaultSharedPreferences(
         private const val KEY_STRESS_LEVEL_TILL_LAST_PERIOD = "stressLevelTillLastPeriod"
         private const val KEY_SLEEP_QUALITY_TILL_LAST_PERIOD = "sleepQualityTillLastPeriod"
         private const val KEY_AVERAGE_CYCLE = "averageCycleDays"
-        private const val KEY_SHOULD_SHOW_ONBOARDING = "shouldShowOnBoarding"
         private const val KEY_DATE_OF_BIRTH = "dateOfBirth"
 
         private const val KEY_SHOULD_SHOW_PREDICTION_DIALOG = "shouldShowPredictionDialog"

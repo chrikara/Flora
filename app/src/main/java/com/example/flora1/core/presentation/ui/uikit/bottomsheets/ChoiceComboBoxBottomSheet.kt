@@ -1,5 +1,6 @@
 package com.example.flora1.core.presentation.ui.uikit.bottomsheets
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -17,9 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.flora1.R
 
 
 @Composable
@@ -33,9 +37,10 @@ fun <T> ChoiceComboBoxBottomSheet(
     sheetState: SheetState,
     onDismissRequest: () -> Unit,
     onOptionClicked: (T) -> Unit,
+    @StringRes testTag : Int = R.string.bottom_sheet_test_tag,
 ) {
     ModalBottomSheet(
-        modifier = modifier,
+        modifier = modifier.testTag(stringResource(id = testTag)),
         title = title,
         modalSheetState = sheetState,
         onDismissRequest = onDismissRequest,
@@ -82,14 +87,14 @@ private fun <T> RowScope.DefaultChoiceRowContent(
         modifier = Modifier
             .weight(1f)
             .padding(
-                top = 9.dp,
-                bottom = 9.dp,
+                top = 10.dp,
+                bottom = 10.dp,
                 end = 22.dp,
             ),
         text = optionText,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodyLarge,
     )
 
     Checkbox(

@@ -45,7 +45,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.flora1.R
@@ -179,6 +181,7 @@ private fun OnBoardingTopBar(
             val size = 30.dp
             Icon(
                 modifier = Modifier
+                    .testTag(stringResource(R.string.icon_back_test_tag))
                     .size(size)
                     .clip(CircleShape)
                     .alpha(if (isBackEnabled) 1f else 0f)
@@ -199,6 +202,7 @@ private fun OnBoardingTopBar(
 
             Icon(
                 modifier = Modifier
+                    .testTag(stringResource(R.string.icon_next_test_tag))
                     .size(size)
                     .clip(CircleShape)
                     .alpha(if (isNextEnabled) 1f else 0f)

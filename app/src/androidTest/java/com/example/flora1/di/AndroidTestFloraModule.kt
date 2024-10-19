@@ -10,14 +10,17 @@ import com.example.flora1.data.preferences.USER_PREFERENCES
 import com.example.flora1.domain.Preferences
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
+import io.mockk.mockk
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
-object FloraModule {
-
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [FloraModule::class],
+)
+object AndroidTestFloraModule {
     @Provides
     @Singleton
     fun providesSharedPrefs(
@@ -29,15 +32,21 @@ object FloraModule {
     @Singleton
     fun providesPreferences(
         sharedPrefs : SharedPreferences
-    ) : Preferences = DefaultSharedPreferences(sharedPrefs)
+    ) : Preferences = AndroidTestDefaultSharedPreferences(DefaultSharedPreferences(sharedPrefs))
 
     @Provides
     @Singleton
-    fun providesDatabase(app:Application) : PeriodDatabase =
+    fun providesDatabase(app: Application) : PeriodDatabase =
         Room.databaseBuilder(
             app.applicationContext,
             PeriodDatabase::class.java,
             "food-database"
         ).build()
+}
 
+
+
+class AndroidTestDefaultSharedPreferences(preferences: Preferences) : Preferences by  preferences {
+    override val shouldShowPredictionDialog: Boolean
+        get() = true
 }

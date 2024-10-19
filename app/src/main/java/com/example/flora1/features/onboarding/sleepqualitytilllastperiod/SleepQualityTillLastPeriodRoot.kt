@@ -37,9 +37,7 @@ fun SleepQualityTillLastPeriodRoot(
             RadioGroup(
                 radioButtons = SleepQuality.entries.toTypedArray(),
                 selectedRadioButton = selectedSleepQuality,
-                radioButtonLabel = {
-                    it.text
-                },
+                radioButtonLabel = SleepQuality::text,
                 onRadioButtonSelected = { viewModel.onSelectedSleepQualityChanged(it) }
             )
     }

@@ -1,5 +1,6 @@
 package com.example.flora1.core.presentation.ui.uikit.dropdown
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,10 +35,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.ui.modifier.width
 
@@ -59,13 +63,14 @@ fun <T : Enum<T>> DropdownWithBorderWithInlineLabel(
     onItemSelected: (T) -> Unit,
     label: String,
     labelStyle: TextStyle = MaterialTheme.typography.bodySmall,
+    @StringRes testTag : Int = R.string.dropdown_with_border_test_tag,
 ) {
 
     var expanded by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
     Box(
-        modifier = modifier,
+        modifier = modifier.testTag(stringResource(testTag)),
     ) {
         var buttonWidth by remember { mutableStateOf<Int?>(null) }
         val density = LocalDensity.current
@@ -86,7 +91,7 @@ fun <T : Enum<T>> DropdownWithBorderWithInlineLabel(
 
         DropdownMenu(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.surface)
                 .width(buttonWidth, density)
                 .heightIn(max = DROPDOWN_MENU_MAX_HEIGHT.dp),
             expanded = expanded,
@@ -127,7 +132,7 @@ private fun <T : Enum<T>> DropdownWithInlineLabelButton(
     Box(
         modifier = Modifier
             .padding(top = 8.dp)
-            .background(Color.Transparent),
+            .background(MaterialTheme.colorScheme.surface),
     ) {
         Row(
             modifier = modifier

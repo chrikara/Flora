@@ -10,5 +10,4 @@ class NavigationRootViewModel @Inject constructor(
     preferences: Preferences,
 ) : ViewModel() {
 
-    val shouldShowOnBoarding = preferences.shouldShowOnBoarding
 }

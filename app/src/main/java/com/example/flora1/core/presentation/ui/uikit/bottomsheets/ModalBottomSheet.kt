@@ -1,6 +1,7 @@
 package com.example.flora1.core.presentation.ui.uikit.bottomsheets
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,9 +34,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.flora1.R
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +62,8 @@ internal fun ModalBottomSheet(
     modalSheetState: SheetState = rememberModalBottomSheetState(),
     onDismissRequest: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
-) {
+    @StringRes testTag : Int = R.string.bottom_sheet_test_tag,
+    ) {
     val coroutineScope = rememberCoroutineScope()
 
     BackHandler(modalSheetState.isVisible) {
@@ -66,10 +71,11 @@ internal fun ModalBottomSheet(
     }
 
     androidx.compose.material3.ModalBottomSheet(
-        modifier = modifier,
+        modifier = modifier.testTag(stringResource(id = testTag)),
         sheetState = modalSheetState,
         shape = sheetShape,
         tonalElevation = sheetElevation,
+        containerColor = MaterialTheme.colorScheme.surface,
         contentColor = sheetContentColor,
         scrimColor = scrimColor,
         onDismissRequest = onDismissRequest,
@@ -135,6 +141,7 @@ private fun BottomSheetTitleWithCloseButton(
 
         Icon(
             modifier = modifier
+                .testTag(tag = stringResource(id = R.string.close_icon_test_tag))
                 .size(size = 26.dp)
                 .clickable(
                     enabled = true,

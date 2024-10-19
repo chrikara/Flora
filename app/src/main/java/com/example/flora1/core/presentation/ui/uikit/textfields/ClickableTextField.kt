@@ -1,5 +1,6 @@
 package com.example.flora1.core.presentation.ui.uikit.textfields
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.Dp
@@ -30,11 +33,13 @@ fun ClickableTextField(
     onClick: () -> Unit,
     leadingIcon: @Composable (RowScope.() -> Unit)? = null,
     trailingIcon: @Composable (RowScope.() -> Unit)? = null,
+    @StringRes testTag: Int = R.string.clickable_text_field_test_tag,
 ) {
     val shape = textInputFieldBorderShape()
 
     TextInputFieldContent(
         modifier = Modifier
+            .testTag(stringResource(id = testTag))
             .clip(shape)
             .border(
                 shape = shape,

@@ -10,7 +10,6 @@ import com.example.flora1.features.onboarding.weight.PregnancyStatus
 interface Preferences {
 
     fun saveAverageCycle(averageCycleDays: Int)
-    fun saveShouldShowOnBoarding(shouldShowOnBoarding: Boolean)
     fun saveDateOfBirth(dateOfBirth: Long)
     fun saveUsername(username: String)
     fun saveHeight(height: Float)
@@ -49,7 +48,6 @@ interface Preferences {
     val stressLevelTillLastPeriod: StressLevelTillLastPeriod
     val sleepQualityTillLastPeriod: SleepQuality
     val averageCycleDays: Int
-    val shouldShowOnBoarding: Boolean
     val dateOfBirth: String
 
     val shouldShowPredictionDialog: Boolean

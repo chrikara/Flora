@@ -21,4 +21,8 @@ sealed class Screen(val name : String) {
     data object GetStarted : Screen("getStarted")
     data object Calendar : Screen("calendar")
     data object Main : Screen("main")
+
+    companion object {
+        val startDestination = Splash.name
+    }
 }

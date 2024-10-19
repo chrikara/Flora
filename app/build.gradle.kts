@@ -17,7 +17,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.flora1.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -57,6 +57,8 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            merges += "META-INF/LICENSE.md"
+            merges += "META-INF/LICENSE-notice.md"
         }
     }
 }
@@ -97,8 +99,14 @@ dependencies {
 
     // test
     testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.mockk.agent)
     testImplementation(libs.kotest.assertions.core.jvm)
     testImplementation(libs.kotest.assertions.core)
+
+    // hilt android test
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.android.compiler)
 }
 
 // Allow references to generated code

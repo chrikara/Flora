@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.flora1.R
 import com.example.flora1.core.presentation.ui.uikit.bottomsheets.ChoiceComboBoxBottomSheet
 import com.example.flora1.core.presentation.ui.uikit.textfields.ClickableTextField
 import com.example.flora1.features.onboarding.OnBoardingScreen
@@ -70,9 +71,7 @@ fun ContraceptivesRoot(
         if (sheetState.isVisible)
             ChoiceComboBoxBottomSheet(
                 modifier = Modifier
-                    .fillMaxHeight(0.6f)
-
-                ,
+                    .fillMaxHeight(0.6f),
                 title = "Contraceptive Methods",
                 options = ContraceptiveMethod.entries,
                 sheetState = sheetState,
@@ -94,7 +93,8 @@ fun ContraceptivesRoot(
                         viewModel.onSelectedContraceptiveMethodsChanged(
                             contraceptiveMethods = selectedContraceptiveMethods + it,
                         )
-                }
+                },
+                testTag = R.string.bottom_sheet_contraceptives_test_tag,
             )
     }
 }

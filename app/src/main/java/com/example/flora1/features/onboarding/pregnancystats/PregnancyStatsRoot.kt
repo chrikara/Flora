@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.flora1.R
 import com.example.flora1.core.presentation.ui.uikit.buttons.MultipleOptionsButton
 import com.example.flora1.core.presentation.ui.uikit.dropdown.DropdownWithBorderWithInlineLabel
 import com.example.flora1.features.onboarding.OnBoardingScreen
@@ -71,7 +72,8 @@ fun PregnancyStatsRoot(
                 onItemSelected = {
                     viewModel.onEvent(PregnancyStatsViewEvent.OnPregnanciesClicked(it))
                 },
-                label = "Pregnancies"
+                label = "Pregnancies",
+                testTag = R.string.dropdown_pregnancy_test_tag,
             )
 
             DropdownWithBorderWithInlineLabel(
@@ -81,7 +83,8 @@ fun PregnancyStatsRoot(
                 onItemSelected = {
                     viewModel.onEvent(PregnancyStatsViewEvent.OnMiscarriagesClicked(it))
                 },
-                label = "Miscarriages"
+                label = "Miscarriages",
+                testTag = R.string.dropdown_miscarriages_test_tag,
             )
 
             DropdownWithBorderWithInlineLabel(
@@ -91,7 +94,8 @@ fun PregnancyStatsRoot(
                 onItemSelected = {
                     viewModel.onEvent(PregnancyStatsViewEvent.OnAbortionsClicked(it))
                 },
-                label = "Abortions"
+                label = "Abortions",
+                testTag = R.string.dropdown_abortions_test_tag,
             )
         }
     }
