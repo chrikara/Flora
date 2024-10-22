@@ -103,6 +103,8 @@ dependencies {
     androidTestImplementation(libs.mockk.agent)
     testImplementation(libs.kotest.assertions.core.jvm)
     testImplementation(libs.kotest.assertions.core)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
 
     // hilt android test
     androidTestImplementation(libs.hilt.android.testing)

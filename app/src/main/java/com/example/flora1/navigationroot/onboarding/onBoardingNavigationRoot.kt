@@ -20,8 +20,6 @@ import com.example.flora1.features.onboarding.usernameage.HeightRoot
 import com.example.flora1.features.onboarding.usernameage.UsernameAgeRoot
 import com.example.flora1.features.onboarding.weight.WeightRoot
 import com.example.flora1.navigationroot.Screen
-import com.example.flora1.navigationroot.navigation.navigateAndPopUpTo
-import com.example.flora1.navigationroot.navigation.popAllPreviousDestinations
 
 fun NavGraphBuilder.onBoardingNavigationRoot(
     navController: NavController,
@@ -152,11 +150,14 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable(Screen.GetStarted.name) {
         GetStartedRoot(
             onPrimaryClicked = {
-                navController.popAllPreviousDestinations()
+                /*
+                Will have to test if popBackStack overloads work
+                 */
+                navController.popBackStack(Screen.UsernameAge.name, inclusive = true)
                 navController.navigate(Screen.Main.name)
             },
             onSecondaryClicked = {
-                navController.navigateAndPopUpTo(route = Screen.Born.name)
+                navController.popBackStack(Screen.UsernameAge.name, inclusive = false)
             }
         )
     }

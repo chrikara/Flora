@@ -11,6 +11,8 @@ activityCompose = "1.9.1"
 composeBom = "2024.06.00"
 hiltVersion = "2.51.1"
 mockk = '1.13.12'
+coroutines = '1.8.1'
+turbine = '0.12.3'
 kotest = '5.7.2'
 
 
@@ -42,6 +44,9 @@ mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockk" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltVersion"}
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltVersion" }
 
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
