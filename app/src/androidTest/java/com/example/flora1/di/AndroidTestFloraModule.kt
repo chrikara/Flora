@@ -37,11 +37,10 @@ object AndroidTestFloraModule {
     @Provides
     @Singleton
     fun providesDatabase(app: Application) : PeriodDatabase =
-        Room.databaseBuilder(
-            app.applicationContext,
-            PeriodDatabase::class.java,
-            "food-database"
-        ).build()
+        Room.inMemoryDatabaseBuilder(app.applicationContext, PeriodDatabase::class.java)
+            // Allowing main thread queries, just for testing.
+            .allowMainThreadQueries()
+            .build()
 }
 
 

@@ -7,6 +7,7 @@ import com.example.flora1.testFirst
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -18,7 +19,7 @@ class UsernameAgeViewModelTest {
     val rule = MainDispatcherRule()
 
     lateinit var viewModel: UsernameAgeViewModel
-    private var preferences : Preferences = mockk(relaxed = true)
+    private var preferences: Preferences = mockk(relaxed = true)
 
 
     @Before
@@ -97,6 +98,7 @@ class UsernameAgeViewModelTest {
     fun `username is blank, enabled is set to false`() = runTest {
         // given
         val username = " "
+
 
         // when
         viewModel.onUsernameChange(

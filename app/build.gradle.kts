@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation("androidx.navigation:navigation-testing:2.6.0")
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
@@ -103,6 +104,7 @@ dependencies {
     androidTestImplementation(libs.mockk.agent)
     testImplementation(libs.kotest.assertions.core.jvm)
     testImplementation(libs.kotest.assertions.core)
+    androidTestImplementation(libs.kotest.assertions.core)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
 

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -65,8 +66,12 @@ class MainViewModel @Inject constructor(
     }
 
 
-    val periodDaysForCurrentMonth = db.dao.getPeriodLogsForMonth(LocalDate.now().monthValue)
-        .mapLatest { fetchedCurrentMonthPeriodLogs ->
+    val periodDaysForCurrentMonth = db.dao()
+        .run {
+            val localDate = LocalDate.now()
+            getPeriodLogsForMonth(localDate.monthValue, localDate.year)
+        }
+        .map { fetchedCurrentMonthPeriodLogs ->
             fetchedCurrentMonthPeriodLogs.map {
                 it.day
             }

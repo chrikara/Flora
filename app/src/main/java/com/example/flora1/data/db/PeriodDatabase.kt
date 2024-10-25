@@ -9,5 +9,6 @@ import androidx.room.RoomDatabase
     version = 1
 )
 abstract class PeriodDatabase : RoomDatabase() {
-    abstract val dao : PeriodDao
+    abstract fun dao() : PeriodDao
+
 }

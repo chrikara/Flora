@@ -4,9 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
-@Entity
+@Entity(tableName = "period")
 data class PeriodEntity (
-    @PrimaryKey val id :Int? = null,
+    @PrimaryKey(autoGenerate = true) val id :Int = 0,
     val flow : String,
     val day :Int,
     val month: Int,

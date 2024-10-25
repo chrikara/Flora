@@ -35,7 +35,7 @@ class LastPeriodViewModel @Inject constructor(
         viewModelScope.launch {
             val result = try {
                 withContext(Dispatchers.IO) {
-                    db.dao.savePeriodEntry(periodEntity)
+                    db.dao().savePeriodEntry(periodEntity)
                 }
                 Result.success(true)
             } catch (e: Exception) {

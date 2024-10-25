@@ -23,10 +23,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
             Flora1Theme {
-                    val navController = rememberNavController()
-
-                    NavigationRoot(navController = navController)
+                    NavigationRoot(navController)
             }
         }
     }
