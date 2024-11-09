@@ -19,23 +19,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.flora1.R
+import com.example.flora1.core.presentation.ui.modifier.applyIf
 
 @Composable
 fun Button(
     text: String,
     modifier: Modifier = Modifier,
+    shouldFillMaxWidth : Boolean = true,
     onClick: () -> Unit,
     textColor: Color,
     textStyle: TextStyle,
     leadingIcon: (@Composable () -> Unit)? = null,
     enabled: Boolean = true,
     brush: Brush,
+    shape: Shape = CircleShape,
     paddingValues: PaddingValues = PaddingValues(
         horizontal = 0.dp,
         vertical = 0.dp,
@@ -44,10 +48,10 @@ fun Button(
 
     Box(
         modifier = modifier
-            .clip(CircleShape)
+            .clip(shape)
             .background(
                 brush = brush,
-                shape = CircleShape
+                shape = shape
             )
             .clickable(
                 enabled = enabled,
@@ -55,7 +59,7 @@ fun Button(
             )
             .padding(
                 horizontal = 20.dp,
-                vertical = 15.dp
+                vertical = 12.dp
             )
 
     ) {
@@ -73,7 +77,10 @@ fun Button(
 
             Text(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .applyIf(
+                        enabled = shouldFillMaxWidth,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     .align(Alignment.CenterVertically),
                 text = text,
                 textAlign = TextAlign.Center,

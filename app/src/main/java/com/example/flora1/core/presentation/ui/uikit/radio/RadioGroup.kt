@@ -1,5 +1,6 @@
 package com.example.flora1.core.presentation.ui.uikit.radio
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 
+
+
 @Composable
 fun <T : Enum<T>> RadioGroup(
     modifier: Modifier = Modifier,
@@ -31,10 +34,10 @@ fun <T : Enum<T>> RadioGroup(
         modifier = modifier
             .fillMaxWidth()
             .selectableGroup(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         for (radioButton in radioButtons) {
             RadioButtonWithLabel(
-                modifier = Modifier.padding(vertical = 15.dp),
                 selected = radioButton == selectedRadioButton,
                 onClick = {
                     onRadioButtonSelected(radioButton)

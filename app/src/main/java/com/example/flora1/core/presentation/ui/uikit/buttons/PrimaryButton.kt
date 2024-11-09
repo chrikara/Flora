@@ -1,9 +1,11 @@
 package com.example.flora1.core.presentation.ui.uikit.buttons
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -16,10 +18,12 @@ import com.example.flora1.core.presentation.designsystem.getPrimaryHorizontalBru
 fun PrimaryButton(
     text: String,
     modifier: Modifier = Modifier,
+    shouldFillMaxWidth : Boolean = true,
     onClick: () -> Unit,
     leadingIcon: (@Composable () -> Unit)? = null,
     enabled: Boolean = true,
     textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+    shape: Shape = CircleShape,
     paddingValues: PaddingValues = PaddingValues(
         horizontal = 0.dp,
         vertical = 0.dp,
@@ -28,6 +32,7 @@ fun PrimaryButton(
 
     Button(
         modifier = modifier.testTag(stringResource(R.string.primary_button_test_tag)),
+        shouldFillMaxWidth = shouldFillMaxWidth,
         text = text,
         enabled = enabled,
         onClick = onClick,
@@ -37,6 +42,7 @@ fun PrimaryButton(
             MaterialTheme.colorScheme.onPrimary.copy(alpha = DisabledAlphaText),
         leadingIcon = leadingIcon,
         textStyle = textStyle,
+        shape = shape,
         brush = getPrimaryHorizontalBrush(isEnabled = enabled),
         paddingValues = paddingValues,
     )

@@ -23,6 +23,6 @@ sealed class Screen(val name : String) {
     data object Main : Screen("main")
 
     companion object {
-        val startDestination = LastPeriod.name
+        val startDestination = SleepQualityTillLastPeriod.name
     }
 }
