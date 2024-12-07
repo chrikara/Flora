@@ -18,10 +18,10 @@ data class PregnancyStatsViewState(
 
 sealed interface PregnancyStatsViewEvent {
 
-    data class OnPregnanciesClicked(val value : NumericalOptions) : PregnancyStatsViewEvent
-    data class OnMiscarriagesClicked(val value : NumericalOptions) : PregnancyStatsViewEvent
-    data class OnAbortionsClicked(val value : NumericalOptions) : PregnancyStatsViewEvent
-    data class OnIsBreastfeedingClicked(val value : Boolean) : PregnancyStatsViewEvent
+    data class OnPregnanciesClicked(val value: NumericalOptions) : PregnancyStatsViewEvent
+    data class OnMiscarriagesClicked(val value: NumericalOptions) : PregnancyStatsViewEvent
+    data class OnAbortionsClicked(val value: NumericalOptions) : PregnancyStatsViewEvent
+    data class OnIsBreastfeedingClicked(val value: Boolean) : PregnancyStatsViewEvent
     data object OnNextClicked : PregnancyStatsViewEvent
 }
 
@@ -48,27 +48,33 @@ class PregnancyStatsViewModel @Inject constructor(
             is PregnancyStatsViewEvent.OnPregnanciesClicked -> {
                 pregnancies = event.value
             }
+
             is PregnancyStatsViewEvent.OnMiscarriagesClicked -> {
                 miscarriages = event.value
             }
+
             is PregnancyStatsViewEvent.OnAbortionsClicked -> {
                 abortions = event.value
             }
+
             is PregnancyStatsViewEvent.OnIsBreastfeedingClicked -> {
                 isBreastfeeding = event.value
             }
+
             is PregnancyStatsViewEvent.OnNextClicked -> {
                 handleNext()
             }
+
             else -> throw IllegalArgumentException("Don't know $event")
         }
     }
 
 
-    private fun handleNext(){
+    private fun handleNext() {
         preferences.saveTotalPregnancies(pregnancies)
         preferences.saveTotalMiscarriages(miscarriages)
         preferences.saveTotalAbortions(abortions)
+        preferences.saveIsBreastfeeding(isBreastfeeding)
     }
 
     companion object {

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,18 +20,48 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.flora1.R
 import com.example.flora1.core.presentation.ui.modifier.applyIf
 
 @Composable
 fun Button(
     text: String,
     modifier: Modifier = Modifier,
-    shouldFillMaxWidth : Boolean = true,
+    shouldFillMaxWidth: Boolean = true,
+    onClick: () -> Unit,
+    textColor: Color,
+    textStyle: TextStyle,
+    leadingIcon: (@Composable () -> Unit)? = null,
+    enabled: Boolean = true,
+    color: Color,
+    shape: Shape = CircleShape,
+    paddingValues: PaddingValues = PaddingValues(
+        horizontal = 0.dp,
+        vertical = 0.dp,
+    ),
+) {
+    Button(
+        text = text,
+        modifier = modifier,
+        shouldFillMaxWidth = shouldFillMaxWidth,
+        onClick = onClick,
+        textColor = textColor,
+        textStyle = textStyle,
+        leadingIcon = leadingIcon,
+        enabled = enabled,
+        brush = Brush.horizontalGradient(listOf(color, color)),
+        shape = shape,
+        paddingValues = paddingValues,
+    )
+
+}
+
+@Composable
+fun Button(
+    text: String,
+    modifier: Modifier = Modifier,
+    shouldFillMaxWidth: Boolean = true,
     onClick: () -> Unit,
     textColor: Color,
     textStyle: TextStyle,
@@ -79,7 +108,9 @@ fun Button(
                 modifier = Modifier
                     .applyIf(
                         enabled = shouldFillMaxWidth,
-                        modifier = Modifier.fillMaxWidth()
+                        otherModifier = {
+                            Modifier.fillMaxWidth()
+                        }
                     )
                     .align(Alignment.CenterVertically),
                 text = text,

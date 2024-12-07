@@ -25,12 +25,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
+import com.example.flora1.core.presentation.designsystem.getPrimaryHorizontalBrush
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,7 +78,7 @@ private fun DefaultRadioButtonWithLabel(
                 border = BorderStroke(
                     width = 1.dp,
                     color =
-                    if(selected)
+                    if (selected)
                         MaterialTheme.colorScheme.primary
                     else
                         MaterialTheme.colorScheme.tertiary,
@@ -89,9 +91,9 @@ private fun DefaultRadioButtonWithLabel(
             }
             .background(
                 if (selected)
-                    MaterialTheme.colorScheme.primaryContainer
+                    getPrimaryHorizontalBrush(true)
                 else
-                    Color.Transparent
+                    Brush.horizontalGradient(listOf(Color.Transparent, Color.Transparent))
             )
             .padding(containerPaddingValues)
             .fillMaxWidth()
@@ -104,6 +106,9 @@ private fun DefaultRadioButtonWithLabel(
                 .padding(end = 15.dp),
             text = label,
             style = labelStyle,
+            color = if (selected) MaterialTheme.colorScheme.onPrimary
+            else
+                MaterialTheme.colorScheme.onBackground
         )
 
         RadioButton(

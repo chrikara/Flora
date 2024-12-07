@@ -1,6 +1,6 @@
 package com.example.flora1.navigationroot
 
-sealed class Screen(val name : String) {
+sealed class Screen(val name: String) {
 
     data object Splash : Screen("splash")
     data object UsernameAge : Screen("usernameAge")
@@ -23,6 +23,6 @@ sealed class Screen(val name : String) {
     data object Main : Screen("main")
 
     companion object {
-        val startDestination = SleepQualityTillLastPeriod.name
+        val startDestination = StressLevelTillLastPeriod.name
     }
 }

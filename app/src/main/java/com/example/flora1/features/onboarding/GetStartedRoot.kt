@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -64,6 +65,8 @@ fun GetStartedRoot(
     viewModel: GetStartedViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+
+    val buttonBorder = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onPrimary)
 
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.girl_walking_lottie))
 
@@ -129,7 +132,9 @@ fun GetStartedRoot(
                 val horizontalPadding = 40.dp
                 val verticalPadding = 10.dp
                 PrimaryButton(
-                    modifier = Modifier.padding(horizontal = horizontalPadding),
+                    modifier = Modifier
+                        .padding(horizontal = horizontalPadding),
+                    border = buttonBorder,
                     onClick = {
                         context.shouldShowOnBoarding = false
                         alpha = 0f
@@ -143,8 +148,10 @@ fun GetStartedRoot(
                 Spacer(modifier = Modifier.height(15.dp))
                 SecondaryButton(
                     onClick = onSecondaryClicked,
+                    border = buttonBorder,
+                    paddingValues = PaddingValues(vertical = verticalPadding),
                     modifier = Modifier.padding(horizontal = horizontalPadding),
-                    text = "Delete and Re-OnBoard"
+                    text = "Delete and Re-OnBoard",
                 )
             }
 

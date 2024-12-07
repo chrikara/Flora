@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -25,6 +27,7 @@ fun SleepQualityTillLastPeriodRoot(
     val selectedSleepQuality by viewModel.selectedStressLevel.collectAsStateWithLifecycle()
 
     OnBoardingScaffold(
+        modifier = Modifier.verticalScroll(state = rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         selectedScreen = OnBoardingScreen.SLEEP_QUALITY_TILL_LAST_PERIOD,
         title = "What is your sleep quality until your last or current period?",
@@ -33,12 +36,12 @@ fun SleepQualityTillLastPeriodRoot(
             onNext()
         },
     ) {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.onboarding_space_between_title_and_radio_groupds)))
-            RadioGroup(
-                radioButtons = SleepQuality.entries.toTypedArray(),
-                selectedRadioButton = selectedSleepQuality,
-                radioButtonLabel = SleepQuality::text,
-                onRadioButtonSelected = { viewModel.onSelectedSleepQualityChanged(it) }
-            )
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.onboarding_space_between_title_and_radio_groupds)))
+        RadioGroup(
+            radioButtons = SleepQuality.entries.toTypedArray(),
+            selectedRadioButton = selectedSleepQuality,
+            radioButtonLabel = SleepQuality::text,
+            onRadioButtonSelected = { viewModel.onSelectedSleepQualityChanged(it) }
+        )
     }
 }

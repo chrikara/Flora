@@ -4,11 +4,11 @@ import androidx.compose.ui.Modifier
 
 
 fun Modifier.applyIf(
-    enabled : Boolean,
-    modifier : Modifier,
-) : Modifier {
+    enabled: Boolean,
+    otherModifier: Modifier.() -> Modifier
+): Modifier {
     return if (enabled) {
-        then(modifier)
+        this.otherModifier()
     } else {
         this
     }
