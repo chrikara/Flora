@@ -118,4 +118,4 @@ private fun PickNumber(
 }
 
 private const val MIN_CYCLE_DAYS = 15
-private const val MAX_CYCLE_DAYS = 100
+private const val MAX_CYCLE_DAYS = 55
