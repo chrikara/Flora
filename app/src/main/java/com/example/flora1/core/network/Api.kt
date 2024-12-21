@@ -1,5 +1,7 @@
 package com.example.flora1.core.network
 
+import com.example.flora1.domain.util.DataError
+import com.example.flora1.domain.util.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
@@ -11,24 +13,30 @@ import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
 import kotlin.coroutines.cancellation.CancellationException
 
 interface Api {
     val baseUrl: String
+
     val httpClientEngine: HttpClientEngine?
         get() = null
+
+    val contentType: ContentType
+        get() = ContentType.Application.Json
 }
 
 private data class HttpClientKey(
     val baseUrl: String,
+    val contentType: ContentType,
     val httpClientEngine: HttpClientEngine?,
 )
 
 private val httpClients = mutableMapOf<HttpClientKey, HttpClient>()
 
 val Api.httpClient: HttpClient
-    get() = httpClients.getOrPut(HttpClientKey(baseUrl, httpClientEngine)) {
-        createHttpClient(baseUrl)
+    get() = httpClients.getOrPut(HttpClientKey(baseUrl, contentType, httpClientEngine)) {
+        createHttpClient(baseUrl, contentType)
     }
 
 suspend inline fun <reified T : Any, reified R> Api.post(
@@ -37,7 +45,7 @@ suspend inline fun <reified T : Any, reified R> Api.post(
     multiQueryParams: Map<String, Iterable<String>> = emptyMap(),
     headers: Map<String, String> = emptyMap(),
     body: T,
-): Result<R> = safeCall {
+): Result<R, DataError.Network> = safeCall {
     httpClient.post(endpoint) {
         setQueryParams(
             queryParams = queryParams,
@@ -48,22 +56,29 @@ suspend inline fun <reified T : Any, reified R> Api.post(
     }.body()
 }
 
-suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): Result<T> {
+suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): Result<T, DataError.Network> {
     val response = try {
         execute()
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         e.printStackTrace()
-        return Result.failure(Exception())
+        return Result.Error(DataError.Network.UNKNOWN)
     }
 
-    return responseToResult(response)
+    return responseToResult<T>(response)
 }
 
-suspend inline fun <reified T> responseToResult(response: HttpResponse): Result<T> {
+suspend inline fun <reified T> responseToResult(response: HttpResponse): Result<T, DataError.Network> {
     return when (response.status.value) {
-        in 200..299 -> Result.success(response.body<T>())
-        else -> Result.failure(Exception())
+        in 200..299 -> Result.Success(response.body<T>())
+        400 -> Result.Error(DataError.Network.BAD_REQUEST)
+        401 -> Result.Error(DataError.Network.UNAUTHORIZED)
+        408 -> Result.Error(DataError.Network.REQUEST_TIMEOUT)
+        409 -> Result.Error(DataError.Network.CONFLICT)
+        413 -> Result.Error(DataError.Network.PAYLOAD_TOO_LARGE)
+        429 -> Result.Error(DataError.Network.TOO_MANY_REQUESTS)
+        in 500..599 -> Result.Error(DataError.Network.SERVER_ERROR)
+        else -> Result.Error(DataError.Network.UNKNOWN)
     }
 }
 
@@ -73,7 +88,7 @@ suspend inline fun <reified T, reified R> Api.put(
     multiQueryParams: Map<String, Iterable<String>> = emptyMap(),
     headers: Map<String, String> = emptyMap(),
     body: T,
-): Result<R> = safeCall {
+): Result<R, DataError.Network> = safeCall {
     httpClient.put(endpoint) {
         setQueryParams(
             queryParams = queryParams,
@@ -90,7 +105,7 @@ suspend inline fun <reified R> Api.get(
     queryParams: Map<String, String> = emptyMap(),
     multiQueryParams: Map<String, Iterable<String>> = emptyMap(),
     headers: Map<String, String> = emptyMap(),
-): Result<R> = safeCall {
+): Result<R, DataError.Network> = safeCall {
     httpClient.get(endpoint) {
         setQueryParams(
             queryParams = queryParams,
@@ -106,7 +121,7 @@ suspend inline fun <reified R> Api.delete(
     queryParams: Map<String, String> = emptyMap(),
     multiQueryParams: Map<String, Iterable<String>> = emptyMap(),
     headers: Map<String, String> = emptyMap(),
-): Result<R> = safeCall {
+): Result<R, DataError.Network> = safeCall {
     httpClient.delete(endpoint) {
         setQueryParams(
             queryParams = queryParams,

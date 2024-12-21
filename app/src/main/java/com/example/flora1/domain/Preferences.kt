@@ -11,7 +11,7 @@ interface Preferences {
 
     fun saveAverageCycle(averageCycleDays: Int)
     fun saveDateOfBirth(dateOfBirth: Long)
-    fun saveUsername(username: String)
+    fun saveToken(token: String)
     fun saveHeight(height: Float)
     fun saveWeight(weight: Float)
     fun savePregnancyStatus(pregnancyStatus: PregnancyStatus)
@@ -31,7 +31,7 @@ interface Preferences {
     fun saveShouldShowPredictionDialog(shouldShowPredictionDialog: Boolean)
     fun saveShouldShowPredictions(shouldShowPredictions: Boolean)
 
-    val username: String
+    val token: String
     val height: Float
     val weight: Float
     val pregnancyStatus: PregnancyStatus

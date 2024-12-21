@@ -14,9 +14,10 @@ import io.ktor.serialization.kotlinx.json.json
 
 fun Api.createHttpClient(
     baseUrl: String,
+    contentType: ContentType = ContentType.Application.Json,
 ) = HttpClient {
     defaultRequest {
-        contentType(ContentType.Application.Json)
+        contentType(contentType)
         url(baseUrl)
     }
     install(ContentNegotiation) {

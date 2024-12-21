@@ -7,7 +7,6 @@ import com.example.flora1.testFirst
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -161,7 +160,7 @@ class UsernameAgeViewModelTest {
 
         // then
         verify {
-            preferences.saveUsername(username)
+            preferences.saveToken(username)
         }
     }
 }

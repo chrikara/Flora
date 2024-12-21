@@ -37,7 +37,6 @@ import com.example.flora1.features.main.components.PeriodSphere
 
 @Composable
 fun MainRoot(
-    onTextPeriodTrackClick: () -> Unit,
     onCalendarClick: () -> Unit,
     onSettingsClick: () -> Unit,
     viewModel: MainViewModel = hiltViewModel(),
@@ -94,7 +93,6 @@ fun MainRoot(
         }
 
         PeriodSphere(
-            onTextPeriodTrackClick = onTextPeriodTrackClick,
             selectedDay = selectedDay,
             dateText = selectedDateFormatted,
             ovulationDay = ovulationDay,

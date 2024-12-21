@@ -16,7 +16,6 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
     composable(Screen.Main.name) {
         MainRoot(
             onCalendarClick = { navController.navigate(Screen.Calendar.name) },
-            onTextPeriodTrackClick = { navController.navigate(Screen.Calendar.name) },
             onSettingsClick = {}
         )
     }

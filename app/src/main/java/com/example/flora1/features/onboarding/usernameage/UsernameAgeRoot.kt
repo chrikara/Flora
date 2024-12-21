@@ -4,9 +4,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -14,8 +11,9 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.R
-import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.ui.components.LoginRoot
+import com.example.flora1.core.presentation.ui.observers.ObserveAsEvents
+import com.example.flora1.core.presentation.ui.toast.showSingleToast
 import com.example.flora1.features.onboarding.OnBoardingScreen
 import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 
@@ -25,35 +23,62 @@ fun UsernameAgeRoot(
     viewModel: UsernameAgeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val username by viewModel.username.collectAsStateWithLifecycle()
-    val enabled by viewModel.enabled.collectAsStateWithLifecycle()
+    val isRunning by viewModel.isRunning.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            UsernameAgeEvent.RegistrationSuccessful -> {
+                context.showSingleToast(context.getString(R.string.registration_was_successful))
+                onNext()
+            }
+
+            is UsernameAgeEvent.RegistrationFailed -> context.showSingleToast(event.message)
+            is UsernameAgeEvent.LoginFailed -> context.showSingleToast(event.message)
+            UsernameAgeEvent.LoginSuccessful -> {
+                context.showSingleToast(context.getString(R.string.login_was_successful))
+                onNext()
+            }
+        }
+    }
 
     UsernameAgeRoot(
-        onNext = {
-            viewModel.onSaveUsername(username)
-            onNext()
+        onNext = onNext,
+        onRegisterClicked = { username, email, password, isConsentGranted ->
+            viewModel.onRegister(
+                username = username,
+                email = email,
+                password = password,
+            )
         },
-        isNextEnabled = enabled,
+        onLoginClicked = { username, password ->
+            viewModel.onLogin(
+                username = username,
+                password = password,
+            )
+        },
+        isRunning = isRunning,
     )
 }
 
 @Composable
 fun UsernameAgeRoot(
     onNext: () -> Unit = {},
-    isNextEnabled: Boolean,
+    onRegisterClicked: (String, String, String, Boolean) -> Unit,
+    onLoginClicked: (String, String) -> Unit,
+    isRunning: Boolean,
 ) {
     OnBoardingScaffold(
         title = stringResource(R.string.welcome_and_login_or_register_screen_title),
-        onNextClick = onNext,
-        isNextEnabled = isNextEnabled,
         shouldShowNext = false,
+        isNextEnabled = false,
         selectedScreen = OnBoardingScreen.USERNAME_AGE,
     ) {
         LoginRoot(
             modifier = Modifier.verticalScroll(rememberScrollState()),
-            onRegisterClicked = { _, _, _ -> },
-            onLoginClicked = { _, _ -> },
+            onRegisterClicked = onRegisterClicked,
+            onLoginClicked = onLoginClicked,
             onContinueAsAnonymous = onNext,
+            isRunning = isRunning,
         )
     }
 }
@@ -63,12 +88,5 @@ fun UsernameAgeRoot(
 @Composable
 private fun Preview1() {
 
-    var username by remember { mutableStateOf("") }
-
-    Flora1Theme() {
-        UsernameAgeRoot(
-            isNextEnabled = true,
-        )
-    }
 }
 

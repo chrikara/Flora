@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,9 +39,10 @@ import com.example.flora1.core.presentation.ui.uikit.checkboxes.CheckboxWithTitl
 @Composable
 fun LoginRoot(
     modifier: Modifier = Modifier,
-    onRegisterClicked: (String, String, Boolean) -> Unit,
+    onRegisterClicked: (String, String, String, Boolean) -> Unit,
     onLoginClicked: (String, String) -> Unit,
     onContinueAsAnonymous: () -> Unit,
+    isRunning: Boolean,
 ) {
     var isRegistering by remember {
         mutableStateOf(false)
@@ -57,13 +59,15 @@ fun LoginRoot(
         if (isRegistering)
             RegisterContent(
                 onRegisterClicked = onRegisterClicked,
-                onBackToLogin = { isRegistering = false }
+                onBackToLogin = { isRegistering = false },
+                isRunning = isRunning,
             )
         else
             LoginContent(
                 onRegisterTextClicked = { isRegistering = true },
                 onLoginClicked = onLoginClicked,
                 onContinueAsAnonymous = onContinueAsAnonymous,
+                isRunning = isRunning,
             )
     }
 
@@ -71,13 +75,14 @@ fun LoginRoot(
 
 @Composable
 private fun ColumnScope.LoginContent(
+    isRunning: Boolean,
     onRegisterTextClicked: () -> Unit,
     onLoginClicked: (String, String) -> Unit,
     onContinueAsAnonymous: () -> Unit,
 ) {
     val context = LocalContext.current
 
-    var email by remember {
+    var username by remember {
         mutableStateOf("")
     }
 
@@ -87,11 +92,11 @@ private fun ColumnScope.LoginContent(
 
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
-        value = email,
+        value = username,
         singleLine = true,
-        onValueChange = { email = it },
+        onValueChange = { username = it },
         label = {
-            Text(text = "E-mail")
+            Text(text = "Username")
         }
     )
     Spacer(modifier = Modifier.height(10.dp))
@@ -116,11 +121,16 @@ private fun ColumnScope.LoginContent(
 
     PrimaryButton(
         text = "Login",
+        leadingIcon = if (!isRunning) null else {
+            {
+                ProgressLoginIndicator()
+            }
+        },
+        enabled = !isRunning,
         onClick = {
             when {
-                !email.isValidEmail -> context.showSingleToast("Your email is incorrect.")
                 password.length <= 8 -> context.showSingleToast("Password should have more than 8 chars")
-                else -> onLoginClicked(email.trim(), password.trim())
+                else -> onLoginClicked(username.trim(), password.trim())
             }
         }
     )
@@ -157,10 +167,15 @@ private fun ColumnScope.LoginContent(
 
 @Composable
 private fun ColumnScope.RegisterContent(
-    onRegisterClicked: (String, String, Boolean) -> Unit,
+    isRunning: Boolean,
+    onRegisterClicked: (String, String, String, Boolean) -> Unit,
     onBackToLogin: () -> Unit,
 ) {
     val context = LocalContext.current
+
+    var username by remember {
+        mutableStateOf("")
+    }
 
     var email by remember {
         mutableStateOf("")
@@ -177,6 +192,16 @@ private fun ColumnScope.RegisterContent(
     var isConsentGranted by remember {
         mutableStateOf(false)
     }
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = username,
+        singleLine = true,
+        onValueChange = { username = it },
+        label = {
+            Text(text = "Username")
+        }
+    )
+    Spacer(modifier = Modifier.height(10.dp))
 
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
@@ -216,14 +241,25 @@ private fun ColumnScope.RegisterContent(
 
     PrimaryButton(
         text = "Register",
+        enabled = !isRunning,
         onClick = {
             when {
-                !email.isValidEmail -> context.showSingleToast("Your email is incorrect.")
+                !email.isValidEmail -> context.showSingleToast("E-mail is incorrect")
                 password.length <= 8 -> context.showSingleToast("Password should have more than 8 chars")
                 password != reTypedPassword -> context.showSingleToast("Passwords don't match.")
-                else -> onRegisterClicked(email.trim(), password.trim(), isConsentGranted)
+                else -> onRegisterClicked(
+                    username.trim(),
+                    email.trim(),
+                    password.trim(),
+                    isConsentGranted
+                )
             }
-        }
+        },
+        leadingIcon = if (!isRunning) null else {
+            {
+                ProgressLoginIndicator()
+            }
+        },
     )
     Spacer(modifier = Modifier.height(30.dp))
 
@@ -291,3 +327,7 @@ private fun PasswordTextField(
     )
 }
 
+@Composable
+private fun ProgressLoginIndicator() {
+    CircularProgressIndicator(modifier = Modifier.size(30.dp))
+}

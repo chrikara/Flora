@@ -55,7 +55,6 @@ import kotlin.math.sin
 
 @Composable
 fun PeriodSphere(
-    onTextPeriodTrackClick: () -> Unit,
     selectedDay: Int,
     fertileDays: List<Int> = buildList { (1..3).forEach { add(it) } },
     ovulationDay: Int? = null,
@@ -115,9 +114,6 @@ fun PeriodSphere(
                 Pair(it.first.toPx() + radius, it.second.toPx() + radius)
             }
         }
-        circlePositions.forEachIndexed { index, it ->
-            println("index $index " + Pair(it.first + radius, it.second + radius))
-        }
     }
 
     val dayIndicatorSizeFloat = radius * 0.3f
@@ -139,7 +135,6 @@ fun PeriodSphere(
                 .height(with(density) { diameter.toDp() })
                 .pointerInput(Unit) {
                     detectTapGestures { offsetClicked ->
-                        println(circlePositions)
                         onArcClicked(offsetClicked, circlePositions, dayIndicatorSizeFloat / 2f)
                     }
                 }
@@ -243,31 +238,6 @@ fun PeriodSphere(
                     fontFamily = FontFamily(Font(R.font.raleway_extrabold)),
                     fontSize = 25.sp,
                     color = primaryColor,
-                    textAlign = TextAlign.Center,
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    modifier = Modifier.clickable(
-                        indication = null,
-                        onClick = onTextPeriodTrackClick,
-                        interactionSource = remember {
-                            MutableInteractionSource()
-                        }
-
-                    ),
-                    text = "Click to track your period\n" + "\u2304",
-                    lineHeight = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.raleway_bolditalic)),
-                    fontSize = 14.sp,
-                    style = TextStyle(
-                        shadow = Shadow(
-                            color = Color.Black,
-                            blurRadius = 1f
-                        )
-                    ),
-                    color = Color(0xFF1822EE),
                     textAlign = TextAlign.Center,
                 )
             }
@@ -398,7 +368,6 @@ fun SpherePreview() {
 
     Flora1Theme {
         PeriodSphere(
-            onTextPeriodTrackClick = { },
             selectedDay = day,
             ovulationDay = 14,
             fertileDays = buildList { (11..15).forEach { add(it) } },

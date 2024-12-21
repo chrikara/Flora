@@ -24,4 +24,6 @@
     <string name="lottie_elegant_woman_test_tag">lottie_elegant_woman_test_tag</string>
     <string name="flora_dialog_test_tag">flora_dialog_test_tag</string>
     <string name="prediction_dialog_test_tag">flora_dialog_test_tag</string>
+    <string name="registration_was_successful">Registration was successful!</string>
+    <string name="login_was_successful">Login was successful!</string>
 </resources>

@@ -25,8 +25,8 @@ class DefaultSharedPreferences(
         sharedPref.edit().putLong(KEY_DATE_OF_BIRTH, dateOfBirth).apply()
     }
 
-    override fun saveUsername(username: String) {
-        sharedPref.edit().putString(KEY_USERNAME, username).apply()
+    override fun saveToken(token: String) {
+        sharedPref.edit().putString(KEY_USERNAME, token).apply()
     }
 
     override fun saveWeight(weight: Float) {
@@ -101,7 +101,7 @@ class DefaultSharedPreferences(
 
 
     override val height: Float get() = sharedPref.getFloat(KEY_HEIGHT, 0f)
-    override val username: String get() = sharedPref.getString(KEY_USERNAME, "") ?: ""
+    override val token: String get() = sharedPref.getString(KEY_USERNAME, "") ?: ""
     override val weight: Float get() = sharedPref.getFloat(KEY_WEIGHT, 0f)
     override val pregnancyStatus: PregnancyStatus
         get() =
@@ -173,7 +173,7 @@ class DefaultSharedPreferences(
     override val dateOfBirth get() = sharedPref.getString(KEY_DATE_OF_BIRTH, "") ?: ""
 
     companion object {
-        private const val KEY_USERNAME = "username"
+        private const val KEY_USERNAME = "token"
         private const val KEY_HEIGHT = "height"
         private const val KEY_WEIGHT = "weight"
         private const val KEY_PREGNANCY_STATUS = "pregnancyStatus"
