@@ -20,9 +20,8 @@ val lightColorScheme = lightColorScheme(
     onBackground = FloraBlack, // Contrast to background
     surface = FloraWhiteBackground, // background on top of actual background, like dialogs
     onSurface = FloraBlack,
-    onSurfaceVariant = FloraGray30,
     surfaceTint = Color(0xFFE4E3E3) // For Calendar surface
-    )
+)
 
 val darkColorScheme = darkColorScheme(
     primary = FloraRed,

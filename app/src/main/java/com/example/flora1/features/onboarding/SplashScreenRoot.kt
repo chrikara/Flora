@@ -46,8 +46,8 @@ fun SplashScreenRoot(
         mutableFloatStateOf(0f)
     }
 
-    var catchyLine by remember {
-        mutableStateOf("")
+    val catchyLine = remember {
+        DEFAULT_FLORA_CATCHY_LINES.random()
     }
     val animateToDp by animateDpAsState(
         targetValue = floraSize,
@@ -76,7 +76,6 @@ fun SplashScreenRoot(
 
     LaunchedEffect(key1 = Unit) {
         floraSize = DEFAULT_FLORA_LOGO_SIZE
-        catchyLine = DEFAULT_FLORA_CATCHY_LINES.random()
     }
 
     Column(

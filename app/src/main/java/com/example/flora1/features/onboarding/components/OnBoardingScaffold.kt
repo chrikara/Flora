@@ -42,6 +42,7 @@ fun OnBoardingScaffold(
     verticalArrangement: Arrangement.Vertical = Arrangement.Center,
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     isNextEnabled: Boolean = true,
+    shouldShowNext: Boolean = true,
     onNextClick: () -> Unit = {},
     isBackEnabled: Boolean = false,
     onBackClick: () -> Unit = {},
@@ -64,14 +65,15 @@ fun OnBoardingScaffold(
         middleContent = middleContent,
         selectedScreen = selectedScreen,
         bottomBar = {
-            OnBoardingButton(
-                modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars))
-                    .fillMaxWidth(),
-                enabled = isNextEnabled,
-                text = buttonText,
-                onClick = onNextClick,
-            )
+            if (shouldShowNext)
+                OnBoardingButton(
+                    modifier = Modifier
+                        .windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars))
+                        .fillMaxWidth(),
+                    enabled = isNextEnabled,
+                    text = buttonText,
+                    onClick = onNextClick,
+                )
         }
     )
 }
