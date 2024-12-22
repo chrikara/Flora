@@ -1,5 +1,6 @@
 package com.example.flora1.core.network
 
+import com.example.flora1.core.network.clients.createHttpClient
 import com.example.flora1.domain.util.DataError
 import com.example.flora1.domain.util.Result
 import io.ktor.client.HttpClient

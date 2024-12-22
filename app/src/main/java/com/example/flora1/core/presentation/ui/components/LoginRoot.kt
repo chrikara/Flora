@@ -83,11 +83,11 @@ private fun ColumnScope.LoginContent(
     val context = LocalContext.current
 
     var username by remember {
-        mutableStateOf("")
+        mutableStateOf("xristos1")
     }
 
     var password by remember {
-        mutableStateOf("")
+        mutableStateOf("123123123")
     }
 
     OutlinedTextField(

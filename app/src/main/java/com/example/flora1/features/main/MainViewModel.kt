@@ -3,8 +3,11 @@ package com.example.flora1.features.main
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.flora1.core.network.clients.WebSocketClient
 import com.example.flora1.data.db.PeriodDatabase
 import com.example.flora1.domain.Preferences
+import com.example.flora1.domain.util.DataError
+import com.example.flora1.domain.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,6 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -20,7 +25,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -30,6 +39,7 @@ import kotlin.math.abs
 class MainViewModel @Inject constructor(
     db: PeriodDatabase,
     private val preferences: Preferences,
+    private val webSocketClient: WebSocketClient,
 ) : ViewModel() {
     private val _selectedDay = MutableStateFlow(LocalDate.now().dayOfMonth)
     val selectedDay: StateFlow<Int> = _selectedDay
@@ -189,6 +199,78 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    private val _isConnectedToSocket = MutableStateFlow(false)
+    val isConnectedToSocket: StateFlow<Boolean> = _isConnectedToSocket
+
+    val latestReceivedMessage =
+        _isConnectedToSocket
+            .flatMapLatest {
+                if (!it)
+                    flow { emit("Pending") }
+                else
+                    webSocketClient.listenToSocket()
+                        .flatMapLatest { result ->
+                            val formattedTime = DateTimeFormatter
+                                .ofPattern("dd-MM-yyyy, hh:mm:ss")
+                                .format(LocalDateTime.now())
+
+                            flow {
+                                emit(
+                                    when (result) {
+                                        is Result.Error -> when (result.error) {
+                                            DataError.Network.SOCKET_ERROR -> "Cannot establish connection"
+                                            else -> "Problem occurred"
+                                        }
+
+                                        is Result.Success -> "Latest WS Msg: ${result.data}, $formattedTime"
+                                    }
+                                )
+                            }
+                        }
+            }
+            .stateIn(
+                viewModelScope, SharingStarted.Lazily, ""
+            )
+
+    fun manageWebSocketConnection() {
+        if (_isConnectedToSocket.value)
+            disconnectFromSocket()
+        else
+            connectToSocket()
+    }
+
+    private fun connectToSocket() {
+        _isConnectedToSocket.value = true
+//        val numParams = 320
+//
+//        val randomData = mapOf(
+//            "params" to List(numParams) { Random.nextFloat() * 1.2f - 0.6f },  // Random floats between -0.6 and 0.6
+//            "num_samples" to 10  // Static integer value
+//        )
+//        val data = TrainingData(
+//            params = List(numParams) { Random.nextFloat() * 1.2f - 0.6f },
+//            numSamples = 10,
+//        )
+//
+//        viewModelScope.launch {
+//            webSocketClient.sendMessage(data)
+//        }
+    }
+
+    private fun disconnectFromSocket() {
+        _isConnectedToSocket.update { false }
+        viewModelScope.launch {
+            webSocketClient.disconnect()
+        }
+    }
 }
 
+@Serializable
+data class TrainingData(
+    @SerialName("params")
+    val params: List<Float>,
 
+    @SerialName("num_samples")
+    val numSamples: Int,
+)

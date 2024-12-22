@@ -121,6 +121,8 @@ dependencies {
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.websockets)
+    implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.mock)
     implementation(libs.logback.classic)
 

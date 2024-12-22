@@ -4,6 +4,9 @@ import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import androidx.room.Room
+import com.example.flora1.core.network.clients.FLWebSocketClient
+import com.example.flora1.core.network.clients.HttpClientFactory
+import com.example.flora1.core.network.clients.WebSocketClient
 import com.example.flora1.data.auth.DefaultLoginService
 import com.example.flora1.data.auth.DefaultRegisterService
 import com.example.flora1.data.auth.LoginService
@@ -53,5 +56,12 @@ object FloraModule {
     @Singleton
     fun providesLoginService(): LoginService =
         DefaultLoginService()
+
+    @Provides
+    @Singleton
+    fun providesWebSocketClient(
+        preferences: Preferences
+    ): WebSocketClient =
+        FLWebSocketClient(preferences = preferences)
 
 }

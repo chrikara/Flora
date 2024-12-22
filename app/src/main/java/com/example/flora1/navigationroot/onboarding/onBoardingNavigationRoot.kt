@@ -28,7 +28,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable(Screen.UsernameAge.name) {
         UsernameAgeRoot(
             onNext = {
-                navController.navigate(Screen.Born.name)
+                navController.navigate(Screen.Main.name)
             }
         )
     }

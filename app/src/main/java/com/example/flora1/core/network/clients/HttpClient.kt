@@ -1,6 +1,8 @@
-package com.example.flora1.core.network
+package com.example.flora1.core.network.clients
 
 import com.example.flora1.BuildConfig
+import com.example.flora1.core.network.Api
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.HttpTimeout
@@ -8,9 +10,11 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 
 fun Api.createHttpClient(
     baseUrl: String,
@@ -20,8 +24,9 @@ fun Api.createHttpClient(
         contentType(contentType)
         url(baseUrl)
     }
+    install(WebSockets)
     install(ContentNegotiation) {
-        json(json)
+        json(com.example.flora1.core.network.json)
     }
     install(HttpTimeout) {
         requestTimeoutMillis = 15000
@@ -42,3 +47,25 @@ fun Api.HttpClient(
             block = clientConfigBlock,
         )
     } ?: HttpClient(block = clientConfigBlock)
+
+object HttpClientFactory {
+
+    fun createForWebSockets(): HttpClient {
+        return HttpClient(CIO) {
+            install(WebSockets)
+            install(ContentNegotiation) {
+                json(
+                    json = Json {
+                        ignoreUnknownKeys = true
+                    }
+                )
+            }
+            install(Logging) {
+                level = LogLevel.ALL
+            }
+            defaultRequest {
+                contentType(ContentType.Application.Json)
+            }
+        }
+    }
+}
