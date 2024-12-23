@@ -41,7 +41,7 @@ import com.example.flora1.features.main.components.PeriodSphere
 @Composable
 fun MainRoot(
     onCalendarClick: () -> Unit,
-    onSettingsClick: () -> Unit,
+    onProfileClick: () -> Unit,
     viewModel: MainViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -92,7 +92,7 @@ fun MainRoot(
                     modifier = Modifier
                         .size(size)
                         .clip(CircleShape)
-                        .clickable(onClick = onSettingsClick)
+                        .clickable(onClick = onProfileClick)
                         .padding(10.dp),
                     imageVector = Icons.Filled.Settings,
                     contentDescription = "",

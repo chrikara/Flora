@@ -46,6 +46,7 @@ class MainViewModel @Inject constructor(
 
     private val _shouldShowPredictionDialog =
         MutableStateFlow(preferences.shouldShowPredictionDialog)
+
     val shouldShowPredictionDialog: StateFlow<Boolean> = _shouldShowPredictionDialog
         .onEach {
             preferences.saveShouldShowPredictionDialog(it)

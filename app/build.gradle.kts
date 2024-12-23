@@ -78,6 +78,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation(libs.androidx.hilt.navigation.compose.v110)
+    implementation(libs.androidx.navigation.compose)
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("com.airbnb.android:lottie-compose:6.4.1")

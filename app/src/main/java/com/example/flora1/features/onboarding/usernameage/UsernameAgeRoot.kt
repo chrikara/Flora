@@ -48,6 +48,7 @@ fun UsernameAgeRoot(
                 username = username,
                 email = email,
                 password = password,
+                isConsentGranted = isConsentGranted,
             )
         },
         onLoginClicked = { username, password ->

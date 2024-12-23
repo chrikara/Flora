@@ -6,11 +6,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.flora1.data.preferences.shouldShowOnBoarding
 import com.example.flora1.features.onboarding.SplashScreenRoot
 import com.example.flora1.navigationroot.main.mainNavigationRoot
@@ -29,15 +27,15 @@ fun NavigationRoot(
         startDestination = Screen.startDestination,
     ) {
 
-        composable(Screen.Splash.name) {
+        composable<Screen.Splash> {
             SplashScreenRoot(
                 onFinishedAnimation = {
                     navController.popBackStack()
                     navController.navigate(
                         if (context.shouldShowOnBoarding)
-                            Screen.UsernameAge.name
+                            Screen.UsernameAge
                         else
-                            Screen.Main.name
+                            Screen.Main
                     )
                 }
             )

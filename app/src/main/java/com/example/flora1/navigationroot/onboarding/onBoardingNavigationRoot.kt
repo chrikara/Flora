@@ -25,139 +25,139 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     navController: NavController,
 ) {
 
-    composable(Screen.UsernameAge.name) {
+    composable<Screen.UsernameAge> {
         UsernameAgeRoot(
             onNext = {
-                navController.navigate(Screen.Main.name)
+                navController.navigate(Screen.Born)
             }
         )
     }
 
-    composable(Screen.Born.name) {
+    composable<Screen.Born> {
         BornRoot(
             onNext = { isEligibleForFlora ->
                 if (isEligibleForFlora)
-                    navController.navigate(Screen.Height.name)
+                    navController.navigate(Screen.Height)
                 else
-                    navController.navigate(Screen.MinorAge.name)
+                    navController.navigate(Screen.MinorAge)
             }
         )
     }
 
-    composable(Screen.MinorAge.name) {
+    composable<Screen.MinorAge> {
         MinorAgeRoot(onBack = {
             navController.navigateUp()
         })
     }
 
-    composable(Screen.Height.name) {
+    composable<Screen.Height> {
         HeightRoot(
             onNext = {
-                navController.navigate(Screen.Weight.name)
+                navController.navigate(Screen.Weight)
             }
         )
     }
 
-    composable(Screen.Weight.name) {
+    composable<Screen.Weight> {
         WeightRoot(
             onNext = {
-                navController.navigate(Screen.Pregnancy.name)
+                navController.navigate(Screen.Pregnancy)
             }
         )
     }
 
-    composable(Screen.Pregnancy.name) {
+    composable<Screen.Pregnancy> {
         PregnancyRoot(
             onNext = { hasBeenPregnant ->
                 if (hasBeenPregnant)
-                    navController.navigate(Screen.PregnancyStats.name)
+                    navController.navigate(Screen.PregnancyStats)
                 else
-                    navController.navigate(Screen.Race.name)
+                    navController.navigate(Screen.Race)
             }
         )
     }
 
-    composable(Screen.PregnancyStats.name) {
+    composable<Screen.PregnancyStats> {
         PregnancyStatsRoot(
             onNext = {
-                navController.navigate(Screen.Race.name)
+                navController.navigate(Screen.Race)
             },
             onBack = navController::navigateUp,
         )
     }
 
-    composable(Screen.Race.name) {
+    composable<Screen.Race> {
         RaceRoot(
             onNext = {
-                navController.navigate(Screen.MedVits.name)
+                navController.navigate(Screen.MedVits)
             },
         )
     }
 
-    composable(Screen.MedVits.name) {
+    composable<Screen.MedVits> {
         MedVitsRoot(
             onNext = {
-                navController.navigate(Screen.Gynecosurgery.name)
+                navController.navigate(Screen.Gynecosurgery)
             },
         )
     }
 
-    composable(Screen.Gynecosurgery.name) {
+    composable<Screen.Gynecosurgery> {
         GynosurgeryRoot(
             onNext = {
-                navController.navigate(Screen.Contraceptives.name)
+                navController.navigate(Screen.Contraceptives)
             },
         )
     }
 
-    composable(Screen.Contraceptives.name) {
+    composable<Screen.Contraceptives> {
         ContraceptivesRoot(
             onNext = {
-                navController.navigate(Screen.StressLevelTillLastPeriod.name)
+                navController.navigate(Screen.StressLevelTillLastPeriod)
             },
         )
     }
 
-    composable(Screen.StressLevelTillLastPeriod.name) {
+    composable<Screen.StressLevelTillLastPeriod> {
         StressTillLastPeriodRoot(
             onNext = {
-                navController.navigate(Screen.SleepQualityTillLastPeriod.name)
+                navController.navigate(Screen.SleepQualityTillLastPeriod)
             },
         )
     }
 
-    composable(Screen.SleepQualityTillLastPeriod.name) {
+    composable<Screen.SleepQualityTillLastPeriod> {
         SleepQualityTillLastPeriodRoot(
             onNext = {
-                navController.navigate(Screen.AverageCycle.name)
+                navController.navigate(Screen.AverageCycle)
             },
             onBack = navController::navigateUp,
         )
     }
 
-    composable(Screen.AverageCycle.name) {
+    composable<Screen.AverageCycle> {
         AverageCycleRoot(
-            onNext = { navController.navigate(Screen.LastPeriod.name) },
+            onNext = { navController.navigate(Screen.LastPeriod) },
         )
     }
 
-    composable(Screen.LastPeriod.name) {
+    composable<Screen.LastPeriod> {
         LastPeriodRoot(
-            onNext = { navController.navigate(Screen.GetStarted.name) },
+            onNext = { navController.navigate(Screen.GetStarted) },
         )
     }
 
-    composable(Screen.GetStarted.name) {
+    composable<Screen.GetStarted> {
         GetStartedRoot(
             onPrimaryClicked = {
                 /*
                 Will have to test if popBackStack overloads work
                  */
-                navController.popBackStack(Screen.UsernameAge.name, inclusive = true)
-                navController.navigate(Screen.Main.name)
+                navController.popBackStack(Screen.UsernameAge, inclusive = true)
+                navController.navigate(Screen.Main)
             },
             onSecondaryClicked = {
-                navController.popBackStack(Screen.UsernameAge.name, inclusive = false)
+                navController.popBackStack(Screen.UsernameAge, inclusive = false)
             }
         )
     }

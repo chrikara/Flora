@@ -24,6 +24,7 @@ interface Preferences {
     fun saveHasDoneGynecosurgery(hasDoneGynecosurgery: Boolean)
     fun saveGyncosurgeryDescription(description: String)
     fun saveIsBreastfeeding(isBreastfeeding: Boolean)
+    fun saveHasGivenDataConsent(hasGivenDataConsent: Boolean)
     fun saveContraceptiveMethods(contraceptiveMethods: List<ContraceptiveMethod>)
     fun saveStressLevelTillLastPeriod(stressLevel: StressLevelTillLastPeriod)
     fun saveSleepQualityTillLastPeriod(sleepQuality: SleepQuality)
@@ -32,6 +33,7 @@ interface Preferences {
     fun saveShouldShowPredictions(shouldShowPredictions: Boolean)
 
     val token: String
+    val isLoggedIn: Boolean
     val height: Float
     val weight: Float
     val pregnancyStatus: PregnancyStatus
@@ -40,6 +42,7 @@ interface Preferences {
     val totalAbortions: NumericalOptions?
     val race: Race
     val hasTakenMedVits: Boolean
+    val hasGivenDataConsent: Boolean
     val medVitsDescription: String
     val hasDoneGynecosurgery: Boolean
     val gyncosurgeryDescription: String

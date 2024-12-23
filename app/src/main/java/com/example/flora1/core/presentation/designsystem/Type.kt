@@ -105,7 +105,7 @@ val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = Raleway,
         fontWeight = FontWeight.Bold,
-        fontSize = 22.sp,
+        fontSize = 20.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
@@ -125,7 +125,7 @@ val Typography = Typography(
     ),
     headlineLarge = TextStyle(
         fontFamily = Raleway,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.ExtraBold,
         fontSize = 32.sp,
         lineHeight = 40.sp,
         letterSpacing = 0.sp

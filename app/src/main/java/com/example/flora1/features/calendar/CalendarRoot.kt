@@ -1,4 +1,4 @@
-package com.example.flora1.features.onboarding.calendar
+package com.example.flora1.features.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flora1.R
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
-import com.example.flora1.features.onboarding.calendar.ContinuousSelectionHelper.getSelection
+import com.example.flora1.features.calendar.ContinuousSelectionHelper.getSelection
 import com.kizitonwose.calendar.compose.VerticalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
@@ -233,8 +233,7 @@ private fun Day(
                 enabled = day.position == DayPosition.MonthDate && day.date >= today,
                 //            showRipple = false,
                 onClick = { onClick(day) },
-            )
-        ,
+            ),
 //            .backgroundHighlight(
 //                day = day,
 //                today = today,

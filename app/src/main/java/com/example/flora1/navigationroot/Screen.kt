@@ -1,28 +1,75 @@
 package com.example.flora1.navigationroot
 
-sealed class Screen(val name: String) {
+import kotlinx.serialization.Serializable
 
-    data object Splash : Screen("splash")
-    data object UsernameAge : Screen("usernameAge")
-    data object Height : Screen("height")
-    data object Weight : Screen("weight")
-    data object Pregnancy : Screen("pregnancy")
-    data object PregnancyStats : Screen("pregnancyStats")
-    data object Race : Screen("race")
-    data object MedVits : Screen("medvits")
-    data object Gynecosurgery : Screen("gynecosurgery")
-    data object Contraceptives : Screen("contraceptives")
-    data object StressLevelTillLastPeriod : Screen("stressLevelTillLastPeriod")
-    data object SleepQualityTillLastPeriod : Screen("sleepQualityTillLastPeriod")
-    data object Born : Screen("born")
-    data object MinorAge : Screen("minorAge")
-    data object AverageCycle : Screen("averageCycle")
-    data object LastPeriod : Screen("lastPeriod")
-    data object GetStarted : Screen("getStarted")
-    data object Calendar : Screen("calendar")
-    data object Main : Screen("main")
+sealed interface Screen {
+    @Serializable
+    data object Splash : Screen
+
+    @Serializable
+    data object UsernameAge : Screen
+
+    @Serializable
+    data object Height : Screen
+
+    @Serializable
+    data object Weight : Screen
+
+    @Serializable
+    data object Pregnancy : Screen
+
+    @Serializable
+    data object PregnancyStats : Screen
+
+    @Serializable
+    data object Race : Screen
+
+    @Serializable
+    data object MedVits : Screen
+
+    @Serializable
+    data object Gynecosurgery : Screen
+
+    @Serializable
+    data object Contraceptives : Screen
+
+    @Serializable
+    data object StressLevelTillLastPeriod : Screen
+
+    @Serializable
+    data object SleepQualityTillLastPeriod : Screen
+
+    @Serializable
+    data object Born : Screen
+
+    @Serializable
+    data object MinorAge : Screen
+
+    @Serializable
+    data object AverageCycle : Screen
+
+    @Serializable
+    data object LastPeriod : Screen
+
+    @Serializable
+    data object GetStarted : Screen
+
+    @Serializable
+    data object Calendar : Screen
+
+    @Serializable
+    data object Main : Screen
+
+    @Serializable
+    data object Settings : Screen
+
+    @Serializable
+    data object ManageConsent : Screen
+
+    @Serializable
+    data object MyDoctors : Screen
 
     companion object {
-        val startDestination = UsernameAge.name
+        val startDestination = Splash
     }
 }

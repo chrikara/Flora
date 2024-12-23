@@ -26,4 +26,7 @@
     <string name="prediction_dialog_test_tag">flora_dialog_test_tag</string>
     <string name="registration_was_successful">Registration was successful!</string>
     <string name="login_was_successful">Login was successful!</string>
+    <string name="profile">Profile</string>
+    <string name="welcome_christos">Welcome %s</string>
+    <string name="language">Language</string>
 </resources>

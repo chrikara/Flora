@@ -99,6 +99,8 @@ class DefaultSharedPreferences(
         sharedPref.edit().putBoolean(KEY_SHOULD_SHOW_PREDICTIONS, shouldShowPredictions).apply()
     }
 
+    override val isLoggedIn: Boolean
+        get() = token.isNotBlank()
 
     override val height: Float get() = sharedPref.getFloat(KEY_HEIGHT, 0f)
     override val token: String get() = sharedPref.getString(KEY_USERNAME, "") ?: ""
@@ -163,8 +165,16 @@ class DefaultSharedPreferences(
 
     override val hasTakenMedVits: Boolean
         get() = sharedPref.getBoolean(KEY_HAS_TAKEN_MEDVITS, false)
+
     override val medVitsDescription: String
         get() = sharedPref.getString(KEY_MEDVITS_DESCRIPTION, "") ?: ""
+
+    override fun saveHasGivenDataConsent(hasGivenDataConsent: Boolean) {
+        sharedPref.edit().putBoolean(KEY_HAS_GIVEN_DATA_CONSENT, hasGivenDataConsent).apply()
+    }
+
+    override val hasGivenDataConsent: Boolean
+        get() = sharedPref.getBoolean(KEY_HAS_GIVEN_DATA_CONSENT, false)
 
 
     override val isBreastfeeding: Boolean
@@ -182,6 +192,7 @@ class DefaultSharedPreferences(
         private const val KEY_TOTAL_ABORTIONS = "totalAbortions"
         private const val KEY_RACE = "race"
         private const val KEY_HAS_TAKEN_MEDVITS = "hasTakenMedVits"
+        private const val KEY_HAS_GIVEN_DATA_CONSENT = "hasGivenDataConsent"
         private const val KEY_MEDVITS_DESCRIPTION = "medVitsDescription"
         private const val KEY_HAS_DONE_GYNECOSURGERY = "hasDoneGynecosurgery"
         private const val KEY_GYNECOSURGERY_DESCRIPTION = "gynecosurgeryDescription"

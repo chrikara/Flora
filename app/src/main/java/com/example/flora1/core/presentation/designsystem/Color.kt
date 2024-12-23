@@ -16,7 +16,12 @@ val FloraWhite70 = Color(0xB3FFFFFF)
 val FloraWhite30 = Color(0x4DFFFFFF)
 val FloraWhiteBackground = Color(0xFFFAFAFA)
 val FloraDarkGray = Color(0xFF302E2E)
+
+val FloraDarkSurfaceVariant = Color(0xFF2B2C2D)
+val FloraLightSurfaceVariant = Color(0xFF302E2E)
+
 val FloraGray = Color(0xFF949494)
+
 val FloraGray30 = Color(0x4D949494)
 val FloraGray10 = Color(0x1A949494)
 
