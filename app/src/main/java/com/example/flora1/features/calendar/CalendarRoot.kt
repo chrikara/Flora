@@ -39,15 +39,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flora1.R
+import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
+import com.example.flora1.data.db.PeriodEntity
 import com.example.flora1.features.calendar.ContinuousSelectionHelper.getSelection
 import com.kizitonwose.calendar.compose.VerticalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
@@ -67,8 +70,6 @@ import kotlin.LazyThreadSafetyMode.NONE
 
 @Composable
 fun CalendarRoot(modifier: Modifier = Modifier) {
-
-
     Example2Page(
         modifier = Modifier
     )
@@ -83,6 +84,7 @@ private val continuousSelectionColor = Color.LightGray.copy(alpha = 0.3f)
 fun Example2Page(
     modifier: Modifier = Modifier,
     close: () -> Unit = {},
+    periodDates: List<PeriodEntity> = emptyList(),
     dateSelected: (startDate: LocalDate, endDate: LocalDate) -> Unit = { _, _ -> },
 ) {
     val currentMonth = remember { YearMonth.now() }
@@ -110,7 +112,7 @@ fun Example2Page(
                 }
             }
 
-            CalendarTop(
+            TopCalendarBar(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceTint)
                     .padding(5.dp)
@@ -136,7 +138,6 @@ fun Example2Page(
                         Day(
                             value,
                             today = today,
-                            selection = selection,
                         ) { day ->
                             if (day.date == today || day.date.isAfter(today)) {
 
@@ -145,7 +146,6 @@ fun Example2Page(
                                     dateSelection = selection,
                                 )
                             }
-
                         }
 
                 },
@@ -154,7 +154,6 @@ fun Example2Page(
                         modifier = Modifier.verticalCalendarModifier()
                     ) {
                         currentCalendarContent()
-
                     }
                     Spacer(
                         modifier = Modifier
@@ -171,7 +170,7 @@ fun Example2Page(
             )
         }
         if (true)
-            CalendarBottom(
+            EditPeriodButton(
                 modifier = Modifier
                     .wrapContentHeight()
                     .align(Alignment.BottomCenter),
@@ -219,35 +218,28 @@ data class DateSelection(val startDate: LocalDate? = null, val endDate: LocalDat
 private fun Day(
     day: CalendarDay,
     today: LocalDate,
-    selection: DateSelection,
+    isSaved: Boolean = true,
     onClick: (CalendarDay) -> Unit,
 ) {
 //    var textColor = Color.Transparent
+    val dayColor = MaterialTheme.colorScheme.primary
     Box(
         modifier = Modifier
-
-
             .aspectRatio(1f) // This is important for square-sizing!
-            .clip(CircleShape)
+            .drawBehind {
+                if (isSaved)
+                    drawCircle(dayColor, radius = size.height / 3f)
+            }
             .clickable(
                 enabled = day.position == DayPosition.MonthDate && day.date >= today,
-                //            showRipple = false,
                 onClick = { onClick(day) },
             ),
-//            .backgroundHighlight(
-//                day = day,
-//                today = today,
-//                selection = selection,
-//                selectionColor = selectionColor,
-//                continuousSelectionColor = continuousSelectionColor,
-//            ) { textColor = it },
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = day.date.dayOfMonth.toString(),
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onPrimary,
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }
@@ -267,7 +259,7 @@ private fun MonthHeader(calendarMonth: CalendarMonth) {
 }
 
 @Composable
-private fun CalendarTop(
+private fun TopCalendarBar(
     modifier: Modifier = Modifier,
     daysOfWeek: List<DayOfWeek>,
     selection: DateSelection,
@@ -329,7 +321,7 @@ private fun CalendarTop(
 }
 
 @Composable
-private fun CalendarBottom(
+private fun EditPeriodButton(
     modifier: Modifier = Modifier,
     selection: DateSelection,
     save: () -> Unit,
@@ -383,10 +375,12 @@ private fun CalendarBottomDef(
     }
 }
 
-@Preview(heightDp = 800)
+@PreviewLightDark
 @Composable
 private fun Example2Preview() {
-    Example2Page()
+    Flora1Theme {
+        Example2Page()
+    }
 }
 
 object ContinuousSelectionHelper {
@@ -425,3 +419,5 @@ fun DayOfWeek.displayText(uppercase: Boolean = false, narrow: Boolean = false): 
         if (uppercase) value.uppercase(Locale.ENGLISH) else value
     }
 }
+
+
