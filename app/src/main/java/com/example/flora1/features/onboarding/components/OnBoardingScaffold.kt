@@ -58,7 +58,7 @@ fun OnBoardingScaffold(
         horizontalAlignment = horizontalAlignment,
         isNextEnabled = isNextEnabled,
         onNextClick = onNextClick,
-        isBackEnabled = isBackEnabled,
+        isBackEnabled = true,
         onBackClick = onBackClick,
         title = title,
         description = description,

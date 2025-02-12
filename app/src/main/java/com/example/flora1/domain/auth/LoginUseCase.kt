@@ -14,7 +14,7 @@ class LoginUseCase @Inject constructor(
     ) = loginService.login(
         username = username,
         password = password
-    ).map { it.toToken() }
+    ).map(LoginResponse::toToken)
 }
 
 fun LoginResponse.toToken() = accessToken

@@ -4,6 +4,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flora1.core.network.clients.WebSocketClient
+import com.example.flora1.data.auth.DefaultUploadFloatsService
+import com.example.flora1.data.auth.RefreshService
+import com.example.flora1.data.auth.UploadFloatsService
 import com.example.flora1.data.db.PeriodDatabase
 import com.example.flora1.domain.Preferences
 import com.example.flora1.domain.util.DataError
@@ -39,6 +42,8 @@ import kotlin.math.abs
 class MainViewModel @Inject constructor(
     db: PeriodDatabase,
     private val preferences: Preferences,
+    private val refreshService: RefreshService,
+    private val uploadFloatsService: UploadFloatsService,
     private val webSocketClient: WebSocketClient,
 ) : ViewModel() {
     private val _selectedDay = MutableStateFlow(LocalDate.now().dayOfMonth)
@@ -188,7 +193,7 @@ class MainViewModel @Inject constructor(
         circleRadius: Float,
     ) {
         viewModelScope.launch {
-            withContext(Dispatchers.Default) {
+            withContext(Dispatchers.Main) {
                 circlePositions.forEachIndexed { index, position ->
                     if (abs(offsetClicked.x - position.first) < circleRadius * 2f
                         && abs(offsetClicked.y - position.second) < circleRadius * 2f
@@ -208,10 +213,13 @@ class MainViewModel @Inject constructor(
         _isConnectedToSocket
             .flatMapLatest {
                 if (!it)
-                    flow { emit("Pending") }
+                    flow { emit("Pending...") }
                 else
                     webSocketClient.listenToSocket()
                         .flatMapLatest { result ->
+//                            if(preferences.token.isNotEmpty())
+//                                refreshService.refreshToken()
+
                             val formattedTime = DateTimeFormatter
                                 .ofPattern("dd-MM-yyyy, hh:mm:ss")
                                 .format(LocalDateTime.now())
@@ -224,12 +232,16 @@ class MainViewModel @Inject constructor(
                                             else -> "Problem occurred"
                                         }
 
-                                        is Result.Success -> "Latest WS Msg: ${result.data}, $formattedTime"
+                                        is Result.Success -> {
+                                            uploadFloatsService.uploadFloat()
+                                            "Latest WS Msg: ${result.data}, $formattedTime"
+                                        }
                                     }
                                 )
                             }
                         }
             }
+            .flowOn(Dispatchers.IO)
             .stateIn(
                 viewModelScope, SharingStarted.Lazily, ""
             )
@@ -242,21 +254,12 @@ class MainViewModel @Inject constructor(
     }
 
     private fun connectToSocket() {
-        _isConnectedToSocket.value = true
-//        val numParams = 320
-//
-//        val randomData = mapOf(
-//            "params" to List(numParams) { Random.nextFloat() * 1.2f - 0.6f },  // Random floats between -0.6 and 0.6
-//            "num_samples" to 10  // Static integer value
-//        )
-//        val data = TrainingData(
-//            params = List(numParams) { Random.nextFloat() * 1.2f - 0.6f },
-//            numSamples = 10,
-//        )
-//
-//        viewModelScope.launch {
-//            webSocketClient.sendMessage(data)
-//        }
+        viewModelScope.launch {
+            if(preferences.token.isNotEmpty())
+                refreshService.refreshToken()
+            uploadFloatsService.uploadFloat()
+            _isConnectedToSocket.value = true
+        }
     }
 
     private fun disconnectFromSocket() {
@@ -266,12 +269,3 @@ class MainViewModel @Inject constructor(
         }
     }
 }
-
-@Serializable
-data class TrainingData(
-    @SerialName("params")
-    val params: List<Float>,
-
-    @SerialName("num_samples")
-    val numSamples: Int,
-)

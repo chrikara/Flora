@@ -2,7 +2,6 @@ package com.example.flora1.core.network.clients
 
 import com.example.flora1.domain.util.DataError
 import com.example.flora1.domain.util.Result
-import com.example.flora1.features.main.TrainingData
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.websocket.Frame
@@ -22,15 +21,9 @@ import java.net.SocketException
 
 abstract class WebSocketClient {
     abstract val urlString: String
-    abstract val httpClient : HttpClient
+    abstract val httpClient: HttpClient
 
     private var session: WebSocketSession? = null
-
-    suspend fun sendMessage(dict: TrainingData) {
-        val jsonArray = Json.encodeToString(dict)
-
-        session?.send(Frame.Text(jsonArray))
-    }
 
     suspend fun disconnect() {
         session?.close()
@@ -57,9 +50,11 @@ abstract class WebSocketClient {
                     session = null
                     close()
                 }
+            } catch (e: SocketException) {
+                send(Result.Error(DataError.Network.SOCKET_ERROR))
+            } catch (e: Exception) {
+                send(Result.Error(DataError.Network.UNKNOWN))
             }
-            catch (e: SocketException){ send(Result.Error(DataError.Network.SOCKET_ERROR)) }
-            catch (e: Exception){ send(Result.Error(DataError.Network.UNKNOWN)) }
 
             awaitClose {
                 launch(NonCancellable) {

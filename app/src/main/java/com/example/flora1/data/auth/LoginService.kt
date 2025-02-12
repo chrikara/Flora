@@ -4,5 +4,8 @@ import com.example.flora1.domain.util.DataError
 import com.example.flora1.domain.util.Result
 
 interface LoginService {
-    suspend fun login(username: String, password: String): Result<LoginResponse, DataError.Network>
+    suspend fun login(
+        username: String,
+        password: String
+    ): Result<LoginResponse, DataError.Network>
 }

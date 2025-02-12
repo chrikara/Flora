@@ -32,6 +32,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.flora1.R
+import com.example.flora1.core.presentation.designsystem.DisabledAlphaBackground
 import com.example.flora1.core.presentation.ui.toast.showSingleToast
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
 import com.example.flora1.core.presentation.ui.uikit.checkboxes.CheckboxWithTitle
@@ -83,11 +84,11 @@ private fun ColumnScope.LoginContent(
     val context = LocalContext.current
 
     var username by remember {
-        mutableStateOf("xristos1")
+        mutableStateOf("")
     }
 
     var password by remember {
-        mutableStateOf("123123123")
+        mutableStateOf("")
     }
 
     OutlinedTextField(
@@ -329,5 +330,8 @@ private fun PasswordTextField(
 
 @Composable
 private fun ProgressLoginIndicator() {
-    CircularProgressIndicator(modifier = Modifier.size(30.dp))
+    CircularProgressIndicator(
+        modifier = Modifier.size(30.dp),
+        color = MaterialTheme.colorScheme.primary.copy(DisabledAlphaBackground)
+    )
 }

@@ -57,12 +57,12 @@ fun ProfileRoot(
     val state = viewModel.state
     val context = LocalContext.current
 
-    ObserveAsEvents(flow = viewModel.events) {
-        when (it) {
+    ObserveAsEvents(flow = viewModel.events) {event ->
+        when (event) {
             ProfileEvent.NavigateBack -> onBack()
             ProfileEvent.NavigateToManageConsent -> onNavigateToManageConsent()
             ProfileEvent.NavigateToMyDoctors -> onNavigateToMyDoctors()
-            is ProfileEvent.ShowMessage -> context.showSingleToast(it.message)
+            is ProfileEvent.ShowMessage -> context.showSingleToast(event.message)
         }
     }
 
@@ -88,14 +88,27 @@ fun ProfileRoot(
             .padding(horizontal = 20.dp, vertical = 10.dp)
             .statusBarsPadding()
     ) {
-        CloseButton(
-            modifier = Modifier.align(Alignment.End),
-            onClick = { onAction(ProfileAction.OnBackClicked) }
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            CloseButton(
+                onClick = { onAction(ProfileAction.OnBackClicked) }
+            )
+
+            Text(
+                text = "Version: 2025.02.12 (5)",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        }
+
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
+            modifier = Modifier.padding(start = 10.dp),
             text = stringResource(R.string.profile),
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onBackground,
@@ -131,8 +144,8 @@ fun ProfileRoot(
 
 
         PrimaryInfoRowWithSwitch(
-            primaryText = "Enable DidRoom",
-            secondaryText = "Enabling this option triggers machine learning using DidRoom instead.",
+            primaryText = "Enable Total Privacy",
+            secondaryText = "Enabling this option triggers machine learning using Total Privacy instead",
             leadingIconRes = R.drawable.ic_didroom,
             enabled = state.isDidRoomEnabled,
         )

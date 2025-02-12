@@ -136,7 +136,7 @@ fun MainRoot(
                 )
 
             PrimaryButton(
-                text = if (isConnectedToSocket) "Disconnect from Web Socket" else "Connect to Web Socket",
+                text = if (isConnectedToSocket) "Stop Federated Learning" else "Start Federated Learning",
                 onClick = viewModel::manageWebSocketConnection,
             )
         }

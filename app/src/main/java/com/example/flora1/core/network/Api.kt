@@ -45,7 +45,7 @@ suspend inline fun <reified T : Any, reified R> Api.post(
     queryParams: Map<String, String> = emptyMap(),
     multiQueryParams: Map<String, Iterable<String>> = emptyMap(),
     headers: Map<String, String> = emptyMap(),
-    body: T,
+    body: T? = null,
 ): Result<R, DataError.Network> = safeCall {
     httpClient.post(endpoint) {
         setQueryParams(
@@ -53,7 +53,9 @@ suspend inline fun <reified T : Any, reified R> Api.post(
             multiQueryParams = multiQueryParams,
         )
         setHeaders(headers)
-        setBody(body)
+        body?.let {
+            setBody(body)
+        }
     }.body()
 }
 

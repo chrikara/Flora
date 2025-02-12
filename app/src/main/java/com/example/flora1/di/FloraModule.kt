@@ -8,9 +8,13 @@ import com.example.flora1.core.network.clients.FLWebSocketClient
 import com.example.flora1.core.network.clients.HttpClientFactory
 import com.example.flora1.core.network.clients.WebSocketClient
 import com.example.flora1.data.auth.DefaultLoginService
+import com.example.flora1.data.auth.DefaultRefreshService
 import com.example.flora1.data.auth.DefaultRegisterService
+import com.example.flora1.data.auth.DefaultUploadFloatsService
 import com.example.flora1.data.auth.LoginService
+import com.example.flora1.data.auth.RefreshService
 import com.example.flora1.data.auth.RegisterService
+import com.example.flora1.data.auth.UploadFloatsService
 import com.example.flora1.data.db.PeriodDatabase
 import com.example.flora1.data.preferences.DefaultSharedPreferences
 import com.example.flora1.data.preferences.USER_PREFERENCES
@@ -56,6 +60,20 @@ object FloraModule {
     @Singleton
     fun providesLoginService(): LoginService =
         DefaultLoginService()
+
+    @Provides
+    @Singleton
+    fun providesRefreshService(
+        preferences: Preferences,
+    ): RefreshService =
+        DefaultRefreshService(preferences = preferences)
+
+    @Provides
+    @Singleton
+    fun providesUploadFloatsService(
+        preferences: Preferences,
+    ): UploadFloatsService =
+        DefaultUploadFloatsService(preferences = preferences)
 
     @Provides
     @Singleton

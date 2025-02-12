@@ -6,13 +6,15 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,9 +31,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flora1.R
+import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.designsystem.getPrimaryLinearBrush
 
 @Composable
@@ -78,32 +82,47 @@ fun SplashScreenRoot(
         floraSize = DEFAULT_FLORA_LOGO_SIZE
     }
 
-    Column(
-        modifier =
-        Modifier
+    Box(
+        modifier = Modifier
             .fillMaxSize()
             .background(brush = getPrimaryLinearBrush())
-            .padding(horizontal = 20.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(horizontal = 20.dp)
+            .safeDrawingPadding(),
+        contentAlignment = Alignment.Center,
     ) {
-        Image(
-            modifier = Modifier.size(animateToDp),
-            painter = painterResource(id = R.drawable.flora_logo_new),
-            contentDescription = ""
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
         Text(
-            modifier = Modifier.alpha(alphaAsAnimation),
-            text = catchyLine,
-            fontFamily = FontFamily(Font(R.font.raleway_regular)),
-            fontSize = 24.sp,
-            color = Color.White,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 20.dp),
+            text = "This version of FLORA app is dedicated solely to testing its user interface." +
+                    " No data will be stored or shared outside your device, and no machine learning" +
+                    " features are enabled.",
             textAlign = TextAlign.Center,
+            color = Color.White,
+            style = MaterialTheme.typography.bodyLarge,
         )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Image(
+                modifier = Modifier.size(animateToDp),
+                painter = painterResource(id = R.drawable.flora_logo_new),
+                contentDescription = ""
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                modifier = Modifier.alpha(alphaAsAnimation),
+                text = catchyLine,
+                fontFamily = FontFamily(Font(R.font.raleway_regular)),
+                fontSize = 24.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
+
 }
 
 private const val DEFAULT_FLORA_LOGO_DURATION_ANIMATION = 1000
@@ -122,3 +141,13 @@ private val DEFAULT_FLORA_CATCHY_LINES = listOf(
     "Your Privacy, Our Priority: Flora Period Tracker",
     "Flora: Where Privacy Meets Precision in Period Tracking"
 )
+
+@Preview(
+    showBackground = true,
+)
+@Composable
+private fun Preview1() {
+    Flora1Theme {
+        SplashScreenRoot {}
+    }
+}

@@ -21,8 +21,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import java.time.LocalDate
+import java.util.GregorianCalendar
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -69,11 +72,9 @@ fun PeriodSphere(
     val density = LocalDensity.current
 
 
-    var circlePositions: List<Pair<Float, Float>> = emptyList()
-    val currentDate = remember {
-        LocalDate.now()
+    val currentDate by remember {
+        mutableStateOf(LocalDate.now())
     }
-
 
     /*
     I can find a better solution for getting the screen's width
@@ -95,23 +96,28 @@ fun PeriodSphere(
     val offsetFactor = 0.2f // Adjust this factor to change the offset
 
     val offset = radius * offsetFactor
-    LaunchedEffect(key1 = Unit) {
+    val gregorianCalendar = remember {
+        GregorianCalendar()
+    }
 
-        circlePositions = buildList {
-            (1..currentDate.month.maxLength()).forEach {
-                add(
-                    calculateCirclePosition(
-                        day = it,
-                        totalDays = 30,
-                        totalSweep = totalSweep,
-                        radius = radius - offset,
-                        density = density,
+    val circlePositions by remember {
+        derivedStateOf {
+            buildList {
+                (1..currentDate.month.length(gregorianCalendar.isLeapYear(currentDate.year))).forEach {
+                    add(
+                        calculateCirclePosition(
+                            day = it,
+                            totalDays = 30,
+                            totalSweep = totalSweep,
+                            radius = radius - offset,
+                            density = density,
+                        )
                     )
-                )
-            }
-        }.map {
-            with(density) {
-                Pair(it.first.toPx() + radius, it.second.toPx() + radius)
+                }
+            }.map {
+                with(density) {
+                    Pair(it.first.toPx() + radius, it.second.toPx() + radius)
+                }
             }
         }
     }
@@ -134,6 +140,7 @@ fun PeriodSphere(
                 .fillMaxWidth()
                 .height(with(density) { diameter.toDp() })
                 .pointerInput(Unit) {
+                    println("mpike3" + circlePositions)
                     detectTapGestures { offsetClicked ->
                         onArcClicked(offsetClicked, circlePositions, dayIndicatorSizeFloat / 2f)
                     }
