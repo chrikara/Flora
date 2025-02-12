@@ -18,6 +18,7 @@ import com.example.flora1.data.db.PeriodDatabase
 import com.example.flora1.data.preferences.DefaultSharedPreferences
 import com.example.flora1.data.preferences.USER_PREFERENCES
 import com.example.flora1.domain.Preferences
+import com.example.flora1.domain.db.DeletePeriodUseCase
 import com.example.flora1.domain.db.GetAllPeriodsUseCase
 import com.example.flora1.domain.db.GetPeriodsForMonthUseCase
 import com.example.flora1.domain.db.SavePeriodUseCase
@@ -105,5 +106,13 @@ object FloraModule {
         db: PeriodDatabase,
     ): SavePeriodUseCase =
         SavePeriodUseCase(db)
+
+    @Provides
+    @Singleton
+    fun providesDeleteUseCase(
+        db: PeriodDatabase,
+    ): DeletePeriodUseCase =
+        DeletePeriodUseCase(db)
+
 
 }

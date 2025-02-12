@@ -28,7 +28,9 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
         enterTransition = { enterToRight() },
         exitTransition = { exitFromRight() },
     ) {
-        CalendarRoot()
+        CalendarRoot(
+            onNavigateBack = navController::popBackStack,
+        )
     }
 
     composable<Screen.Settings>(

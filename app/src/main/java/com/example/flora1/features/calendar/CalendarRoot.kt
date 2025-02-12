@@ -1,16 +1,18 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.flora1.features.calendar
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,26 +24,28 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material.ripple.RippleAlpha
+import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -49,11 +53,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
+import com.example.flora1.core.presentation.ui.modifier.shadow
+import com.example.flora1.core.presentation.ui.observers.ObserveAsEvents
+import com.example.flora1.core.presentation.ui.uikit.buttons.CircleCloseButton
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
 import com.example.flora1.domain.db.model.Period
-import com.example.flora1.features.calendar.ContinuousSelectionHelper.getSelection
 import com.kizitonwose.calendar.compose.VerticalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
@@ -67,18 +72,34 @@ import java.time.Month
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
+import java.util.HashSet
 import java.util.Locale
 import kotlin.LazyThreadSafetyMode.NONE
 
 @Composable
 fun CalendarRoot(
     viewModel: CalendarViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit,
 ) {
     val periods by viewModel.periods.collectAsStateWithLifecycle()
+    val temporarySelectedPeriodDates by viewModel.temporarySelectedPeriodDates.collectAsStateWithLifecycle()
+    val isEditing by viewModel.isEditing.collectAsStateWithLifecycle()
 
-    println(periods)
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            CalendarEvent.NavigateBack -> onNavigateBack()
+        }
+    }
+
     CalendarRoot(
-        periods = periods,
+        periodDates = periods,
+        onCloseClick = viewModel::close,
+        temporarySelectedPeriodDates = temporarySelectedPeriodDates,
+        isEditing = isEditing,
+        onEditClicked = viewModel::edit,
+        onCancelClicked = viewModel::cancel,
+        onTemporaryPeriodDateClicked = viewModel::onTemporaryPeriodSelected,
+        onSaveClicked = viewModel::save,
     )
 }
 
@@ -90,22 +111,21 @@ private val continuousSelectionColor = Color.LightGray.copy(alpha = 0.3f)
 @Composable
 fun CalendarRoot(
     modifier: Modifier = Modifier,
-    close: () -> Unit = {},
-    periods: Set<Period> = emptySet(),
-    dateSelected: (startDate: LocalDate, endDate: LocalDate) -> Unit = { _, _ -> },
+    onCloseClick: () -> Unit = {},
+    onEditClicked: () -> Unit = {},
+    onCancelClicked: () -> Unit = {},
+    onSaveClicked: () -> Unit = {},
+    periodDates: Set<Period> = emptySet(),
+    temporarySelectedPeriodDates: Set<Period> = emptySet(),
+    isEditing: Boolean = false,
+    onTemporaryPeriodDateClicked : (Period) -> Unit = {},
 ) {
     val currentMonth = remember { YearMonth.now() }
+    val horizontalPadding = remember { 7.dp }
     val startMonth = remember { YearMonth.of(2022, 12) }
     val scope = rememberCoroutineScope()
     val endMonth = remember { currentMonth.plusYears(2) }
-    val today = remember { LocalDate.now() }
-    var selection by remember { mutableStateOf(DateSelection()) }
     val daysOfWeek = remember { daysOfWeek() }
-    val periodDates = remember(periods) {
-        println("mpike2 $periods")
-        periods.map(Period::date)
-    }
-
 
     Box(
         modifier = modifier
@@ -127,11 +147,10 @@ fun CalendarRoot(
             TopCalendarBar(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceTint)
-                    .padding(5.dp)
+                    .padding(horizontal = horizontalPadding)
                     .statusBarsPadding(),
                 daysOfWeek = daysOfWeek,
-                selection = selection,
-                close = close,
+                onCloseClick = onCloseClick,
                 todayClicked = {
                     scope.launch {
                         state.animateScrollToMonth(currentMonth)
@@ -142,25 +161,30 @@ fun CalendarRoot(
             VerticalCalendar(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceTint)
-                    .padding(5.dp),
+                    .padding(horizontal = horizontalPadding)
+                    .animateContentSize(),
                 state = state,
                 contentPadding = PaddingValues(bottom = 100.dp),
                 dayContent = { value ->
                     if (value.position == DayPosition.MonthDate)
-                        Day(
-                            value,
-                            today = today,
-                            isSaved = value.date in periodDates,
-                        ) { day ->
-                            if (day.date == today || day.date.isAfter(today)) {
-
-                                selection = getSelection(
-                                    clickedDate = day.date,
-                                    dateSelection = selection,
-                                )
-                            }
+                        if (!isEditing)
+                            NonEditingDay(
+                                value,
+                                isSaved = value.date in periodDates.mapTo(HashSet<LocalDate>()){
+                                    it.date
+                                },
+                            )
+                        else{
+                            EditingDay(
+                                day = value,
+                                isSaved = value.date in temporarySelectedPeriodDates.mapTo(HashSet<LocalDate>()){
+                                    it.date
+                                },
+                                onClick = {
+                                    onTemporaryPeriodDateClicked(Period(date = it.date))
+                                }
+                            )
                         }
-
                 },
                 monthContainer = { monthDisplayed, currentCalendarContent ->
                     Column(
@@ -182,19 +206,62 @@ fun CalendarRoot(
                 },
             )
         }
-        if (true)
+        if (!isEditing) {
             EditPeriodButton(
                 modifier = Modifier
                     .wrapContentHeight()
                     .align(Alignment.BottomCenter),
-                selection = selection,
-                save = {
-                    val (startDate, endDate) = selection
-                    if (startDate != null && endDate != null) {
-                        dateSelected(startDate, endDate)
-                    }
-                },
+                onEditClicked = onEditClicked,
             )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        color = MaterialTheme.colorScheme.surface,
+
+                        blurRadius = 10.dp,
+                    )
+                    .align(Alignment.BottomCenter)
+
+                    .navigationBarsPadding(),
+            ) {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = horizontalPadding + horizontalPadding)
+                        .padding(vertical = 30.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(percent = 50))
+                            .clickable(onClick = onCancelClicked)
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        text = "Cancel",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(percent = 50))
+                            .clickable(onClick = {
+                                onSaveClicked()
+                            })
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        text = "Save",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
     }
 
 }
@@ -228,23 +295,19 @@ data class DateSelection(val startDate: LocalDate? = null, val endDate: LocalDat
 
 
 @Composable
-private fun Day(
+private fun NonEditingDay(
     day: CalendarDay,
-    today: LocalDate,
     isSaved: Boolean = true,
-    onClick: (CalendarDay) -> Unit,
+    onClick: (CalendarDay) -> Unit = {},
 ) {
-//    var textColor = Color.Transparent
-    val dayColor = MaterialTheme.colorScheme.primary
+
     Box(
         modifier = Modifier
             .aspectRatio(1f) // This is important for square-sizing!
-            .drawBehind {
-                if (isSaved)
-                    drawCircle(dayColor, radius = size.height / 3f)
-            }
+            .padding(10.dp)
+            .clip(CircleShape)
+            .background(if (isSaved) MaterialTheme.colorScheme.primary else Color.Transparent)
             .clickable(
-                enabled = day.position == DayPosition.MonthDate && day.date >= today,
                 onClick = { onClick(day) },
             ),
         contentAlignment = Alignment.Center,
@@ -258,6 +321,70 @@ private fun Day(
             style = MaterialTheme.typography.bodyMedium,
         )
     }
+}
+
+@Composable
+private fun EditingDay(
+    day: CalendarDay,
+    isSaved: Boolean = true,
+    onClick: (CalendarDay) -> Unit = {},
+) {
+
+    CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
+        Box(
+            modifier = Modifier
+                .aspectRatio(1f) // This is important for square-sizing!
+                .padding(8.dp)
+                .clip(CircleShape)
+                .clickable(
+                    onClick = { onClick(day) },
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = day.date.dayOfMonth.toString(),
+                    color = if (isSaved)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+                Box(
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .border(
+                            width = 1.dp,
+                            color = if (isSaved)
+                                Color.Transparent
+                            else
+                                MaterialTheme.colorScheme.onBackground,
+                            shape = CircleShape
+                        )
+                        .clip(CircleShape)
+                        .background(
+                            if (isSaved)
+                                MaterialTheme.colorScheme.primary
+                            else
+                                Color.Transparent
+                        )
+                        .padding(3.dp)
+                ) {
+                    if (isSaved)
+                        Icon(
+                            tint = MaterialTheme.colorScheme.background,
+                            imageVector = Icons.Default.Check,
+                            contentDescription = ""
+                        )
+                }
+            }
+
+        }
+    }
+
 }
 
 @Composable
@@ -278,59 +405,49 @@ private fun MonthHeader(calendarMonth: CalendarMonth) {
 private fun TopCalendarBar(
     modifier: Modifier = Modifier,
     daysOfWeek: List<DayOfWeek>,
-    selection: DateSelection,
     shouldShowTodayText: Boolean,
-    close: () -> Unit,
+    onCloseClick: () -> Unit,
     todayClicked: () -> Unit,
 ) {
-    Column(modifier.fillMaxWidth()) {
-        Column(
+    Column(
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            CircleCloseButton(
+                onClick = onCloseClick,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            if (shouldShowTodayText)
+                Text(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(percent = 50))
+                        .clickable(onClick = todayClicked)
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    text = "Today",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.End,
+                )
+        }
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 6.dp, bottom = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+                .padding(top = 14.dp),
         ) {
-            Row(
-                modifier = Modifier.height(IntrinsicSize.Max),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .aspectRatio(1f)
-                        .clip(CircleShape)
-                        .clickable(onClick = close)
-                        .padding(12.dp),
-                    painter = painterResource(id = R.drawable.eye_closed),
-                    contentDescription = "Close",
+            for (dayOfWeek in daysOfWeek) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    text = dayOfWeek.displayText(),
+                    fontSize = 15.sp,
                 )
-                Spacer(modifier = Modifier.weight(1f))
-                if (shouldShowTodayText)
-                    Text(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(percent = 50))
-                            .clickable(onClick = todayClicked)
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        text = "Today",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.End,
-                    )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp),
-            ) {
-                for (dayOfWeek in daysOfWeek) {
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        text = dayOfWeek.displayText(),
-                        fontSize = 15.sp,
-                    )
-                }
             }
         }
     }
@@ -339,8 +456,7 @@ private fun TopCalendarBar(
 @Composable
 private fun EditPeriodButton(
     modifier: Modifier = Modifier,
-    selection: DateSelection,
-    save: () -> Unit,
+    onEditClicked: () -> Unit,
 ) {
     PrimaryButton(
         modifier =
@@ -350,7 +466,7 @@ private fun EditPeriodButton(
         paddingValues = PaddingValues(horizontal = 24.dp),
         shape = RoundedCornerShape(20.dp),
         text = "Edit Period",
-        onClick = { /*TODO*/ },
+        onClick = onEditClicked,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Edit,
@@ -403,11 +519,12 @@ private fun Example2Preview() {
                 now.year, now.month, it + 5
             )
         )
+
     }
 
     Flora1Theme {
         CalendarRoot(
-            periods = dates.toSet(),
+            periodDates = dates.toSet(),
         )
     }
 }
@@ -447,6 +564,14 @@ fun DayOfWeek.displayText(uppercase: Boolean = false, narrow: Boolean = false): 
     return getDisplayName(style, Locale.ENGLISH).let { value ->
         if (uppercase) value.uppercase(Locale.ENGLISH) else value
     }
+}
+
+private object NoRippleTheme : RippleTheme {
+    @Composable
+    override fun defaultColor() = Color.Unspecified
+
+    @Composable
+    override fun rippleAlpha(): RippleAlpha = RippleAlpha(0.0F, 0.0F, 0.0f, 0.0F)
 }
 
 

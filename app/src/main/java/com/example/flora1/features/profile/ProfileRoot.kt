@@ -44,7 +44,7 @@ import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.designsystem.getPrimaryHorizontalBrush
 import com.example.flora1.core.presentation.ui.observers.ObserveAsEvents
 import com.example.flora1.core.presentation.ui.toast.showSingleToast
-import com.example.flora1.core.presentation.ui.uikit.buttons.CloseButton
+import com.example.flora1.core.presentation.ui.uikit.buttons.CircleCloseButton
 import com.example.flora1.features.profile.consent.ProfileEvent
 
 @Composable
@@ -93,7 +93,7 @@ fun ProfileRoot(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            CloseButton(
+            CircleCloseButton(
                 onClick = { onAction(ProfileAction.OnBackClicked) }
             )
 

@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.flora1.R
+import com.example.flora1.core.presentation.ui.uikit.buttons.CloseButton
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -139,17 +140,9 @@ private fun BottomSheetTitleWithCloseButton(
             overflow = TextOverflow.Ellipsis,
         )
 
-        Icon(
-            modifier = modifier
-                .testTag(tag = stringResource(id = R.string.close_icon_test_tag))
-                .size(size = 26.dp)
-                .clickable(
-                    enabled = true,
-                    onClick = onCloseButtonClicked,
-                ),
-            imageVector = Icons.Default.Close,
-            contentDescription = "",
-            tint = iconTint,
+        CloseButton(
+            iconTint = iconTint,
+            onCloseButtonClicked = onCloseButtonClicked
         )
     }
 }

@@ -12,6 +12,8 @@ class GetAllPeriodsUseCase(
 ) {
     fun getAllPeriods(): Flow<Set<Period>> =
         db.dao().getAllPeriodLogs().map { entities ->
-            entities.map(PeriodEntity::toPeriod).toSet()
+            entities
+                .map(PeriodEntity::toPeriod)
+                .toSet()
         }
 }

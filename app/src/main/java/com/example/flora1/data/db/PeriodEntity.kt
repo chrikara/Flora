@@ -17,11 +17,13 @@ data class PeriodEntity(
 
 fun PeriodEntity.toPeriod() =
     Period(
+        id = id,
         date = LocalDate.of(year, month, day)
     )
 
 fun Period.toPeriodEntity() =
     PeriodEntity(
+        id = id,
         flow = "heavy",
         month = date.monthValue,
         day = date.dayOfMonth,
