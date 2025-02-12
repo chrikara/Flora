@@ -47,10 +47,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
-import com.example.flora1.data.db.PeriodEntity
+import com.example.flora1.domain.db.model.Period
 import com.example.flora1.features.calendar.ContinuousSelectionHelper.getSelection
 import com.kizitonwose.calendar.compose.VerticalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
@@ -69,9 +71,14 @@ import java.util.Locale
 import kotlin.LazyThreadSafetyMode.NONE
 
 @Composable
-fun CalendarRoot(modifier: Modifier = Modifier) {
-    Example2Page(
-        modifier = Modifier
+fun CalendarRoot(
+    viewModel: CalendarViewModel = hiltViewModel(),
+) {
+    val periods by viewModel.periods.collectAsStateWithLifecycle()
+
+    println(periods)
+    CalendarRoot(
+        periods = periods,
     )
 }
 
@@ -81,10 +88,10 @@ private val selectionColor = primaryColor
 private val continuousSelectionColor = Color.LightGray.copy(alpha = 0.3f)
 
 @Composable
-fun Example2Page(
+fun CalendarRoot(
     modifier: Modifier = Modifier,
     close: () -> Unit = {},
-    periodDates: List<PeriodEntity> = emptyList(),
+    periods: Set<Period> = emptySet(),
     dateSelected: (startDate: LocalDate, endDate: LocalDate) -> Unit = { _, _ -> },
 ) {
     val currentMonth = remember { YearMonth.now() }
@@ -94,6 +101,11 @@ fun Example2Page(
     val today = remember { LocalDate.now() }
     var selection by remember { mutableStateOf(DateSelection()) }
     val daysOfWeek = remember { daysOfWeek() }
+    val periodDates = remember(periods) {
+        println("mpike2 $periods")
+        periods.map(Period::date)
+    }
+
 
     Box(
         modifier = modifier
@@ -138,6 +150,7 @@ fun Example2Page(
                         Day(
                             value,
                             today = today,
+                            isSaved = value.date in periodDates,
                         ) { day ->
                             if (day.date == today || day.date.isAfter(today)) {
 
@@ -238,7 +251,10 @@ private fun Day(
     ) {
         Text(
             text = day.date.dayOfMonth.toString(),
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = if (isSaved)
+                MaterialTheme.colorScheme.onPrimary
+            else
+                MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodyMedium,
         )
     }
@@ -378,8 +394,21 @@ private fun CalendarBottomDef(
 @PreviewLightDark
 @Composable
 private fun Example2Preview() {
+    val now = remember {
+        LocalDate.now()
+    }
+    val dates = List(10) {
+        Period(
+            date = LocalDate.of(
+                now.year, now.month, it + 5
+            )
+        )
+    }
+
     Flora1Theme {
-        Example2Page()
+        CalendarRoot(
+            periods = dates.toSet(),
+        )
     }
 }
 

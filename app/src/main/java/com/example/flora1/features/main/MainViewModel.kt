@@ -4,11 +4,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flora1.core.network.clients.WebSocketClient
-import com.example.flora1.data.auth.DefaultUploadFloatsService
 import com.example.flora1.data.auth.RefreshService
 import com.example.flora1.data.auth.UploadFloatsService
-import com.example.flora1.data.db.PeriodDatabase
 import com.example.flora1.domain.Preferences
+import com.example.flora1.domain.db.GetPeriodsForMonthUseCase
+import com.example.flora1.domain.db.SavePeriodUseCase
 import com.example.flora1.domain.util.DataError
 import com.example.flora1.domain.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,8 +28,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -40,7 +38,8 @@ import kotlin.math.abs
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    db: PeriodDatabase,
+    private val getPeriodsForMonthUseCase: GetPeriodsForMonthUseCase,
+    private val savePeriodUseCase: SavePeriodUseCase,
     private val preferences: Preferences,
     private val refreshService: RefreshService,
     private val uploadFloatsService: UploadFloatsService,
@@ -82,22 +81,22 @@ class MainViewModel @Inject constructor(
     }
 
 
-    val periodDaysForCurrentMonth = db.dao()
-        .run {
+    val periodDaysForCurrentMonth =
+        run {
             val localDate = LocalDate.now()
-            getPeriodLogsForMonth(localDate.monthValue, localDate.year)
+            getPeriodsForMonthUseCase.getPeriodsForMonth(localDate.monthValue, localDate.year)
         }
-        .map { fetchedCurrentMonthPeriodLogs ->
-            fetchedCurrentMonthPeriodLogs.map {
-                it.day
+            .map { fetchedCurrentMonthPeriodLogs ->
+                fetchedCurrentMonthPeriodLogs.map {
+                    it.date.dayOfMonth
+                }
             }
-        }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = emptyList()
-        )
+            .flowOn(Dispatchers.IO)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily,
+                initialValue = emptyList()
+            )
 
     val fertileDays = periodDaysForCurrentMonth.mapLatest { periodDays ->
         val daysOfMonth = LocalDate.now().month.maxLength()
@@ -255,7 +254,7 @@ class MainViewModel @Inject constructor(
 
     private fun connectToSocket() {
         viewModelScope.launch {
-            if(preferences.token.isNotEmpty())
+            if (preferences.token.isNotEmpty())
                 refreshService.refreshToken()
             uploadFloatsService.uploadFloat()
             _isConnectedToSocket.value = true

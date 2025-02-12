@@ -5,23 +5,22 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
-import java.time.YearMonth
 
 @Dao
 interface PeriodDao {
 
 
     @Upsert
-    suspend fun savePeriodEntry(food : PeriodEntity)
+    suspend fun savePeriodEntry(period: PeriodEntity)
 
     @Delete
-    suspend fun deletePeriodEntry(food : PeriodEntity)
+    suspend fun deletePeriodEntry(period: PeriodEntity)
 
     @Query("SELECT * FROM period")
-    fun getAllPeriodLogs() : Flow<List<PeriodEntity>>
+    fun getAllPeriodLogs(): Flow<List<PeriodEntity>>
 
     @Query("SELECT * FROM period WHERE id = :id")
-    fun getPeriodLogById(id : Int) : Flow<PeriodEntity>
+    fun getPeriodLogById(id: Int): Flow<PeriodEntity>
 
     @Query("SELECT * FROM period WHERE month = :specifiedMonth AND year = :specifiedYear ORDER BY day ASC")
     fun getPeriodLogsForMonth(specifiedMonth: Int, specifiedYear: Int): Flow<List<PeriodEntity>>

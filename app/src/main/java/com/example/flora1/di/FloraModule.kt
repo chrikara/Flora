@@ -5,7 +5,6 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import androidx.room.Room
 import com.example.flora1.core.network.clients.FLWebSocketClient
-import com.example.flora1.core.network.clients.HttpClientFactory
 import com.example.flora1.core.network.clients.WebSocketClient
 import com.example.flora1.data.auth.DefaultLoginService
 import com.example.flora1.data.auth.DefaultRefreshService
@@ -19,6 +18,9 @@ import com.example.flora1.data.db.PeriodDatabase
 import com.example.flora1.data.preferences.DefaultSharedPreferences
 import com.example.flora1.data.preferences.USER_PREFERENCES
 import com.example.flora1.domain.Preferences
+import com.example.flora1.domain.db.GetAllPeriodsUseCase
+import com.example.flora1.domain.db.GetPeriodsForMonthUseCase
+import com.example.flora1.domain.db.SavePeriodUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -81,5 +83,27 @@ object FloraModule {
         preferences: Preferences
     ): WebSocketClient =
         FLWebSocketClient(preferences = preferences)
+
+
+    @Provides
+    @Singleton
+    fun providesGetPeriodsForMonthUseCase(
+        db: PeriodDatabase,
+    ): GetAllPeriodsUseCase =
+        GetAllPeriodsUseCase(db)
+
+    @Provides
+    @Singleton
+    fun providesGetAllPeriodsUseCase(
+        db: PeriodDatabase,
+    ): GetPeriodsForMonthUseCase =
+        GetPeriodsForMonthUseCase(db)
+
+    @Provides
+    @Singleton
+    fun providesSaveUseCase(
+        db: PeriodDatabase,
+    ): SavePeriodUseCase =
+        SavePeriodUseCase(db)
 
 }
