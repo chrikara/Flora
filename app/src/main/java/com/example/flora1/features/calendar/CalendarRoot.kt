@@ -2,7 +2,11 @@
 
 package com.example.flora1.features.calendar
 
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -54,11 +58,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
-import com.example.flora1.core.presentation.ui.modifier.shadow
 import com.example.flora1.core.presentation.ui.observers.ObserveAsEvents
 import com.example.flora1.core.presentation.ui.uikit.buttons.CircleCloseButton
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
 import com.example.flora1.domain.db.model.Period
+import com.example.flora1.features.calendar.CalendarDefaults.horizontalPadding
 import com.kizitonwose.calendar.compose.VerticalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
@@ -120,7 +124,6 @@ fun CalendarRoot(
     onTemporaryPeriodDateClicked: (Period) -> Unit = {},
 ) {
     val currentMonth = remember { YearMonth.now() }
-    val horizontalPadding = remember { 7.dp }
     val startMonth = remember { YearMonth.of(2022, 12) }
     val scope = rememberCoroutineScope()
     val endMonth = remember { currentMonth.plusYears(2) }
@@ -163,8 +166,7 @@ fun CalendarRoot(
             VerticalCalendar(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceTint)
-                    .padding(horizontal = horizontalPadding)
-                    .animateContentSize(),
+                    .padding(horizontal = 5.dp),
                 state = state,
                 contentPadding = PaddingValues(bottom = 100.dp),
                 dayContent = { value ->
@@ -210,60 +212,81 @@ fun CalendarRoot(
                 },
             )
         }
-        if (!isEditing) {
+        if(!isEditing)
             EditPeriodButton(
                 modifier = Modifier
                     .wrapContentHeight()
                     .align(Alignment.BottomCenter),
                 onEditClicked = onEditClicked,
             )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-                    .align(Alignment.BottomCenter)
 
-                    .navigationBarsPadding(),
-            ) {
-                HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth()
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            visible = isEditing,
+            enter = slideInVertically(
+                animationSpec = spring(
+                    dampingRatio = 0.4f,
+                    stiffness = Spring.StiffnessLow
                 )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = horizontalPadding + horizontalPadding)
-                        .padding(vertical = 30.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(percent = 50))
-                            .clickable(onClick = onCancelClicked)
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        text = "Cancel",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-
-                    Text(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(percent = 50))
-                            .clickable(onClick = {
-                                onSaveClicked()
-                            })
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        text = "Save",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
+            ) { it },
+            exit = slideOutVertically { it },
+        ) {
+            BottomEditBar(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                onCancelClicked = onCancelClicked,
+                onSaveClicked = onSaveClicked,
+            )
         }
     }
+}
 
+@Composable
+fun BottomEditBar(
+    modifier: Modifier = Modifier,
+    onCancelClicked: () -> Unit,
+    onSaveClicked: () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface)
+            .navigationBarsPadding(),
+    ) {
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = horizontalPadding + horizontalPadding)
+                .padding(vertical = 30.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(percent = 50))
+                    .clickable(onClick = onCancelClicked)
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                text = "Cancel",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Text(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(percent = 50))
+                    .clickable(onClick = {
+                        onSaveClicked()
+                    })
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                text = "Save",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
 }
 
 private val MONTH_CORNERS = 15.dp
@@ -349,7 +372,7 @@ private fun EditingDay(
         Box(
             modifier = Modifier
                 .aspectRatio(1f) // This is important for square-sizing!
-                .padding(4.dp)
+                .padding(7.dp)
                 .clip(CircleShape)
                 .clickable(
                     enabled = enabled,
@@ -589,3 +612,6 @@ private fun EditingPreview() {
     }
 }
 
+object CalendarDefaults {
+    val horizontalPadding = 20.dp
+}
