@@ -52,10 +52,7 @@ fun MainRoot(
     val selectedDate by viewModel.selectedDate.collectAsStateWithLifecycle()
     val periodDays by viewModel.periodDaysForCurrentMonth.collectAsStateWithLifecycle()
     val primaryText by viewModel.primaryText.collectAsStateWithLifecycle()
-    val ovulationDay by viewModel.ovulationDay.collectAsStateWithLifecycle()
-    val fertileDays by viewModel.fertileDays.collectAsStateWithLifecycle()
     val shouldShowPredictionDialog by viewModel.shouldShowPredictionDialog.collectAsStateWithLifecycle()
-    val shouldShowPredictions by viewModel.shouldShowPredictions.collectAsStateWithLifecycle()
     val isConnectedToSocket by viewModel.isConnectedToSocket.collectAsStateWithLifecycle()
     val latestReceivedMessage by viewModel.latestReceivedMessage.collectAsStateWithLifecycle()
 
@@ -112,11 +109,8 @@ fun MainRoot(
             PeriodSphere(
                 selectedDay = selectedDay,
                 dateText = selectedDateFormatted,
-                ovulationDay = ovulationDay,
-                shouldShowPredictions = shouldShowPredictions,
                 primaryText = primaryText,
                 periodDays = periodDays,
-                fertileDays = fertileDays,
                 onArcClicked = viewModel::onArcClicked,
             )
         }
@@ -146,7 +140,6 @@ fun MainRoot(
     if (shouldShowPredictionDialog) {
         PredictionDialog(
             onAccept = {
-                viewModel.onShouldShowPredictionsChanged(shouldShow = true)
                 viewModel.onShouldShowPredictionDialogChanged(shouldShow = false)
             },
             onDismiss = {

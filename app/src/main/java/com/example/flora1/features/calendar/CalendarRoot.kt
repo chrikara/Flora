@@ -72,7 +72,6 @@ import java.time.Month
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
-import java.util.HashSet
 import java.util.Locale
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -93,7 +92,7 @@ fun CalendarRoot(
 
     CalendarRoot(
         periodDates = periods,
-        onCloseClick = viewModel::close,
+        onCloseClicked = viewModel::close,
         temporarySelectedPeriodDates = temporarySelectedPeriodDates,
         isEditing = isEditing,
         onEditClicked = viewModel::edit,
@@ -111,14 +110,14 @@ private val continuousSelectionColor = Color.LightGray.copy(alpha = 0.3f)
 @Composable
 fun CalendarRoot(
     modifier: Modifier = Modifier,
-    onCloseClick: () -> Unit = {},
+    onCloseClicked: () -> Unit = {},
     onEditClicked: () -> Unit = {},
     onCancelClicked: () -> Unit = {},
     onSaveClicked: () -> Unit = {},
     periodDates: Set<Period> = emptySet(),
     temporarySelectedPeriodDates: Set<Period> = emptySet(),
     isEditing: Boolean = false,
-    onTemporaryPeriodDateClicked : (Period) -> Unit = {},
+    onTemporaryPeriodDateClicked: (Period) -> Unit = {},
 ) {
     val currentMonth = remember { YearMonth.now() }
     val horizontalPadding = remember { 7.dp }
@@ -150,7 +149,7 @@ fun CalendarRoot(
                     .padding(horizontal = horizontalPadding)
                     .statusBarsPadding(),
                 daysOfWeek = daysOfWeek,
-                onCloseClick = onCloseClick,
+                onCloseClick = onCloseClicked,
                 todayClicked = {
                     scope.launch {
                         state.animateScrollToMonth(currentMonth)
@@ -170,14 +169,14 @@ fun CalendarRoot(
                         if (!isEditing)
                             NonEditingDay(
                                 value,
-                                isSaved = value.date in periodDates.mapTo(HashSet<LocalDate>()){
+                                isSaved = value.date in periodDates.mapTo(HashSet<LocalDate>()) {
                                     it.date
                                 },
                             )
-                        else{
+                        else {
                             EditingDay(
                                 day = value,
-                                isSaved = value.date in temporarySelectedPeriodDates.mapTo(HashSet<LocalDate>()){
+                                isSaved = value.date in temporarySelectedPeriodDates.mapTo(HashSet<LocalDate>()) {
                                     it.date
                                 },
                                 onClick = {

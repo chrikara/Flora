@@ -65,101 +65,39 @@ class MainViewModel @Inject constructor(
         _shouldShowPredictionDialog.value = shouldShow
     }
 
-    private val _shouldShowPredictions = MutableStateFlow(preferences.shouldShowPredictions)
-    val shouldShowPredictions: StateFlow<Boolean> = _shouldShowPredictions
-        .onEach {
-            preferences.saveShouldShowPredictions(it)
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Lazily,
-            preferences.shouldShowPredictionDialog
-        )
-
-    fun onShouldShowPredictionsChanged(shouldShow: Boolean) {
-        _shouldShowPredictions.value = shouldShow
+    val periodDaysForCurrentMonth = run {
+        val localDate = LocalDate.now()
+        getPeriodsForMonthUseCase.getPeriodsForMonth(localDate.monthValue, localDate.year)
     }
-
-
-    val periodDaysForCurrentMonth =
-        run {
-            val localDate = LocalDate.now()
-            getPeriodsForMonthUseCase.getPeriodsForMonth(localDate.monthValue, localDate.year)
-        }
-            .map { fetchedCurrentMonthPeriodLogs ->
-                fetchedCurrentMonthPeriodLogs.map {
-                    it.date.dayOfMonth
-                }
-            }
-            .flowOn(Dispatchers.IO)
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.Lazily,
-                initialValue = emptyList()
-            )
-
-    val fertileDays = periodDaysForCurrentMonth.mapLatest { periodDays ->
-        val daysOfMonth = LocalDate.now().month.maxLength()
-
-        when {
-            periodDays.isEmpty() -> emptyList<Int>()
-            daysOfMonth - periodDays.last() < 10 -> emptyList()
-            else -> {
-                buildList<Int> {
-                    (periodDays.last() + 6..periodDays.last() + 11).forEach { candidateDay ->
-                        if (candidateDay <= daysOfMonth) {
-                            add(candidateDay)
-                        } else {
-                            return@forEach
-                        }
-                    }
-                }
+        .map { fetchedCurrentMonthPeriodLogs ->
+            fetchedCurrentMonthPeriodLogs.map {
+                it.date.dayOfMonth
             }
         }
-    }
-        .flowOn(Dispatchers.Default)
+        .flowOn(Dispatchers.IO)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = emptyList()
         )
 
-    val ovulationDay: StateFlow<Int?> = fertileDays.mapLatest { fertileDays ->
-        when {
-            fertileDays.isEmpty() -> null
-            fertileDays.size < 6 -> null
-            else -> fertileDays[4]
-        }
-    }
-        .flowOn(Dispatchers.Default)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = null
-        )
-
 
     val primaryText = combine(
-        selectedDay, periodDaysForCurrentMonth, ovulationDay, fertileDays,
-    ) { selectedDay, periodDaysForCurrentMonth, ovulationDay, fertileDays ->
-
-        if (selectedDay == ovulationDay)
-            "Ovulation Day"
-        else if (selectedDay in fertileDays)
-            "Fertile days"
-        else if (selectedDay in periodDaysForCurrentMonth) {
-            if (periodDaysForCurrentMonth.last() - selectedDay == 1)
-                "1 Day Left"
-            else if (periodDaysForCurrentMonth.last() == selectedDay)
+        selectedDay, periodDaysForCurrentMonth,
+    ) { selectedDay, periodDaysForCurrentMonth ->
+        if (selectedDay in periodDaysForCurrentMonth) {
+            if (!periodDaysForCurrentMonth.contains(selectedDay + 1))
                 "Last Day"
-            else
-                "${periodDaysForCurrentMonth.last() - selectedDay} days left"
-        } else if (periodDaysForCurrentMonth.isNotEmpty() && periodDaysForCurrentMonth[0] - selectedDay == 1)
-            "Your next period is on 1 day"
-        else if (periodDaysForCurrentMonth.isNotEmpty() && periodDaysForCurrentMonth[0] > selectedDay)
-            "Your next period\nstarts on ${periodDaysForCurrentMonth[0] - selectedDay} days"
-        else
-            "Nothing else\nfor this month"
+            else {
+                var daysLeft = 1
+
+                while (periodDaysForCurrentMonth.contains(selectedDay + daysLeft)) {
+                    daysLeft++
+                }
+                "$daysLeft days remaining"
+            }
+        } else
+            "No period today"
 
     }
         .flowOn(Dispatchers.Default)
