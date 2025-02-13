@@ -125,6 +125,7 @@ fun CalendarRoot(
     val scope = rememberCoroutineScope()
     val endMonth = remember { currentMonth.plusYears(2) }
     val daysOfWeek = remember { daysOfWeek() }
+    val today = remember { LocalDate.now() }
 
     Box(
         modifier = modifier
@@ -146,7 +147,9 @@ fun CalendarRoot(
             TopCalendarBar(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceTint)
-                    .padding(horizontal = horizontalPadding)
+                    .padding(
+                        horizontal = horizontalPadding,
+                    )
                     .statusBarsPadding(),
                 daysOfWeek = daysOfWeek,
                 onCloseClick = onCloseClicked,
@@ -172,6 +175,7 @@ fun CalendarRoot(
                                 isSaved = value.date in periodDates.mapTo(HashSet<LocalDate>()) {
                                     it.date
                                 },
+                                enabled = value.date <= today,
                             )
                         else {
                             EditingDay(
@@ -179,6 +183,7 @@ fun CalendarRoot(
                                 isSaved = value.date in temporarySelectedPeriodDates.mapTo(HashSet<LocalDate>()) {
                                     it.date
                                 },
+                                enabled = value.date <= today,
                                 onClick = {
                                     onTemporaryPeriodDateClicked(Period(date = it.date))
                                 }
@@ -216,11 +221,7 @@ fun CalendarRoot(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .shadow(
-                        color = MaterialTheme.colorScheme.surface,
-
-                        blurRadius = 10.dp,
-                    )
+                    .background(MaterialTheme.colorScheme.surface)
                     .align(Alignment.BottomCenter)
 
                     .navigationBarsPadding(),
@@ -243,7 +244,7 @@ fun CalendarRoot(
                             .clickable(onClick = onCancelClicked)
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         text = "Cancel",
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
 
@@ -255,7 +256,7 @@ fun CalendarRoot(
                             })
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         text = "Save",
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -297,8 +298,14 @@ data class DateSelection(val startDate: LocalDate? = null, val endDate: LocalDat
 private fun NonEditingDay(
     day: CalendarDay,
     isSaved: Boolean = true,
+    enabled: Boolean,
     onClick: (CalendarDay) -> Unit = {},
 ) {
+    val textColor = when {
+        isSaved -> MaterialTheme.colorScheme.onPrimary
+        !enabled -> MaterialTheme.colorScheme.tertiary
+        else -> MaterialTheme.colorScheme.onBackground
+    }
 
     Box(
         modifier = Modifier
@@ -313,10 +320,7 @@ private fun NonEditingDay(
     ) {
         Text(
             text = day.date.dayOfMonth.toString(),
-            color = if (isSaved)
-                MaterialTheme.colorScheme.onPrimary
-            else
-                MaterialTheme.colorScheme.onBackground,
+            color = textColor,
             style = MaterialTheme.typography.bodyMedium,
         )
     }
@@ -327,15 +331,28 @@ private fun EditingDay(
     day: CalendarDay,
     isSaved: Boolean = true,
     onClick: (CalendarDay) -> Unit = {},
+    enabled: Boolean,
 ) {
+    val textColor = when {
+        isSaved -> MaterialTheme.colorScheme.primary
+        !enabled -> MaterialTheme.colorScheme.tertiary
+        else -> MaterialTheme.colorScheme.onBackground
+    }
+
+    val tickBorderColor = when {
+        isSaved -> Color.Transparent
+        !enabled -> MaterialTheme.colorScheme.tertiary
+        else -> MaterialTheme.colorScheme.onBackground
+    }
 
     CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
         Box(
             modifier = Modifier
                 .aspectRatio(1f) // This is important for square-sizing!
-                .padding(8.dp)
+                .padding(4.dp)
                 .clip(CircleShape)
                 .clickable(
+                    enabled = enabled,
                     onClick = { onClick(day) },
                 ),
             contentAlignment = Alignment.Center,
@@ -345,11 +362,7 @@ private fun EditingDay(
             ) {
                 Text(
                     text = day.date.dayOfMonth.toString(),
-                    color = if (isSaved)
-                        MaterialTheme.colorScheme.primary
-                    else
-                        MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.bodyMedium,
+                    color = textColor,
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Box(
@@ -357,10 +370,7 @@ private fun EditingDay(
                         .aspectRatio(1f)
                         .border(
                             width = 1.dp,
-                            color = if (isSaved)
-                                Color.Transparent
-                            else
-                                MaterialTheme.colorScheme.onBackground,
+                            color = tickBorderColor,
                             shape = CircleShape
                         )
                         .clip(CircleShape)
@@ -411,10 +421,14 @@ private fun TopCalendarBar(
     Column(
         modifier = modifier
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
+
+        ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    vertical = 20.dp,
+                ),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -437,7 +451,6 @@ private fun TopCalendarBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 14.dp),
         ) {
             for (dayOfWeek in daysOfWeek) {
                 Text(
@@ -506,49 +519,6 @@ private fun CalendarBottomDef(
     }
 }
 
-@PreviewLightDark
-@Composable
-private fun Example2Preview() {
-    val now = remember {
-        LocalDate.now()
-    }
-    val dates = List(10) {
-        Period(
-            date = LocalDate.of(
-                now.year, now.month, it + 5
-            )
-        )
-
-    }
-
-    Flora1Theme {
-        CalendarRoot(
-            periodDates = dates.toSet(),
-        )
-    }
-}
-
-object ContinuousSelectionHelper {
-    fun getSelection(
-        clickedDate: LocalDate,
-        dateSelection: DateSelection,
-    ): DateSelection {
-        val (selectionStartDate, selectionEndDate) = dateSelection
-        return if (selectionStartDate != null) {
-            if (clickedDate < selectionStartDate || selectionEndDate != null) {
-                DateSelection(startDate = clickedDate, endDate = null)
-            } else if (clickedDate != selectionStartDate) {
-                DateSelection(startDate = selectionStartDate, endDate = clickedDate)
-            } else {
-                DateSelection(startDate = clickedDate, endDate = null)
-            }
-        } else {
-            DateSelection(startDate = clickedDate, endDate = null)
-        }
-    }
-
-}
-
 fun YearMonth.displayText(short: Boolean = false): String {
     return "${this.month.displayText(short = short)} ${this.year}"
 }
@@ -558,7 +528,7 @@ fun Month.displayText(short: Boolean = true): String {
     return getDisplayName(style, Locale.ENGLISH)
 }
 
-fun DayOfWeek.displayText(uppercase: Boolean = false, narrow: Boolean = false): String {
+fun DayOfWeek.displayText(uppercase: Boolean = false, narrow: Boolean = true): String {
     val style = if (narrow) TextStyle.NARROW else TextStyle.SHORT
     return getDisplayName(style, Locale.ENGLISH).let { value ->
         if (uppercase) value.uppercase(Locale.ENGLISH) else value
@@ -573,4 +543,49 @@ private object NoRippleTheme : RippleTheme {
     override fun rippleAlpha(): RippleAlpha = RippleAlpha(0.0F, 0.0F, 0.0f, 0.0F)
 }
 
+@PreviewLightDark
+@Composable
+private fun NonEditingPreview() {
+    val now = remember {
+        LocalDate.now()
+    }
+    val dates = List(10) {
+        Period(
+            date = LocalDate.of(
+                now.year, now.month, it + 10
+            )
+        )
+
+    }
+
+    Flora1Theme {
+        CalendarRoot(
+            periodDates = dates.toSet(),
+            isEditing = false,
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun EditingPreview() {
+    val now = remember {
+        LocalDate.now()
+    }
+    val dates = List(10) {
+        Period(
+            date = LocalDate.of(
+                now.year, now.month, it + 10
+            )
+        )
+
+    }
+
+    Flora1Theme {
+        CalendarRoot(
+            temporarySelectedPeriodDates = dates.toSet(),
+            isEditing = true,
+        )
+    }
+}
 
