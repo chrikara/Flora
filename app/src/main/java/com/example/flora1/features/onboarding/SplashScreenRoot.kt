@@ -1,8 +1,7 @@
 package com.example.flora1.features.onboarding
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,8 +24,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -42,49 +44,38 @@ import com.example.flora1.core.presentation.designsystem.getPrimaryLinearBrush
 fun SplashScreenRoot(
     onFinishedAnimation: () -> Unit,
 ) {
-    var floraSize by remember {
-        mutableStateOf(0.dp)
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+
+    val fraction1 = remember {
+        Animatable(0f)
     }
 
-    var alphaText by remember {
-        mutableFloatStateOf(0f)
+    val fraction2 = remember {
+        Animatable(0f)
     }
 
     val catchyLine = remember {
         DEFAULT_FLORA_CATCHY_LINES.random()
     }
-    val animateToDp by animateDpAsState(
-        targetValue = floraSize,
-        label = "",
-        animationSpec = tween(
-            durationMillis = DEFAULT_FLORA_LOGO_DURATION_ANIMATION,
-        ),
-        finishedListener = {
-            alphaText = 1f
-        },
-    )
-
-    val alphaAsAnimation by animateFloatAsState(
-        targetValue = alphaText,
-        label = "",
-        animationSpec = tween(
-            durationMillis = DEFAULT_FLORA_TEXT_DURATION_ANIMATION,
-        ),
-        finishedListener = {
-            onFinishedAnimation()
-        },
-    )
 
     BackHandler {}
 
-
     LaunchedEffect(key1 = Unit) {
-        floraSize = DEFAULT_FLORA_LOGO_SIZE
+        fraction1.animateTo(1f, tween(3000))
+        fraction2.animateTo(1f, tween(500))
+        onFinishedAnimation()
+    }
+
+    var size by remember {
+        mutableFloatStateOf(0f)
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .onSizeChanged {
+                size = it.width.toFloat()
+            }
             .background(brush = getPrimaryLinearBrush())
             .padding(horizontal = 20.dp)
             .safeDrawingPadding(),
@@ -105,7 +96,16 @@ fun SplashScreenRoot(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
-                modifier = Modifier.size(animateToDp),
+                modifier = Modifier
+                    .size(DEFAULT_FLORA_LOGO_SIZE)
+                    .graphicsLayer {
+                        scaleX = fraction1.value
+                        scaleY = fraction1.value
+                        rotationZ = fraction1.value * 360
+                        translationX = screenWidth.toPx() * fraction2.value
+                        this.cameraDistance = 10f
+                    }
+                ,
                 painter = painterResource(id = R.drawable.flora_logo_new),
                 contentDescription = ""
             )
@@ -113,7 +113,11 @@ fun SplashScreenRoot(
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
-                modifier = Modifier.alpha(alphaAsAnimation),
+                modifier = Modifier
+                    .graphicsLayer {
+                        alpha = fraction1.value
+                        translationX = - screenWidth.toPx() * fraction2.value
+                    },
                 text = catchyLine,
                 fontFamily = FontFamily(Font(R.font.raleway_regular)),
                 fontSize = 24.sp,
@@ -125,8 +129,6 @@ fun SplashScreenRoot(
 
 }
 
-private const val DEFAULT_FLORA_LOGO_DURATION_ANIMATION = 1000
-private const val DEFAULT_FLORA_TEXT_DURATION_ANIMATION = 2000
 private val DEFAULT_FLORA_LOGO_SIZE = 250.dp
 
 private val DEFAULT_FLORA_CATCHY_LINES = listOf(

@@ -372,7 +372,7 @@ private fun EditingDay(
         Box(
             modifier = Modifier
                 .aspectRatio(1f) // This is important for square-sizing!
-                .padding(7.dp)
+                .padding(3.dp)
                 .clip(CircleShape)
                 .clickable(
                     enabled = enabled,
@@ -392,7 +392,7 @@ private fun EditingDay(
                     modifier = Modifier
                         .aspectRatio(1f)
                         .border(
-                            width = 1.dp,
+                            width = 0.5.dp,
                             color = tickBorderColor,
                             shape = CircleShape
                         )
