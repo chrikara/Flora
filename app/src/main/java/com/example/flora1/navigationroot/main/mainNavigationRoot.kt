@@ -38,7 +38,7 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
         exitTransition = { exitFromLeft() },
     ) {
         ProfileRoot(
-            onBack = { navController.popBackStack() },
+            onBack = navController::popBackStack,
             onNavigateToManageConsent = { navController.navigate(Screen.ManageConsent) },
             onNavigateToMyDoctors = { navController.navigate(Screen.MyDoctors) },
         )
@@ -49,7 +49,7 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
         exitTransition = { exitFromRight() },
     ) {
         ManageConsentRoot(
-            onBack = { navController.popBackStack() }
+            onBack = navController::popBackStack
         )
     }
 
@@ -57,7 +57,9 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
         enterTransition = { enterToRight() },
         exitTransition = { exitFromRight() },
     ) {
-        MyDoctorsRoot()
+        MyDoctorsRoot(
+            onBack = navController::popBackStack
+        )
     }
 }
 

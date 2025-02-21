@@ -126,6 +126,8 @@ dependencies {
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.mock)
     implementation(libs.logback.classic)
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
 
     // json
     implementation(libs.kotlinx.serialization.json)

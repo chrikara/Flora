@@ -30,7 +30,7 @@ private val Raleway = FontFamily(
     Font(R.font.raleway_thinitalic, FontWeight.Thin, FontStyle.Italic)
 )
 
-private val OpenSans = FontFamily(
+val OpenSans = FontFamily(
     Font(R.font.opensans_bold, FontWeight.Bold),
     Font(R.font.opensans_bolditalic, FontWeight.Bold, FontStyle.Italic),
     Font(R.font.opensans_extrabold, FontWeight.ExtraBold),
