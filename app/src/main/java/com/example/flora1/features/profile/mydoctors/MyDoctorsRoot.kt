@@ -7,11 +7,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -53,8 +56,7 @@ fun MyDoctorsRoot(
         doctors = doctors,
         onBackClicked = doctorsViewModel::onBack,
         onDoctorButtonClicked = doctorsViewModel::updateDoctorStatus,
-
-        )
+    )
 }
 
 @Composable
@@ -67,13 +69,14 @@ internal fun MyDoctorsRoot(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .safeDrawingPadding()
-            .padding(all = 20.dp),
+            .statusBarsPadding()
+            .padding(horizontal = 20.dp),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Max),
+                .height(IntrinsicSize.Max)
+                .padding(vertical = 30.dp),
         ) {
             CircleCloseButton(
                 modifier = Modifier.align(Alignment.CenterStart),
@@ -89,24 +92,25 @@ internal fun MyDoctorsRoot(
             )
         }
 
-        Spacer(modifier = Modifier.height(30.dp))
-
-        Text(
-            text = pluralStringResource(
-                id = R.plurals.my_doctors_description,
-                count = doctors.size,
-                doctors.size,
-            ),
-            color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.titleSmall,
-        )
-
-        Spacer(modifier = Modifier.height(30.dp))
-
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(15.dp),
             contentPadding = PaddingValues(vertical = 20.dp),
         ) {
+            item(key = "doctorsHeader") {
+
+                Text(
+                    text = pluralStringResource(
+                        id = R.plurals.my_doctors_description,
+                        count = doctors.size,
+                        doctors.size,
+                    ),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.titleSmall,
+                )
+
+                Spacer(modifier = Modifier.height(30.dp))
+            }
+
             items(
                 items = doctors,
                 key = Doctor::id,
@@ -115,6 +119,10 @@ internal fun MyDoctorsRoot(
                     doctor = doctor,
                     onButtonClicked = onDoctorButtonClicked,
                 )
+            }
+
+            item(key = "navigationSpacer") {
+                Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
             }
         }
     }

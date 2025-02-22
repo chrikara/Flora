@@ -15,11 +15,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.ui.uikit.buttons.BackButton
 
@@ -28,12 +30,12 @@ fun ManageConsentRoot(
     onBack: () -> Unit,
     viewModel: ManageConsentViewModel = hiltViewModel(),
 ) {
+    val hasGivenDataConsent by viewModel.isDataConsentGiven.collectAsStateWithLifecycle()
+
     ManageConsentRoot(
         onBack = onBack,
-        enabled = viewModel.isDataConsentGiven,
-        onSwitched = {
-            viewModel.onToggleDataConsent(it)
-        },
+        enabled = hasGivenDataConsent,
+        onSwitched = viewModel::onToggleDataConsent,
     )
 }
 

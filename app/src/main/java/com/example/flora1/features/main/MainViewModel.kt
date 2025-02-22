@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.flora1.core.network.clients.WebSocketClient
 import com.example.flora1.data.auth.RefreshService
 import com.example.flora1.data.auth.UploadFloatsService
-import com.example.flora1.domain.Preferences
+import com.example.flora1.domain.Preferences2
 import com.example.flora1.domain.db.GetPeriodsForMonthUseCase
 import com.example.flora1.domain.db.SavePeriodUseCase
 import com.example.flora1.domain.util.DataError
@@ -18,12 +18,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,7 +40,7 @@ import kotlin.math.abs
 class MainViewModel @Inject constructor(
     private val getPeriodsForMonthUseCase: GetPeriodsForMonthUseCase,
     private val savePeriodUseCase: SavePeriodUseCase,
-    private val preferences: Preferences,
+    private val preferences: Preferences2,
     private val refreshService: RefreshService,
     private val uploadFloatsService: UploadFloatsService,
     private val webSocketClient: WebSocketClient,
@@ -48,21 +48,29 @@ class MainViewModel @Inject constructor(
     private val _selectedDay = MutableStateFlow(LocalDate.now().dayOfMonth)
     val selectedDay: StateFlow<Int> = _selectedDay
 
-    private val _shouldShowPredictionDialog =
-        MutableStateFlow(preferences.shouldShowPredictionDialog)
 
+    private var _shouldShowPredictionDialog = MutableStateFlow(false)
     val shouldShowPredictionDialog: StateFlow<Boolean> = _shouldShowPredictionDialog
-        .onEach {
-            preferences.saveShouldShowPredictionDialog(it)
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Lazily,
-            preferences.shouldShowPredictionDialog
-        )
 
-    fun onShouldShowPredictionDialogChanged(shouldShow: Boolean) {
-        _shouldShowPredictionDialog.value = shouldShow
+    init {
+        viewModelScope.launch {
+            _shouldShowPredictionDialog.update {
+                preferences.shouldShowPredictionDialog.firstOrNull() ?: false
+            }
+        }
+    }
+
+    fun onAccept() {
+        viewModelScope.launch {
+            _shouldShowPredictionDialog.update { false }
+            preferences.saveShouldShowPredictionDialog(false)
+        }
+    }
+
+    fun onDismiss() {
+        viewModelScope.launch {
+            _shouldShowPredictionDialog.update { false }
+        }
     }
 
     val periodDaysForCurrentMonth = run {
@@ -192,7 +200,7 @@ class MainViewModel @Inject constructor(
 
     private fun connectToSocket() {
         viewModelScope.launch {
-            if (preferences.token.isNotEmpty())
+            if (!preferences.token.firstOrNull().isNullOrBlank())
                 refreshService.refreshToken()
             uploadFloatsService.uploadFloat()
             _isConnectedToSocket.value = true

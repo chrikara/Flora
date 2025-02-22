@@ -59,7 +59,7 @@ fun DoctorItem(
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surfaceVariant, itemShape)
             .clip(itemShape)
-            .padding(horizontal = 15.dp, vertical = 10.dp),
+            .padding(horizontal = 5.dp, vertical = 14.dp),
     ) {
         Row(
 

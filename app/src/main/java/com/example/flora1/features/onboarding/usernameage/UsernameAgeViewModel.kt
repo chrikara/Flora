@@ -2,7 +2,7 @@ package com.example.flora1.features.onboarding.usernameage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.flora1.domain.Preferences
+import com.example.flora1.domain.Preferences2
 import com.example.flora1.domain.auth.LoginUseCase
 import com.example.flora1.domain.auth.RegisterUseCase
 import com.example.flora1.domain.util.DataError
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UsernameAgeViewModel @Inject constructor(
-    private val preferences: Preferences,
+    private val preferences: Preferences2,
     private val registerUseCase: RegisterUseCase,
     private val loginUseCase: LoginUseCase,
 ) : ViewModel() {

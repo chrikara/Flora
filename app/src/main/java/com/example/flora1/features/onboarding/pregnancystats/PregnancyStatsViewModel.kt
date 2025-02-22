@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewModelScope
 import com.example.flora1.core.presentation.ui.viewmodel.ComposeViewModel
-import com.example.flora1.domain.Preferences
+import com.example.flora1.domain.Preferences2
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class PregnancyStatsViewState(
@@ -27,7 +29,7 @@ sealed interface PregnancyStatsViewEvent {
 
 @HiltViewModel
 class PregnancyStatsViewModel @Inject constructor(
-    private val preferences: Preferences,
+    private val preferences: Preferences2,
 ) : ComposeViewModel<PregnancyStatsViewState, PregnancyStatsViewEvent>() {
     private var pregnancies by mutableStateOf(NumericalOptions.ZERO)
     private var miscarriages by mutableStateOf(NumericalOptions.ZERO)
@@ -71,10 +73,19 @@ class PregnancyStatsViewModel @Inject constructor(
 
 
     private fun handleNext() {
-        preferences.saveTotalPregnancies(pregnancies)
-        preferences.saveTotalMiscarriages(miscarriages)
-        preferences.saveTotalAbortions(abortions)
-        preferences.saveIsBreastfeeding(isBreastfeeding)
+        viewModelScope.launch {
+            launch {
+                preferences.saveTotalPregnancies(pregnancies)
+            }
+            launch {
+                preferences.saveTotalMiscarriages(miscarriages)
+            }
+            launch {
+                preferences.saveTotalAbortions(abortions)
+            }
+            preferences.saveIsBreastfeeding(isBreastfeeding)
+        }
+
     }
 
     companion object {

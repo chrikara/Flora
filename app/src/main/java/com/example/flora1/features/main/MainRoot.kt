@@ -139,12 +139,8 @@ fun MainRoot(
 
     if (shouldShowPredictionDialog) {
         PredictionDialog(
-            onAccept = {
-                viewModel.onShouldShowPredictionDialogChanged(shouldShow = false)
-            },
-            onDismiss = {
-                viewModel.onShouldShowPredictionDialogChanged(shouldShow = false)
-            }
+            onAccept = viewModel::onAccept,
+            onDismiss = viewModel::onDismiss
         )
     }
 }

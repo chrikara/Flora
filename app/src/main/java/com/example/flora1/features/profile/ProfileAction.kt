@@ -4,5 +4,6 @@ sealed interface ProfileAction {
     data object OnManageConsentClicked : ProfileAction
     data object OnBackClicked : ProfileAction
     data object OnMyDoctorsClicked : ProfileAction
+    data object OnChangeTheme : ProfileAction
 
 }

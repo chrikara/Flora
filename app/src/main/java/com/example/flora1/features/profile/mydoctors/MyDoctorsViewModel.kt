@@ -7,7 +7,6 @@ import com.example.flora1.domain.mydoctors.model.DoctorStatus
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -17,12 +16,9 @@ import java.time.LocalTime
 
 class MyDoctorsViewModel : ViewModel() {
 
-    private var _doctors = MutableStateFlow(mockDoctors)
+    private var _doctors = MutableStateFlow(mockDoctors.sortedByDescending(Doctor::lastUpdated))
     val doctors = _doctors
-        .map {
-            it.sortedBy(Doctor::lastUpdated)
-        }
-        .map(List<Doctor>::reversed)
+
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -71,6 +67,16 @@ class MyDoctorsViewModel : ViewModel() {
                 name = "Despoina",
                 status = DoctorStatus.ACCEPTED,
                 lastUpdated = LocalDateTime.of(LocalDate.of(2024, 4, 15), LocalTime.of(15, 33))
+            ),
+            Doctor(
+                name = "Georgia",
+                status = DoctorStatus.ACCEPTED,
+                lastUpdated = LocalDateTime.of(LocalDate.of(2022, 12, 15), LocalTime.of(23, 33))
+            ),
+            Doctor(
+                name = "Antonis",
+                status = DoctorStatus.ACCEPTED,
+                lastUpdated = LocalDateTime.of(LocalDate.of(2021, 11, 30), LocalTime.of(0, 33))
             ),
         )
     }

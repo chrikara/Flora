@@ -49,7 +49,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -58,6 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
+import com.example.flora1.core.presentation.ui.modifier.applyIf
 import com.example.flora1.core.presentation.ui.observers.ObserveAsEvents
 import com.example.flora1.core.presentation.ui.uikit.buttons.CircleCloseButton
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
@@ -107,8 +113,6 @@ fun CalendarRoot(
 }
 
 
-private val primaryColor = Color.Black.copy(alpha = 0.9f)
-private val selectionColor = primaryColor
 private val continuousSelectionColor = Color.LightGray.copy(alpha = 0.3f)
 
 @Composable
@@ -178,6 +182,7 @@ fun CalendarRoot(
                                     it.date
                                 },
                                 enabled = value.date <= today,
+                                today = today == value.date,
                             )
                         else {
                             EditingDay(
@@ -186,15 +191,17 @@ fun CalendarRoot(
                                     it.date
                                 },
                                 enabled = value.date <= today,
+                                today = today == value.date,
                                 onClick = {
                                     onTemporaryPeriodDateClicked(Period(date = it.date))
                                 }
                             )
                         }
                 },
-                monthContainer = { monthDisplayed, currentCalendarContent ->
+                monthContainer = { _, currentCalendarContent ->
                     Column(
-                        modifier = Modifier.verticalCalendarModifier()
+                        modifier = Modifier
+                            .verticalCalendarModifier()
                     ) {
                         currentCalendarContent()
                     }
@@ -212,7 +219,7 @@ fun CalendarRoot(
                 },
             )
         }
-        if(!isEditing)
+        if (!isEditing)
             EditPeriodButton(
                 modifier = Modifier
                     .wrapContentHeight()
@@ -303,6 +310,7 @@ fun Modifier.verticalCalendarModifier() = composed {
                 )
             )
             .background(background)
+            .padding(vertical = 15.dp)
     }
 }
 
@@ -320,10 +328,13 @@ data class DateSelection(val startDate: LocalDate? = null, val endDate: LocalDat
 @Composable
 private fun NonEditingDay(
     day: CalendarDay,
+    today: Boolean = true,
     isSaved: Boolean = true,
     enabled: Boolean,
     onClick: (CalendarDay) -> Unit = {},
 ) {
+    val primaryColor = MaterialTheme.colorScheme.primary
+
     val textColor = when {
         isSaved -> MaterialTheme.colorScheme.onPrimary
         !enabled -> MaterialTheme.colorScheme.tertiary
@@ -333,6 +344,21 @@ private fun NonEditingDay(
     Box(
         modifier = Modifier
             .aspectRatio(1f) // This is important for square-sizing!
+
+            .applyIf(today) {
+                drawBehind {
+                    drawCircle(
+                        color = primaryColor,
+                        radius = size.maxDimension / 2.5f,
+                        style = Stroke(
+                            width = 4f,
+                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(1f, 12f), 0f),
+                            join = StrokeJoin.Bevel,
+                            cap = StrokeCap.Square,
+                        )
+                    )
+                }
+            }
             .padding(10.dp)
             .clip(CircleShape)
             .background(if (isSaved) MaterialTheme.colorScheme.primary else Color.Transparent)
@@ -353,9 +379,12 @@ private fun NonEditingDay(
 private fun EditingDay(
     day: CalendarDay,
     isSaved: Boolean = true,
+    today: Boolean = false,
     onClick: (CalendarDay) -> Unit = {},
     enabled: Boolean,
 ) {
+    val primaryColor = MaterialTheme.colorScheme.primary
+
     val textColor = when {
         isSaved -> MaterialTheme.colorScheme.primary
         !enabled -> MaterialTheme.colorScheme.tertiary
@@ -387,27 +416,47 @@ private fun EditingDay(
                     text = day.date.dayOfMonth.toString(),
                     color = textColor,
                 )
-                Spacer(modifier = Modifier.height(5.dp))
                 Box(
                     modifier = Modifier
                         .aspectRatio(1f)
+                        .applyIf(today) {
+                            drawBehind {
+                                drawCircle(
+                                    color = primaryColor,
+                                    radius = size.minDimension / 2f,
+                                    style = Stroke(
+                                        width = 4f,
+                                        pathEffect = PathEffect.dashPathEffect(
+                                            floatArrayOf(1f, 12f),
+                                            0f
+                                        ),
+                                        join = StrokeJoin.Bevel,
+                                        cap = StrokeCap.Square,
+                                    )
+                                )
+                            }
+                        }
+                        .padding(3.dp)
                         .border(
                             width = 0.5.dp,
                             color = tickBorderColor,
                             shape = CircleShape
                         )
                         .clip(CircleShape)
-                        .background(
-                            if (isSaved)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                Color.Transparent
-                        )
+                        .drawBehind {
+                            drawCircle(
+                                color = if (isSaved)
+                                    primaryColor
+                                else
+                                    Color.Transparent,
+                            )
+                        }
                         .padding(3.dp)
+
                 ) {
                     if (isSaved)
                         Icon(
-                            tint = MaterialTheme.colorScheme.background,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                             imageVector = Icons.Default.Check,
                             contentDescription = ""
                         )
@@ -425,7 +474,7 @@ private fun MonthHeader(calendarMonth: CalendarMonth) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 18.dp, bottom = 8.dp, start = 16.dp, end = 16.dp),
+            .padding(bottom = 8.dp, start = 16.dp, end = 16.dp),
         textAlign = TextAlign.Center,
         text = calendarMonth.yearMonth.displayText(),
         color = MaterialTheme.colorScheme.onBackground,
@@ -575,7 +624,7 @@ private fun NonEditingPreview() {
     val dates = List(10) {
         Period(
             date = LocalDate.of(
-                now.year, now.month, it + 10
+                now.year, now.month, it + 14
             )
         )
 
@@ -598,7 +647,7 @@ private fun EditingPreview() {
     val dates = List(10) {
         Period(
             date = LocalDate.of(
-                now.year, now.month, it + 10
+                now.year, now.month, it + 4
             )
         )
 

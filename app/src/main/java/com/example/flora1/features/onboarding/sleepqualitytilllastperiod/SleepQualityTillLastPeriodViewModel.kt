@@ -1,29 +1,32 @@
 package com.example.flora1.features.onboarding.sleepqualitytilllastperiod
 
 import androidx.lifecycle.ViewModel
-import com.example.flora1.domain.Preferences
+import androidx.lifecycle.viewModelScope
+import com.example.flora1.domain.Preferences2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class StressTillLastPeriodViewModel @Inject constructor(
-    private val preferences: Preferences,
+    private val preferences: Preferences2,
 ) : ViewModel() {
 
-    private var _selectedSleepQuality : MutableStateFlow<SleepQuality> =
+    private var _selectedSleepQuality: MutableStateFlow<SleepQuality> =
         MutableStateFlow(SleepQuality.GOOD)
-    val selectedStressLevel : StateFlow<SleepQuality> = _selectedSleepQuality
+    val selectedStressLevel: StateFlow<SleepQuality> = _selectedSleepQuality
 
-    fun onSelectedSleepQualityChanged(sleepQuality :SleepQuality) {
+    fun onSelectedSleepQualityChanged(sleepQuality: SleepQuality) {
         _selectedSleepQuality.value = sleepQuality
     }
 
-    fun onSaveSleepQualityLevel(sleepQuality: SleepQuality){
-        preferences.saveSleepQualityTillLastPeriod(sleepQuality)
+    fun onSaveSleepQualityLevel(sleepQuality: SleepQuality) {
+        viewModelScope.launch {
+            preferences.saveSleepQualityTillLastPeriod(sleepQuality)
+        }
     }
-
 }
 
 enum class SleepQuality(val text: String) {

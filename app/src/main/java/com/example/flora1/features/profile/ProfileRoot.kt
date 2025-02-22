@@ -26,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,12 +40,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.designsystem.getPrimaryHorizontalBrush
 import com.example.flora1.core.presentation.ui.observers.ObserveAsEvents
 import com.example.flora1.core.presentation.ui.toast.showSingleToast
 import com.example.flora1.core.presentation.ui.uikit.buttons.CircleCloseButton
+import com.example.flora1.domain.Theme
 import com.example.flora1.features.profile.consent.ProfileEvent
 
 @Composable
@@ -56,8 +59,10 @@ fun ProfileRoot(
 ) {
     val state = viewModel.state
     val context = LocalContext.current
+    val theme by viewModel.theme.collectAsStateWithLifecycle()
+    val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
 
-    ObserveAsEvents(flow = viewModel.events) {event ->
+    ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
             ProfileEvent.NavigateBack -> onBack()
             ProfileEvent.NavigateToManageConsent -> onNavigateToManageConsent()
@@ -69,13 +74,16 @@ fun ProfileRoot(
     ProfileRoot(
         state = state,
         onAction = viewModel::onAction,
+        theme = theme,
+        isLoggedIn = isLoggedIn,
     )
-
 }
 
 @Composable
 fun ProfileRoot(
     state: ProfileState = ProfileState(),
+    theme: Theme = Theme.AUTO,
+    isLoggedIn: Boolean = false,
     onAction: (ProfileAction) -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
@@ -135,9 +143,20 @@ fun ProfileRoot(
         Spacer(modifier = Modifier.height(20.dp))
 
         PrimaryInfoRow(
-            primaryText = "Dark Mode",
+            primaryText = when (theme) {
+                Theme.AUTO -> "Auto Mode"
+                Theme.LIGHT -> "Light Mode"
+                Theme.DARK -> "Dark Mode"
+            },
             secondaryText = "Tap to toggle",
-            leadingIconRes = R.drawable.ic_dark_mode,
+            leadingIconRes = when (theme) {
+                Theme.AUTO -> R.drawable.person
+                Theme.LIGHT -> R.drawable.ic_light_mode
+                Theme.DARK -> R.drawable.ic_dark_mode
+            },
+            onClick = {
+                onAction(ProfileAction.OnChangeTheme)
+            }
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -189,7 +208,7 @@ fun ProfileRoot(
 
         PrimaryInfoButton(
             brush = getPrimaryHorizontalBrush(),
-            text = if (state.isLoggedIn) "Login" else "Logout",
+            text = if (isLoggedIn) "Login" else "Logout",
             onClick = {},
             color = MaterialTheme.colorScheme.onPrimary,
         )

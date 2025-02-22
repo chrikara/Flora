@@ -2,7 +2,6 @@ package com.example.flora1.features.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.flora1.domain.Preferences
 import com.example.flora1.domain.db.DeletePeriodUseCase
 import com.example.flora1.domain.db.GetAllPeriodsUseCase
 import com.example.flora1.domain.db.SavePeriodUseCase
@@ -23,7 +22,6 @@ class CalendarViewModel @Inject constructor(
     private val getAllPeriodsUseCase: GetAllPeriodsUseCase,
     private val savePeriodUseCase: SavePeriodUseCase,
     private val deletePeriodUseCase: DeletePeriodUseCase,
-    private val preferences: Preferences,
 ) : ViewModel() {
 
     private val _events = Channel<CalendarEvent>()

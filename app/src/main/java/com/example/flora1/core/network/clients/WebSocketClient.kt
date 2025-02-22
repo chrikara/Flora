@@ -15,12 +15,10 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import java.net.SocketException
 
 abstract class WebSocketClient {
-    abstract val urlString: String
+    abstract suspend fun urlString(): String
     abstract val httpClient: HttpClient
 
     private var session: WebSocketSession? = null
@@ -34,7 +32,7 @@ abstract class WebSocketClient {
     fun listenToSocket(): Flow<Result<String, DataError.Network>> {
         return callbackFlow {
             try {
-                session = httpClient.webSocketSession(urlString = urlString)
+                session = httpClient.webSocketSession(urlString = urlString())
 
                 session?.let { session ->
                     session
@@ -42,7 +40,6 @@ abstract class WebSocketClient {
                         .consumeAsFlow()
                         .filterIsInstance<Frame.Text>()
                         .collect {
-                            println(it.readText())
                             send(Result.Success(it.readText()))
                         }
                 } ?: run {

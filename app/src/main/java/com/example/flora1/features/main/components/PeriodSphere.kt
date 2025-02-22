@@ -135,7 +135,6 @@ fun PeriodSphere(
                 .fillMaxWidth()
                 .height(with(density) { diameter.toDp() })
                 .pointerInput(Unit) {
-                    println("mpike3" + circlePositions)
                     detectTapGestures { offsetClicked ->
                         onArcClicked(offsetClicked, circlePositions, dayIndicatorSizeFloat / 2f)
                     }
@@ -301,7 +300,6 @@ fun calculateCirclePosition(
     val x = (radius * cos(angleInRadians)).toFloat()
     val y = (radius * sin(angleInRadians)).toFloat()
 
-    println("mpike11 $day totalDays $totalDays totalSweep $totalSweep angleInDegrees $angleInDegrees sweepAngle $sweepAnglePerDay")
     return with(density) {
         Pair(x.toDp(), y.toDp())
     }

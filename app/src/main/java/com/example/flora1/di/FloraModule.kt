@@ -1,8 +1,9 @@
 package com.example.flora1.di
 
 import android.app.Application
-import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.example.flora1.core.network.clients.FLWebSocketClient
 import com.example.flora1.core.network.clients.WebSocketClient
@@ -15,9 +16,8 @@ import com.example.flora1.data.auth.RefreshService
 import com.example.flora1.data.auth.RegisterService
 import com.example.flora1.data.auth.UploadFloatsService
 import com.example.flora1.data.db.PeriodDatabase
-import com.example.flora1.data.preferences.DefaultSharedPreferences
-import com.example.flora1.data.preferences.USER_PREFERENCES
-import com.example.flora1.domain.Preferences
+import com.example.flora1.domain.FloraDataStorePreferences
+import com.example.flora1.domain.Preferences2
 import com.example.flora1.domain.db.DeletePeriodUseCase
 import com.example.flora1.domain.db.GetAllPeriodsUseCase
 import com.example.flora1.domain.db.GetPeriodsForMonthUseCase
@@ -28,22 +28,24 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+private val Context.userDataStore by preferencesDataStore(
+    name = "new_preferences"
+)
+
 @Module
 @InstallIn(SingletonComponent::class)
 object FloraModule {
-
     @Provides
     @Singleton
-    fun providesSharedPrefs(
+    fun providesDataStore(
         app: Application
-    ): SharedPreferences = app.getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE)
-
+    ): DataStore<androidx.datastore.preferences.core.Preferences> = app.userDataStore
 
     @Provides
     @Singleton
-    fun providesPreferences(
-        sharedPrefs: SharedPreferences
-    ): Preferences = DefaultSharedPreferences(sharedPrefs)
+    fun providesPreferences2(
+        dataStore: DataStore<androidx.datastore.preferences.core.Preferences>
+    ): Preferences2 = FloraDataStorePreferences(dataStore)
 
     @Provides
     @Singleton
@@ -67,21 +69,21 @@ object FloraModule {
     @Provides
     @Singleton
     fun providesRefreshService(
-        preferences: Preferences,
+        preferences: Preferences2,
     ): RefreshService =
         DefaultRefreshService(preferences = preferences)
 
     @Provides
     @Singleton
     fun providesUploadFloatsService(
-        preferences: Preferences,
+        preferences: Preferences2,
     ): UploadFloatsService =
         DefaultUploadFloatsService(preferences = preferences)
 
     @Provides
     @Singleton
     fun providesWebSocketClient(
-        preferences: Preferences
+        preferences: Preferences2
     ): WebSocketClient =
         FLWebSocketClient(preferences = preferences)
 

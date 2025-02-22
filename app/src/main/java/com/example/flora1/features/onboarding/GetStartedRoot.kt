@@ -45,7 +45,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -62,7 +61,6 @@ import com.example.flora1.data.preferences.shouldShowOnBoarding
 fun GetStartedRoot(
     onPrimaryClicked: () -> Unit,
     onSecondaryClicked: () -> Unit,
-    viewModel: GetStartedViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
 

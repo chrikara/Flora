@@ -1,18 +1,20 @@
 package com.example.flora1.features.onboarding.weight
 
 import androidx.lifecycle.ViewModel
-import com.example.flora1.domain.Preferences
+import androidx.lifecycle.viewModelScope
+import com.example.flora1.domain.Preferences2
 import com.example.flora1.features.onboarding.weight.PregnancyViewModel.Companion.DEFAULT_NOT_PREGNANT_VALUE
 import com.example.flora1.features.onboarding.weight.PregnancyViewModel.Companion.DEFAULT_NO_COMMENT_VALUE
 import com.example.flora1.features.onboarding.weight.PregnancyViewModel.Companion.DEFAULT_PREGNANT_VALUE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PregnancyViewModel @Inject constructor(
-    private val preferences: Preferences,
+    private val preferences: Preferences2,
 ) : ViewModel() {
 
     private var _pregnancyStatus = MutableStateFlow(PregnancyStatus.NOT_PREGNANT)
@@ -23,7 +25,9 @@ class PregnancyViewModel @Inject constructor(
     }
 
     fun onSavePregnancyStatus(pregnancyStatus: PregnancyStatus) {
-        preferences.savePregnancyStatus(pregnancyStatus)
+        viewModelScope.launch {
+            preferences.savePregnancyStatus(pregnancyStatus)
+        }
     }
 
     companion object {

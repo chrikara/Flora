@@ -3,7 +3,7 @@ package com.example.flora1.features.onboarding.weight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.flora1.domain.Preferences
+import com.example.flora1.domain.Preferences2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -11,20 +11,21 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class WeightViewModel @Inject constructor(
-    private val preferences: Preferences,
+    private val preferences: Preferences2,
 ) : ViewModel() {
 
     private var _weight = MutableStateFlow(TextFieldValue("60"))
     val weight: StateFlow<TextFieldValue> = _weight
-        .filter {weight ->
-          //  (weight.matches(Regex("\\d+\\.?\\d*"))) This could have been done with Regex
+        .filter { weight ->
+            //  (weight.matches(Regex("\\d+\\.?\\d*"))) This could have been done with Regex
             (weight.text.hasAtMostOneDot() &&
-                   weight.text.isOnlyDigitsMinusDots() &&
-                   weight.text.hasLessThanMaxChars()) && !weight.text.startsWith('0')
+                    weight.text.isOnlyDigitsMinusDots() &&
+                    weight.text.hasLessThanMaxChars()) && !weight.text.startsWith('0')
         }
         .stateIn(
             viewModelScope,
@@ -32,7 +33,7 @@ class WeightViewModel @Inject constructor(
             _weight.value,
         )
 
-    val enabled = weight.map { it.text.isNotBlank() && it.text.length > 1}
+    val enabled = weight.map { it.text.isNotBlank() && it.text.length > 1 }
         .stateIn(
             viewModelScope,
             SharingStarted.Lazily,
@@ -44,7 +45,9 @@ class WeightViewModel @Inject constructor(
     }
 
     fun onSaveWeight(weight: Float) {
-        preferences.saveWeight(weight)
+        viewModelScope.launch {
+            preferences.saveWeight(weight)
+        }
     }
 
     private fun String.hasAtMostOneDot() = count { it == '.' } <= 1

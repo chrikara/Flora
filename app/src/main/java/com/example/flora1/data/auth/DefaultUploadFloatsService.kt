@@ -3,7 +3,7 @@ package com.example.flora1.data.auth
 import com.example.flora1.core.network.FloraApi
 import com.example.flora1.core.network.json
 import com.example.flora1.core.network.post
-import com.example.flora1.domain.Preferences
+import com.example.flora1.domain.Preferences2
 import com.example.flora1.domain.util.DataError
 import com.example.flora1.domain.util.Result
 import io.ktor.client.engine.HttpClientEngine
@@ -13,11 +13,12 @@ import io.ktor.content.TextContent
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.encodeToString
 
 class DefaultUploadFloatsService(
     override val httpClientEngine: HttpClientEngine? = null,
-    private val preferences: Preferences,
+    private val preferences: Preferences2,
 ) : UploadFloatsService, FloraApi {
     override val contentType: ContentType
         get() = ContentType.Application.Json
@@ -36,14 +37,14 @@ class DefaultUploadFloatsService(
                     )
 
                     append("description", "Ktor logo")
-                    append("file", file.bytes() , Headers.build {
+                    append("file", file.bytes(), Headers.build {
                         append(HttpHeaders.ContentType, "application/json")
                         append(HttpHeaders.ContentDisposition, "filename=\"file2\"")
                     })
                 }
             ),
             headers = mapOf(
-                HttpHeaders.Authorization to "Bearer ${preferences.token}",
+                HttpHeaders.Authorization to "Bearer ${preferences.token.firstOrNull()}",
             ),
         )
 }
