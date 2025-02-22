@@ -76,8 +76,8 @@ interface Preferences2 {
     suspend fun saveShouldShowPredictionDialog(shouldShowPredictionDialog: Boolean)
     val shouldShowPredictionDialog: Flow<Boolean>
 
-    suspend fun saveShouldShowPredictions(shouldShowPredictions: Boolean)
-    val shouldShowPredictions: Flow<Boolean>
+    suspend fun saveIsPredictionModeEnabled(isPredictionModeEnabled: Boolean)
+    val isPredictionModeEnabled: Flow<Boolean>
 
     suspend fun saveContraceptiveMethods(contraceptiveMethods: List<ContraceptiveMethod>)
     val contraceptiveMethods: Flow<List<ContraceptiveMethod>>
@@ -211,13 +211,13 @@ class FloraDataStorePreferences(
             preferences[SHOULD_SHOW_PREDICTION_DIALOG_KEY] ?: true
         }
 
-    override suspend fun saveShouldShowPredictions(shouldShowPredictions: Boolean) {
+    override suspend fun saveIsPredictionModeEnabled(isPredictionModeEnabled: Boolean) {
         dataStore.edit { preferences ->
-            preferences[SHOULD_SHOW_PREDICTIONS_KEY] = shouldShowPredictions
+            preferences[SHOULD_SHOW_PREDICTIONS_KEY] = isPredictionModeEnabled
         }
     }
 
-    override val shouldShowPredictions: Flow<Boolean> =
+    override val isPredictionModeEnabled: Flow<Boolean> =
         dataStore.data.map { preferences ->
             preferences[SHOULD_SHOW_PREDICTIONS_KEY] ?: true
         }

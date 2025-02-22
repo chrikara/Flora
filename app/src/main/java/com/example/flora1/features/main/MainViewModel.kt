@@ -64,12 +64,14 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _shouldShowPredictionDialog.update { false }
             preferences.saveShouldShowPredictionDialog(false)
+            preferences.saveIsPredictionModeEnabled(true)
         }
     }
 
     fun onDismiss() {
         viewModelScope.launch {
             _shouldShowPredictionDialog.update { false }
+            preferences.saveShouldShowPredictionDialog(false)
         }
     }
 

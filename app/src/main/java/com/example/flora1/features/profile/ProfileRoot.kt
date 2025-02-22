@@ -57,10 +57,10 @@ fun ProfileRoot(
     onNavigateToMyDoctors: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val state = viewModel.state
     val context = LocalContext.current
     val theme by viewModel.theme.collectAsStateWithLifecycle()
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
+    val isPredictionModeEnabled by viewModel.isPredictionModeEnabled.collectAsStateWithLifecycle()
 
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
@@ -72,19 +72,19 @@ fun ProfileRoot(
     }
 
     ProfileRoot(
-        state = state,
         onAction = viewModel::onAction,
         theme = theme,
         isLoggedIn = isLoggedIn,
+        isPredictionModeEnabled = isPredictionModeEnabled,
     )
 }
 
 @Composable
 fun ProfileRoot(
-    state: ProfileState = ProfileState(),
     theme: Theme = Theme.AUTO,
     isLoggedIn: Boolean = false,
     onAction: (ProfileAction) -> Unit = {},
+    isPredictionModeEnabled: Boolean = false,
 ) {
     val scrollState = rememberScrollState()
 
@@ -122,25 +122,19 @@ fun ProfileRoot(
             color = MaterialTheme.colorScheme.onBackground,
         )
 
-        state.username?.let { username ->
-            Spacer(modifier = Modifier.height(15.dp))
-
-            Text(
-                text = stringResource(R.string.welcome_christos, username),
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-        }
-
         Spacer(modifier = Modifier.height(30.dp))
 
-        PrimaryInfoRow(
-            primaryText = stringResource(R.string.language),
-            secondaryText = "Choose your preferred language",
-            leadingIconRes = R.drawable.ic_language
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
+        /*
+        We don't know yet if greek language support is required.
+         */
+//
+//        PrimaryInfoRow(
+//            primaryText = stringResource(R.string.language),
+//            secondaryText = "Choose your preferred language",
+//            leadingIconRes = R.drawable.ic_language
+//        )
+//
+//        Spacer(modifier = Modifier.height(20.dp))
 
         PrimaryInfoRow(
             primaryText = when (theme) {
@@ -163,10 +157,11 @@ fun ProfileRoot(
 
 
         PrimaryInfoRowWithSwitch(
-            primaryText = "Enable Total Privacy",
-            secondaryText = "Enabling this option triggers machine learning using Total Privacy instead",
+            primaryText = "Enable Predictions",
+            secondaryText = "Enabling this option triggers machine learning for predicting your next cycle",
             leadingIconRes = R.drawable.ic_didroom,
-            enabled = state.isDidRoomEnabled,
+            checked = isPredictionModeEnabled,
+            onClick = { onAction(ProfileAction.OnEnablePredictionModeClicked) }
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -191,7 +186,6 @@ fun ProfileRoot(
 
         InfoRow(enabled = false) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
                 OnBoardingItem(text = "Age")
                 OnBoardingItem(text = "Pregnancy Stats")
@@ -256,7 +250,9 @@ private fun OnBoardingItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            .padding(vertical = 10.dp)
+            .padding(start = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -277,6 +273,7 @@ private fun OnBoardingItem(
 
 @Composable
 fun PrimaryInfoRow(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     brush: Brush = Brush.horizontalGradient(
         listOf(
@@ -292,6 +289,7 @@ fun PrimaryInfoRow(
     @DrawableRes trailingIconRes: Int,
 ) {
     PrimaryInfoRow(
+        modifier = modifier,
         onClick = onClick,
         brush = brush,
         leadingIconRes = leadingIconRes,
@@ -311,6 +309,7 @@ fun PrimaryInfoRow(
 
 @Composable
 fun PrimaryInfoRow(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     brush: Brush = Brush.horizontalGradient(
         listOf(
@@ -326,6 +325,7 @@ fun PrimaryInfoRow(
     trailingContent: (@Composable () -> Unit)? = null,
 ) {
     InfoRow(
+        modifier = modifier,
         onClick = onClick,
         brush = brush,
         enabled = enabled,
@@ -399,6 +399,7 @@ private fun PrimaryInfoButton(
 
 @Composable
 fun InfoRow(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     brush: Brush = Brush.horizontalGradient(
         listOf(
@@ -410,7 +411,7 @@ fun InfoRow(
     content: @Composable RowScope.() -> Unit,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(15.dp))
             .clickable(enabled = enabled, onClick = onClick)

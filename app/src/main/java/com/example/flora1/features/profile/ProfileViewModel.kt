@@ -1,8 +1,5 @@
 package com.example.flora1.features.profile
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flora1.domain.Preferences2
@@ -22,11 +19,14 @@ class ProfileViewModel @Inject constructor(
     private val preferences2: Preferences2,
 ) : ViewModel() {
 
-    var state by mutableStateOf(
-        ProfileState()
-    )
-
     val isLoggedIn = preferences2.isLoggedIn
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            false,
+        )
+
+    val isPredictionModeEnabled = preferences2.isPredictionModeEnabled
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
@@ -69,6 +69,12 @@ class ProfileViewModel @Inject constructor(
                             Theme.DARK -> Theme.AUTO
                         }
                     )
+                }
+
+                ProfileAction.OnEnablePredictionModeClicked -> {
+                    viewModelScope.launch {
+                        preferences2.saveIsPredictionModeEnabled(isPredictionModeEnabled = !isPredictionModeEnabled.value)
+                    }
                 }
             }
         }
