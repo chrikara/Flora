@@ -129,6 +129,7 @@ dependencies {
     implementation(libs.logback.classic)
     implementation(libs.coil)
     implementation(libs.coil.compose)
+    implementation(libs.metamask.android.sdk)
 
     // json
     implementation(libs.kotlinx.serialization.json)

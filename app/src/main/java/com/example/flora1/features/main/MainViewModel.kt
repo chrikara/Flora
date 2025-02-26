@@ -34,7 +34,6 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlin.math.abs
 
-
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -44,6 +43,7 @@ class MainViewModel @Inject constructor(
     private val refreshService: RefreshService,
     private val uploadFloatsService: UploadFloatsService,
     private val webSocketClient: WebSocketClient,
+    ethereum: EthereumRepo,
 ) : ViewModel() {
     private val _selectedDay = MutableStateFlow(LocalDate.now().dayOfMonth)
     val selectedDay: StateFlow<Int> = _selectedDay
@@ -54,6 +54,7 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            ethereum.connect()
             _shouldShowPredictionDialog.update {
                 preferences.shouldShowPredictionDialog.firstOrNull() ?: false
             }

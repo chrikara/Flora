@@ -22,6 +22,8 @@ import com.example.flora1.domain.db.DeletePeriodUseCase
 import com.example.flora1.domain.db.GetAllPeriodsUseCase
 import com.example.flora1.domain.db.GetPeriodsForMonthUseCase
 import com.example.flora1.domain.db.SavePeriodUseCase
+import com.example.flora1.features.main.EthereumRepo
+import com.example.flora1.features.main.SomeModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -116,5 +118,10 @@ object FloraModule {
     ): DeletePeriodUseCase =
         DeletePeriodUseCase(db)
 
-
+    @Provides
+    @Singleton
+    fun providesEthereum(
+        app: Application,
+    ): EthereumRepo =
+        SomeModel(app.applicationContext)
 }
