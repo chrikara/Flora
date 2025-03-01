@@ -136,7 +136,7 @@ class FloraDataStorePreferences(
 
     override suspend fun saveRace(race: Race) {
         dataStore.edit { preferences ->
-            preferences[RACE_KEY] = race.name
+            preferences[RACE_KEY] = race.text
         }
     }
 

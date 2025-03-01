@@ -55,7 +55,7 @@ class WeightViewModel @Inject constructor(
     private fun String.hasLessThanMaxChars() = length <= MAX_WEIGHT_CHARS
 
     companion object {
-        const val MAX_WEIGHT_CHARS = 5
+        const val MAX_WEIGHT_CHARS = 4
     }
 }
 

@@ -124,7 +124,7 @@ private fun ColumnScope.LoginContent(
         text = "Login",
         leadingIcon = if (!isRunning) null else {
             {
-                ProgressLoginIndicator()
+                FloraButtonProgressIndicator()
             }
         },
         enabled = !isRunning,
@@ -258,7 +258,7 @@ private fun ColumnScope.RegisterContent(
         },
         leadingIcon = if (!isRunning) null else {
             {
-                ProgressLoginIndicator()
+                FloraButtonProgressIndicator()
             }
         },
     )
@@ -329,7 +329,7 @@ private fun PasswordTextField(
 }
 
 @Composable
-private fun ProgressLoginIndicator() {
+fun FloraButtonProgressIndicator() {
     CircularProgressIndicator(
         modifier = Modifier.size(30.dp),
         color = MaterialTheme.colorScheme.primary.copy(DisabledAlphaBackground)

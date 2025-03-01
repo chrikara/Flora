@@ -74,6 +74,10 @@ val PrimaryVerticalBrush = Brush.verticalGradient(
 const val DisabledAlphaBackground: Float = 0.38f
 const val DisabledAlphaText: Float = 0.7f
 
+@Composable
+fun getPrimaryHorizontalBrush() = Brush.horizontalGradient(
+    colors = getPrimaryColors(isEnabled = true),
+)
 
 @Composable
 fun getPrimaryHorizontalBrush(isEnabled: Boolean = true) = Brush.horizontalGradient(

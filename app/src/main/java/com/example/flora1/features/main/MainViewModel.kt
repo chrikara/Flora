@@ -54,7 +54,7 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            ethereum.connect()
+            //    ethereum.connect()
             _shouldShowPredictionDialog.update {
                 preferences.shouldShowPredictionDialog.firstOrNull() ?: false
             }

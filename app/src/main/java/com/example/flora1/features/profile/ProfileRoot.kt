@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.flora1.features.profile
 
 import androidx.annotation.DrawableRes
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -48,6 +51,10 @@ import com.example.flora1.core.presentation.ui.observers.ObserveAsEvents
 import com.example.flora1.core.presentation.ui.toast.showSingleToast
 import com.example.flora1.core.presentation.ui.uikit.buttons.CircleCloseButton
 import com.example.flora1.domain.Theme
+import com.example.flora1.features.onboarding.contraceptives.ContraceptiveMethod
+import com.example.flora1.features.onboarding.race.Race
+import com.example.flora1.features.onboarding.weight.PregnancyStatus
+import com.example.flora1.features.profile.components.OnBoardingItem
 import com.example.flora1.features.profile.consent.ProfileEvent
 
 @Composable
@@ -61,6 +68,9 @@ fun ProfileRoot(
     val theme by viewModel.theme.collectAsStateWithLifecycle()
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
     val isPredictionModeEnabled by viewModel.isPredictionModeEnabled.collectAsStateWithLifecycle()
+    val pregnancyStatus by viewModel.pregnancyStatus.collectAsStateWithLifecycle()
+    val race by viewModel.race.collectAsStateWithLifecycle()
+    val contraceptiveMethods by viewModel.contraceptiveMethods.collectAsStateWithLifecycle()
 
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
@@ -76,6 +86,9 @@ fun ProfileRoot(
         theme = theme,
         isLoggedIn = isLoggedIn,
         isPredictionModeEnabled = isPredictionModeEnabled,
+        selectedPregnancyStatus = pregnancyStatus,
+        selectedRace = race,
+        selectedContraceptiveMethods = contraceptiveMethods,
     )
 }
 
@@ -85,6 +98,9 @@ fun ProfileRoot(
     isLoggedIn: Boolean = false,
     onAction: (ProfileAction) -> Unit = {},
     isPredictionModeEnabled: Boolean = false,
+    selectedPregnancyStatus: PregnancyStatus = PregnancyStatus.PREGNANT,
+    selectedRace: Race = Race.NO_COMMENT,
+    selectedContraceptiveMethods: List<ContraceptiveMethod> = emptyList(),
 ) {
     val scrollState = rememberScrollState()
 
@@ -188,11 +204,35 @@ fun ProfileRoot(
             Column(
             ) {
                 OnBoardingItem(text = "Age")
-                OnBoardingItem(text = "Pregnancy Stats")
-                OnBoardingItem(text = "Race")
+                OnBoardingItem(
+                    text = stringResource(R.string.pregnancy_stats),
+                    options = PregnancyStatus.entries,
+                    selectedOption = selectedPregnancyStatus,
+                    optionName = PregnancyStatus::value,
+                    onButtonClicked = {
+                        onAction(ProfileAction.OnPregnancyStatButtonClicked(it))
+                    },
+                )
+                OnBoardingItem(
+                    text = stringResource(R.string.race),
+                    options = Race.entries,
+                    selectedOption = selectedRace,
+                    optionName = Race::text,
+                    onButtonClicked = {
+                        onAction(ProfileAction.OnRaceButtonClicked(it))
+                    },
+                )
                 OnBoardingItem(text = "Weight")
                 OnBoardingItem(text = "Vitamins")
-                OnBoardingItem(text = "Contraceptives")
+                OnBoardingItem(
+                    text = stringResource(R.string.contraceptives),
+                    options = ContraceptiveMethod.entries,
+                    selectedOptions = selectedContraceptiveMethods,
+                    optionName = ContraceptiveMethod::text,
+                    onButtonClicked = {
+                        onAction(ProfileAction.OnContraceptiveMethodsButtonClicked(it))
+                    },
+                )
                 OnBoardingItem(text = "Average Cycle")
             }
         }
@@ -241,35 +281,6 @@ fun PrimaryInfoRowWithSwitch(
     )
 }
 
-@Composable
-private fun OnBoardingItem(
-    modifier: Modifier = Modifier,
-    text: String = "Item",
-    onClick: () -> Unit = {},
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 10.dp)
-            .padding(start = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            text = text,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Icon(
-            painter = painterResource(id = R.drawable.ic_onboarding_next_arrow),
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.onSurface,
-        )
-    }
-}
 
 @Composable
 fun PrimaryInfoRow(

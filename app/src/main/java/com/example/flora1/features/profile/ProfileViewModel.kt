@@ -4,10 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flora1.domain.Preferences2
 import com.example.flora1.domain.Theme
+import com.example.flora1.features.onboarding.contraceptives.ContraceptiveMethod
+import com.example.flora1.features.onboarding.race.Race
+import com.example.flora1.features.onboarding.weight.PregnancyStatus
 import com.example.flora1.features.profile.consent.ProfileEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -20,25 +25,26 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     val isLoggedIn = preferences2.isLoggedIn
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000L),
-            false,
-        )
+        .stateIn(false)
+
+    val pregnancyStatus = preferences2.pregnancyStatus
+        .stateIn(PregnancyStatus.NOT_PREGNANT)
+
+    val race = preferences2.race
+        .stateIn(Race.NO_COMMENT)
+
+    val contraceptiveMethods = preferences2.contraceptiveMethods
+        .stateIn(emptyList<ContraceptiveMethod>())
 
     val isPredictionModeEnabled = preferences2.isPredictionModeEnabled
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000L),
-            false,
-        )
+        .stateIn(false)
 
     val theme = preferences2.theme
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000L),
-            Theme.AUTO,
-        )
+        .stateIn(Theme.AUTO)
+
+    private fun <T> Flow<T>.stateIn(
+        initialValue: T
+    ): StateFlow<T> = stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), initialValue)
 
     private val _events = Channel<ProfileEvent>()
     val events = _events.receiveAsFlow()
@@ -76,8 +82,31 @@ class ProfileViewModel @Inject constructor(
                         preferences2.saveIsPredictionModeEnabled(isPredictionModeEnabled = !isPredictionModeEnabled.value)
                     }
                 }
+
+                is ProfileAction.OnPregnancyStatButtonClicked -> {
+                    viewModelScope.launch {
+                        preferences2.savePregnancyStatus(
+                            action.pregnancyStatus ?: PregnancyStatus.NO_COMMENT
+                        )
+                    }
+                }
+
+                is ProfileAction.OnRaceButtonClicked -> {
+                    viewModelScope.launch {
+                        preferences2.saveRace(
+                            action.race ?: Race.NO_COMMENT,
+                        )
+                    }
+                }
+
+                is ProfileAction.OnContraceptiveMethodsButtonClicked -> {
+                    viewModelScope.launch {
+                        preferences2.saveContraceptiveMethods(
+                            action.methods,
+                        )
+                    }
+                }
             }
         }
     }
-
 }

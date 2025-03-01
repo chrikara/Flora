@@ -29,7 +29,12 @@
     <string name="profile">Profile</string>
     <string name="welcome_christos">Welcome %s</string>
     <string name="language">Language</string>
-
+    <string name="done">DONE</string>
+    <string name="pregnancy_stats">Pregnancy Stats</string>
+    <string name="race">Race</string>
+    <string name="contraceptives">Contraceptives</string>
+    <string name="cm">cm</string>
+    <string name="kg">kg</string>
     <plurals name="my_doctors_description">
         <item quantity="one">"%d doctor requested to help you. You may accept, revoke or decline each doctor\'s status at any point."</item>
         <item quantity="other">%d doctors requested to help you. You may accept, revoke or decline each doctor\'s status at any point.</item>

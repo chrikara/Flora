@@ -2,18 +2,16 @@ package com.example.flora1.features.onboarding.weight
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.flora1.core.presentation.ui.uikit.textfields.UnitTextField
+import com.example.flora1.R
 import com.example.flora1.features.onboarding.OnBoardingScreen
 import com.example.flora1.features.onboarding.components.OnBoardingScaffold
+import com.example.flora1.features.onboarding.usernameage.UnitTextFieldContent
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -23,17 +21,7 @@ fun WeightRoot(
 ) {
     val weight by viewModel.weight.collectAsStateWithLifecycle()
     val enabled by viewModel.enabled.collectAsStateWithLifecycle()
-    val focusRequester = remember { FocusRequester() }
 
-
-    LaunchedEffect(key1 = Unit) {
-        focusRequester.requestFocus()
-        viewModel.onWeightChanged(
-            weight.copy(
-                selection = TextRange(weight.text.length) // Set cursor to the end
-            )
-        )
-    }
     OnBoardingScaffold(
         title = "What is your weight?",
         isNextEnabled = enabled,
@@ -43,13 +31,23 @@ fun WeightRoot(
             onNext()
         },
     ) {
-        UnitTextField(
-            modifier = Modifier.focusRequester(focusRequester),
-            value = weight,
-            onValueChange = {
-                viewModel.onWeightChanged(it)
-            },
-            unit = "kg"
+        WeightContent(
+            weight = weight,
+            onValueChange = viewModel::onWeightChanged,
         )
     }
+}
+
+@Composable
+internal fun WeightContent(
+    modifier: Modifier = Modifier,
+    weight: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+) {
+    UnitTextFieldContent(
+        modifier = modifier,
+        value = weight,
+        onValueChange = onValueChange,
+        unit = stringResource(R.string.kg),
+    )
 }
