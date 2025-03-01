@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.example.flora1.domain.personaldetails.DecimalConverter
 import com.example.flora1.features.onboarding.contraceptives.ContraceptiveMethod
 import com.example.flora1.features.onboarding.race.Race
 import com.example.flora1.features.onboarding.sleepqualitytilllastperiod.SleepQuality
@@ -35,10 +36,10 @@ interface Preferences2 {
     val theme: Flow<Theme>
 
     suspend fun saveWeight(weight: Float)
-    val weight: Flow<Float>
+    val weight: Flow<String>
 
     suspend fun saveHeight(height: Float)
-    val height: Flow<Float>
+    val height: Flow<String>
 
     suspend fun savePregnancyStatus(pregnancyStatus: PregnancyStatus)
     val pregnancyStatus: Flow<PregnancyStatus>
@@ -93,6 +94,7 @@ interface Preferences2 {
 
 class FloraDataStorePreferences(
     private val dataStore: DataStore<Preferences>,
+    private val decimalConverter: DecimalConverter,
 ) : Preferences2 {
     override suspend fun saveDateOfBirth(dateOfBirth: Long) {
         dataStore.edit { it[DATE_OF_BIRTH] = dateOfBirth }
@@ -291,15 +293,24 @@ class FloraDataStorePreferences(
         dataStore.edit { it[WEIGHT] = weight }
     }
 
-    override val weight: Flow<Float>
-        get() = dataStore.data.flowWithCatch().map { it[WEIGHT] ?: 0f }
+    override val weight: Flow<String>
+        get() = dataStore.data.flowWithCatch().map {
+            with(decimalConverter) {
+                it[WEIGHT]?.convertDecimalToString() ?: ""
+            }
+        }
 
     override suspend fun saveHeight(height: Float) {
         dataStore.edit { it[HEIGHT] = height }
     }
 
-    override val height: Flow<Float>
-        get() = dataStore.data.flowWithCatch().map { it[HEIGHT] ?: 0f }
+    override val height: Flow<String>
+        get() = dataStore.data.flowWithCatch().map {
+            with(decimalConverter) {
+                it[HEIGHT]?.convertDecimalToString() ?: ""
+            }
+
+        }
 
     override suspend fun savePregnancyStatus(pregnancyStatus: PregnancyStatus) {
         dataStore.edit { it[PREGNANCY_STATUS] = pregnancyStatus.value }

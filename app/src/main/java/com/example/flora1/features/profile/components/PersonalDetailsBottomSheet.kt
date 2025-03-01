@@ -5,6 +5,7 @@ package com.example.flora1.features.profile.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
@@ -81,8 +82,6 @@ fun <T : Enum<T>> SingleChoicePersonalDetailsBottomSheet(
             onOptionIsSelected = selected
         )
     }
-
-
 }
 
 @Composable
@@ -136,8 +135,62 @@ private fun <T : Enum<T>> PersonalDetailsBottomSheet(
     onOptionClicked: (T) -> Unit,
     onOptionIsSelected: (T) -> Boolean,
 ) {
-    val scope = rememberCoroutineScope()
+    PersonalDetailsBottomSheet(
+        modifier = modifier,
+        state = state,
+        title = title,
+        onButtonClicked = onButtonClicked,
+        buttonEnabled = buttonEnabled,
+    ) {
+        FlowRow(
+            verticalArrangement = Arrangement.spacedBy(0.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            options.fastForEach { option ->
+                val selected = onOptionIsSelected(option)
+                InputChip(
+                    selected = selected,
+                    label = {
+                        Text(
+                            text = optionName(option),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (selected)
+                                MaterialTheme.colorScheme.onBackground
+                            else
+                                MaterialTheme.colorScheme.tertiary
+                        )
+                    },
+                    onClick = {
+                        onOptionClicked(option)
+                    },
+                    colors = InputChipDefaults.inputChipColors(
+                        containerColor = Color.Transparent,
+                        selectedContainerColor = Color.Transparent,
+                    ),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = if (selected)
+                            MaterialTheme.colorScheme.primary
+                        else
+                            MaterialTheme.colorScheme.tertiary
+                    ),
+                    shape = CircleShape
+                )
+            }
+        }
+    }
+}
 
+@Composable
+internal fun PersonalDetailsBottomSheet(
+    modifier: Modifier = Modifier,
+    title: String,
+    onButtonClicked: () -> Unit,
+    buttonEnabled: Boolean = true,
+    state: SheetState = rememberModalBottomSheetState(),
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    val scope = rememberCoroutineScope()
 
     ModalBottomSheet(
         modifier = modifier,
@@ -164,42 +217,7 @@ private fun <T : Enum<T>> PersonalDetailsBottomSheet(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            FlowRow(
-                verticalArrangement = Arrangement.spacedBy(0.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                options.fastForEach { option ->
-                    val selected = onOptionIsSelected(option)
-                    InputChip(
-                        selected = selected,
-                        label = {
-                            Text(
-                                text = optionName(option),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = if (selected)
-                                    MaterialTheme.colorScheme.onBackground
-                                else
-                                    MaterialTheme.colorScheme.tertiary
-                            )
-                        },
-                        onClick = {
-                            onOptionClicked(option)
-                        },
-                        colors = InputChipDefaults.inputChipColors(
-                            containerColor = Color.Transparent,
-                            selectedContainerColor = Color.Transparent,
-                        ),
-                        border = BorderStroke(
-                            width = 1.dp,
-                            color = if (selected)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                MaterialTheme.colorScheme.tertiary
-                        ),
-                        shape = CircleShape
-                    )
-                }
-            }
+            content()
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -219,10 +237,10 @@ private fun <T : Enum<T>> PersonalDetailsBottomSheet(
                 },
                 brush = getPrimaryHorizontalBrush(),
             )
-
             Spacer(modifier = Modifier.height(16.dp))
             Spacer(modifier = Modifier.navigationBarsPadding())
         }
+
     }
 }
 

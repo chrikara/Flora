@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -54,7 +55,9 @@ import com.example.flora1.domain.Theme
 import com.example.flora1.features.onboarding.contraceptives.ContraceptiveMethod
 import com.example.flora1.features.onboarding.race.Race
 import com.example.flora1.features.onboarding.weight.PregnancyStatus
+import com.example.flora1.features.profile.components.HeightItem
 import com.example.flora1.features.profile.components.OnBoardingItem
+import com.example.flora1.features.profile.components.WeightItem
 import com.example.flora1.features.profile.consent.ProfileEvent
 
 @Composable
@@ -71,6 +74,8 @@ fun ProfileRoot(
     val pregnancyStatus by viewModel.pregnancyStatus.collectAsStateWithLifecycle()
     val race by viewModel.race.collectAsStateWithLifecycle()
     val contraceptiveMethods by viewModel.contraceptiveMethods.collectAsStateWithLifecycle()
+    val height by viewModel.height.collectAsStateWithLifecycle()
+    val weight by viewModel.weight.collectAsStateWithLifecycle()
 
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
@@ -89,6 +94,10 @@ fun ProfileRoot(
         selectedPregnancyStatus = pregnancyStatus,
         selectedRace = race,
         selectedContraceptiveMethods = contraceptiveMethods,
+        selectedHeight = height,
+        selectedWeight = weight,
+        isHeightValid = viewModel.heightValidator::isHeightValid,
+        isWeightValid = viewModel.weightValidator::isWeightValid,
     )
 }
 
@@ -100,6 +109,10 @@ fun ProfileRoot(
     isPredictionModeEnabled: Boolean = false,
     selectedPregnancyStatus: PregnancyStatus = PregnancyStatus.PREGNANT,
     selectedRace: Race = Race.NO_COMMENT,
+    selectedHeight: String = "",
+    selectedWeight: String = "",
+    isHeightValid: (String) -> Boolean = { true },
+    isWeightValid: (String) -> Boolean = { true },
     selectedContraceptiveMethods: List<ContraceptiveMethod> = emptyList(),
 ) {
     val scrollState = rememberScrollState()
@@ -222,7 +235,24 @@ fun ProfileRoot(
                         onAction(ProfileAction.OnRaceButtonClicked(it))
                     },
                 )
-                OnBoardingItem(text = "Weight")
+
+                HeightItem(
+                    height = TextFieldValue(selectedHeight),
+                    onButtonClicked = {
+                        onAction(ProfileAction.OnHeightButtonClicked(it.text))
+                    },
+                    isValid = isHeightValid,
+                )
+
+                WeightItem(
+                    weight = TextFieldValue(selectedWeight),
+                    onButtonClicked = {
+                        onAction(ProfileAction.OnWeightButtonClicked(it.text))
+                    },
+                    isValid = isWeightValid,
+                )
+
+
                 OnBoardingItem(text = "Vitamins")
                 OnBoardingItem(
                     text = stringResource(R.string.contraceptives),

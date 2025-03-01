@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flora1.domain.Preferences2
 import com.example.flora1.domain.Theme
-import com.example.flora1.features.onboarding.contraceptives.ContraceptiveMethod
+import com.example.flora1.domain.personaldetails.HeightValidator
+import com.example.flora1.domain.personaldetails.WeightValidator
 import com.example.flora1.features.onboarding.race.Race
 import com.example.flora1.features.onboarding.weight.PregnancyStatus
 import com.example.flora1.features.profile.consent.ProfileEvent
@@ -22,6 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val preferences2: Preferences2,
+    internal val heightValidator: HeightValidator,
+    internal val weightValidator: WeightValidator,
 ) : ViewModel() {
 
     val isLoggedIn = preferences2.isLoggedIn
@@ -34,7 +37,13 @@ class ProfileViewModel @Inject constructor(
         .stateIn(Race.NO_COMMENT)
 
     val contraceptiveMethods = preferences2.contraceptiveMethods
-        .stateIn(emptyList<ContraceptiveMethod>())
+        .stateIn(emptyList())
+
+    val height = preferences2.height
+        .stateIn("150")
+
+    val weight = preferences2.weight
+        .stateIn("80")
 
     val isPredictionModeEnabled = preferences2.isPredictionModeEnabled
         .stateIn(false)
@@ -103,6 +112,22 @@ class ProfileViewModel @Inject constructor(
                     viewModelScope.launch {
                         preferences2.saveContraceptiveMethods(
                             action.methods,
+                        )
+                    }
+                }
+
+                is ProfileAction.OnHeightButtonClicked -> {
+                    viewModelScope.launch {
+                        preferences2.saveHeight(
+                            action.text.toFloatOrNull() ?: 0f
+                        )
+                    }
+                }
+
+                is ProfileAction.OnWeightButtonClicked -> {
+                    viewModelScope.launch {
+                        preferences2.saveWeight(
+                            action.text.toFloatOrNull() ?: 0f
                         )
                     }
                 }

@@ -22,6 +22,12 @@ import com.example.flora1.domain.db.DeletePeriodUseCase
 import com.example.flora1.domain.db.GetAllPeriodsUseCase
 import com.example.flora1.domain.db.GetPeriodsForMonthUseCase
 import com.example.flora1.domain.db.SavePeriodUseCase
+import com.example.flora1.domain.personaldetails.DecimalConverter
+import com.example.flora1.domain.personaldetails.DefaultDecimalConverter
+import com.example.flora1.domain.personaldetails.DefaultHeightValidator
+import com.example.flora1.domain.personaldetails.DefaultWeightValidator
+import com.example.flora1.domain.personaldetails.HeightValidator
+import com.example.flora1.domain.personaldetails.WeightValidator
 import com.example.flora1.features.main.EthereumRepo
 import com.example.flora1.features.main.SomeModel
 import dagger.Module
@@ -42,12 +48,6 @@ object FloraModule {
     fun providesDataStore(
         app: Application
     ): DataStore<androidx.datastore.preferences.core.Preferences> = app.userDataStore
-
-    @Provides
-    @Singleton
-    fun providesPreferences2(
-        dataStore: DataStore<androidx.datastore.preferences.core.Preferences>
-    ): Preferences2 = FloraDataStorePreferences(dataStore)
 
     @Provides
     @Singleton
@@ -124,4 +124,29 @@ object FloraModule {
         app: Application,
     ): EthereumRepo =
         SomeModel(app.applicationContext)
+
+    @Provides
+    @Singleton
+    fun providesHeightValidator(): HeightValidator =
+        DefaultHeightValidator()
+
+    @Provides
+    @Singleton
+    fun providesWeightValidator(): WeightValidator =
+        DefaultWeightValidator()
+
+    @Provides
+    @Singleton
+    fun providesDecimalConverter(): DecimalConverter =
+        DefaultDecimalConverter()
+
+    @Provides
+    @Singleton
+    fun providesPreferences2(
+        dataStore: DataStore<androidx.datastore.preferences.core.Preferences>,
+        decimalConverter: DecimalConverter,
+    ): Preferences2 = FloraDataStorePreferences(
+        dataStore = dataStore,
+        decimalConverter = decimalConverter,
+    )
 }

@@ -14,4 +14,8 @@ sealed interface ProfileAction {
     data class OnRaceButtonClicked(val race: Race?) : ProfileAction
     data class OnContraceptiveMethodsButtonClicked(val methods: List<ContraceptiveMethod>) :
         ProfileAction
+
+    data class OnHeightButtonClicked(val text: String) : ProfileAction
+    data class OnWeightButtonClicked(val text: String) : ProfileAction
+
 }

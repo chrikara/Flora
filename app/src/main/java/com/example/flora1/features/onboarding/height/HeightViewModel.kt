@@ -1,10 +1,10 @@
 package com.example.flora1.features.onboarding.height
 
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flora1.domain.Preferences2
+import com.example.flora1.domain.personaldetails.HeightValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,15 +18,12 @@ import javax.inject.Inject
 @HiltViewModel
 class HeightViewModel @Inject constructor(
     private val preferences: Preferences2,
+    private val heightValidator: HeightValidator,
 ) : ViewModel() {
 
     private var _height = MutableStateFlow(TextFieldValue("150"))
     val height: StateFlow<TextFieldValue> = _height
-        .filter { height ->
-            height.text.isDigitsOnly()
-                    && !height.text.startsWith('0')
-                    && height.text.length < 4
-        }
+        .filter { height -> heightValidator.isHeightValid(height.text) }
         .stateIn(
             viewModelScope,
             SharingStarted.Lazily,
