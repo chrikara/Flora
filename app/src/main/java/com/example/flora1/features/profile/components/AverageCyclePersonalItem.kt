@@ -1,31 +1,30 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.example.flora1.features.profile.components
 
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
-import com.example.flora1.features.onboarding.usernameage.UnitTextFieldContent
+import com.example.flora1.features.onboarding.averagecycle.AverageCycleDaysFlowRow
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun PersonalDetailsUnitItem(
+fun AverageCyclePersonalItem(
     modifier: Modifier = Modifier,
     title: String,
-    sheetState: SheetState = rememberModalBottomSheetState(),
-    onButtonClicked: suspend (TextFieldValue) -> Unit,
-    value: TextFieldValue,
-    isValid: (String) -> Boolean,
-    unit: String,
+    day: Int,
+    sheetState: SheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+    ),
+    onButtonClicked: suspend (Int) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     OnBoardingItem(
@@ -36,27 +35,27 @@ internal fun PersonalDetailsUnitItem(
             }
         },
     )
-    if (sheetState.isVisible) {
-        var temporaryValue by remember {
-            mutableStateOf(value)
-        }
 
+    if (sheetState.isVisible) {
+        var temporaryDaySelected by remember {
+            mutableIntStateOf(day)
+        }
         PersonalDetailsBottomSheet(
             modifier = modifier,
+            contentModifier = Modifier.verticalScroll(rememberScrollState()),
             title = title,
             state = sheetState,
             onButtonClicked = {
-                onButtonClicked(temporaryValue)
+                onButtonClicked(temporaryDaySelected)
             },
         ) {
-            UnitTextFieldContent(
-                modifier = modifier.align(Alignment.CenterHorizontally),
-                value = temporaryValue,
-                onValueChange = {
-                    if (isValid(it.text))
-                        temporaryValue = it
+            AverageCycleDaysFlowRow(
+                onClick = {
+                    temporaryDaySelected = it
                 },
-                unit = unit,
+                selected = {
+                    it == temporaryDaySelected
+                }
             )
         }
     }

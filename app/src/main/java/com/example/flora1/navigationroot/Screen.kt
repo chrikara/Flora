@@ -70,6 +70,6 @@ sealed interface Screen {
     data object MyDoctors : Screen
 
     companion object {
-        val startDestination = Settings
+        val startDestination = Splash
     }
 }

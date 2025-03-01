@@ -45,8 +45,26 @@ class ProfileViewModel @Inject constructor(
     val weight = preferences2.weight
         .stateIn("80")
 
+    val averageCycleDays = preferences2.averageCycleDays
+        .stateIn(0)
+
+    val medVitsDescription = preferences2.medVitsDescription
+        .stateIn("")
+
+    val hasTakenMedvits = preferences2.hasTakenMedVits
+        .stateIn(false)
+
+    val gynosurgeryDescription = preferences2.gyncosurgeryDescription
+        .stateIn("")
+
+    val hasDoneGynosurgery = preferences2.hasDoneGynecosurgery
+        .stateIn(false)
+
     val isPredictionModeEnabled = preferences2.isPredictionModeEnabled
         .stateIn(false)
+
+    val dateOfBirth = preferences2.dateOfBirth
+        .stateIn(10L)
 
     val theme = preferences2.theme
         .stateIn(Theme.AUTO)
@@ -71,9 +89,9 @@ class ProfileViewModel @Inject constructor(
 
                 ProfileAction.OnMyDoctorsClicked -> {
                     if (preferences2.hasGivenDataConsent.firstOrNull() == true)
-                        _events.send(ProfileEvent.NavigateToMyDoctors)
+                        _events.send(ProfileEvent.NavigateToMyDoctorsSuccess)
                     else
-                        _events.send(ProfileEvent.ShowMessage("You have to give consent in Manage Data Consent section."))
+                        _events.send(ProfileEvent.NavigateToMyDoctorsFailed)
                 }
 
                 is ProfileAction.OnChangeTheme -> {
@@ -129,6 +147,41 @@ class ProfileViewModel @Inject constructor(
                         preferences2.saveWeight(
                             action.text.toFloatOrNull() ?: 0f
                         )
+                    }
+                }
+
+                is ProfileAction.OnAverageCycleDaysButtonClicked -> {
+                    viewModelScope.launch {
+                        preferences2.saveAverageCycle(
+                            action.day,
+                        )
+                    }
+                }
+
+                is ProfileAction.OnChangeMedvitsClicked ->
+                    viewModelScope.launch {
+                        launch {
+                            preferences2.saveMedVitsDescription(action.description)
+                        }
+                        launch {
+                            preferences2.saveHasTakenMedVits(action.enabled)
+                        }
+                    }
+
+                is ProfileAction.OnChangeGynosurgeryClicked -> {
+                    viewModelScope.launch {
+                        launch {
+                            preferences2.saveGyncosurgeryDescription(action.description)
+                        }
+                        launch {
+                            preferences2.saveHasDoneGynecosurgery(action.enabled)
+                        }
+                    }
+                }
+
+                is ProfileAction.OnDateOfBirthButtonClicked -> {
+                    viewModelScope.launch {
+                        preferences2.saveDateOfBirth(action.date)
                     }
                 }
             }

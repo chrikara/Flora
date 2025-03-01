@@ -48,9 +48,8 @@ fun AverageCycleRoot(
             onNext()
         },
     ) {
-
-        NumbersFlowRow(
-            enabled = {
+        AverageCycleDaysFlowRow(
+            selected = {
                 selectedNumber == it
             },
             onClick = {
@@ -66,10 +65,10 @@ fun AverageCycleRoot(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun NumbersFlowRow(
+internal fun AverageCycleDaysFlowRow(
     modifier: Modifier = Modifier,
     onClick: (Int) -> Unit,
-    enabled: (Int) -> Boolean,
+    selected: (Int) -> Boolean,
 ) {
     FlowRow(
         modifier = modifier,
@@ -78,7 +77,7 @@ private fun NumbersFlowRow(
     ) {
         (MIN_CYCLE_DAYS..MAX_CYCLE_DAYS).forEach {
             PickNumber(
-                enabled = enabled(it),
+                selected = selected(it),
                 num = it,
                 onClick = { numClicked ->
                     onClick(numClicked)
@@ -92,14 +91,14 @@ private fun NumbersFlowRow(
 private fun PickNumber(
     size: Dp = 55.dp,
     num: Int,
-    enabled: Boolean,
+    selected: Boolean,
     onClick: (Int) -> Unit,
 ) {
     Box(
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
-            .background(brush = getPrimaryHorizontalBrush(isEnabled = enabled))
+            .background(brush = getPrimaryHorizontalBrush(isEnabled = selected))
             .clickable(onClick = {
                 onClick(num)
             }),
@@ -107,7 +106,7 @@ private fun PickNumber(
     ) {
         Text(
             text = num.toString(),
-            color = if (enabled)
+            color = if (selected)
                 MaterialTheme.colorScheme.onPrimary
             else
                 MaterialTheme.colorScheme.onPrimary.copy(alpha = DisabledAlphaText),

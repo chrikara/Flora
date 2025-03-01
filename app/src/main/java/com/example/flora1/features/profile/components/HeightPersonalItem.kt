@@ -19,7 +19,7 @@ import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun HeightItem(
+internal fun HeightPersonalItem(
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
     height: TextFieldValue,
@@ -49,7 +49,7 @@ private fun Preview() {
             Text(text = "click", modifier = Modifier
                 .clickable { scope.launch { state.show() } })
 
-            HeightItem(
+            HeightPersonalItem(
                 height = TextFieldValue("150"),
                 sheetState = state,
                 onButtonClicked = {}

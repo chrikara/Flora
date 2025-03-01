@@ -55,9 +55,13 @@ import com.example.flora1.domain.Theme
 import com.example.flora1.features.onboarding.contraceptives.ContraceptiveMethod
 import com.example.flora1.features.onboarding.race.Race
 import com.example.flora1.features.onboarding.weight.PregnancyStatus
-import com.example.flora1.features.profile.components.HeightItem
+import com.example.flora1.features.profile.components.AgePersonalItem
+import com.example.flora1.features.profile.components.AverageCyclePersonalItem
+import com.example.flora1.features.profile.components.GynosurgeryPersonalItem
+import com.example.flora1.features.profile.components.HeightPersonalItem
+import com.example.flora1.features.profile.components.MedVitsPersonalItem
 import com.example.flora1.features.profile.components.OnBoardingItem
-import com.example.flora1.features.profile.components.WeightItem
+import com.example.flora1.features.profile.components.WeightPersonalItem
 import com.example.flora1.features.profile.consent.ProfileEvent
 
 @Composable
@@ -76,13 +80,21 @@ fun ProfileRoot(
     val contraceptiveMethods by viewModel.contraceptiveMethods.collectAsStateWithLifecycle()
     val height by viewModel.height.collectAsStateWithLifecycle()
     val weight by viewModel.weight.collectAsStateWithLifecycle()
+    val averageCycleDays by viewModel.averageCycleDays.collectAsStateWithLifecycle()
+    val medVitsDescription by viewModel.medVitsDescription.collectAsStateWithLifecycle()
+    val hasTakenMedvits by viewModel.hasTakenMedvits.collectAsStateWithLifecycle()
+    val gynosurgeryDescription by viewModel.gynosurgeryDescription.collectAsStateWithLifecycle()
+    val hasDoneGynosurgery by viewModel.hasDoneGynosurgery.collectAsStateWithLifecycle()
+    val dateOfBirth by viewModel.dateOfBirth.collectAsStateWithLifecycle()
 
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
             ProfileEvent.NavigateBack -> onBack()
             ProfileEvent.NavigateToManageConsent -> onNavigateToManageConsent()
-            ProfileEvent.NavigateToMyDoctors -> onNavigateToMyDoctors()
-            is ProfileEvent.ShowMessage -> context.showSingleToast(event.message)
+            ProfileEvent.NavigateToMyDoctorsSuccess -> onNavigateToMyDoctors()
+            is ProfileEvent.NavigateToMyDoctorsFailed -> context.showSingleToast(
+                context.getString(R.string.enable_manage_data_consent)
+            )
         }
     }
 
@@ -96,8 +108,14 @@ fun ProfileRoot(
         selectedContraceptiveMethods = contraceptiveMethods,
         selectedHeight = height,
         selectedWeight = weight,
+        selectedAverageCycleDays = averageCycleDays,
         isHeightValid = viewModel.heightValidator::isHeightValid,
         isWeightValid = viewModel.weightValidator::isWeightValid,
+        medVitsDescription = medVitsDescription,
+        hasTakenMedVits = hasTakenMedvits,
+        gynosurgeryDescription = gynosurgeryDescription,
+        hasDoneGynosurgery = hasDoneGynosurgery,
+        dateOfBirth = dateOfBirth,
     )
 }
 
@@ -111,9 +129,15 @@ fun ProfileRoot(
     selectedRace: Race = Race.NO_COMMENT,
     selectedHeight: String = "",
     selectedWeight: String = "",
+    medVitsDescription: String = "",
+    hasTakenMedVits: Boolean = false,
+    gynosurgeryDescription: String = "",
+    hasDoneGynosurgery: Boolean = false,
     isHeightValid: (String) -> Boolean = { true },
     isWeightValid: (String) -> Boolean = { true },
     selectedContraceptiveMethods: List<ContraceptiveMethod> = emptyList(),
+    selectedAverageCycleDays: Int = 1,
+    dateOfBirth: Long = 10L,
 ) {
     val scrollState = rememberScrollState()
 
@@ -135,7 +159,7 @@ fun ProfileRoot(
             )
 
             Text(
-                text = "Version: 2025.02.12 (5)",
+                text = stringResource(R.string.version_flora),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground,
             )
@@ -167,11 +191,11 @@ fun ProfileRoot(
 
         PrimaryInfoRow(
             primaryText = when (theme) {
-                Theme.AUTO -> "Auto Mode"
-                Theme.LIGHT -> "Light Mode"
-                Theme.DARK -> "Dark Mode"
+                Theme.AUTO -> stringResource(R.string.auto_mode)
+                Theme.LIGHT -> stringResource(R.string.light_mode)
+                Theme.DARK -> stringResource(R.string.dark_mode)
             },
-            secondaryText = "Tap to toggle",
+            secondaryText = stringResource(R.string.tap_to_toggle),
             leadingIconRes = when (theme) {
                 Theme.AUTO -> R.drawable.person
                 Theme.LIGHT -> R.drawable.ic_light_mode
@@ -186,8 +210,8 @@ fun ProfileRoot(
 
 
         PrimaryInfoRowWithSwitch(
-            primaryText = "Enable Predictions",
-            secondaryText = "Enabling this option triggers machine learning for predicting your next cycle",
+            primaryText = stringResource(R.string.enable_predictions),
+            secondaryText = stringResource(R.string.enable_predictions_description),
             leadingIconRes = R.drawable.ic_didroom,
             checked = isPredictionModeEnabled,
             onClick = { onAction(ProfileAction.OnEnablePredictionModeClicked) }
@@ -196,7 +220,7 @@ fun ProfileRoot(
         Spacer(modifier = Modifier.height(20.dp))
 
         PrimaryInfoRow(
-            primaryText = "Manage Data Consent",
+            primaryText = stringResource(R.string.manage_data_consent),
             leadingIconRes = null,
             trailingIconRes = R.drawable.ic_onboarding_next_arrow,
             onClick = { onAction(ProfileAction.OnManageConsentClicked) },
@@ -205,7 +229,7 @@ fun ProfileRoot(
         Spacer(modifier = Modifier.height(20.dp))
 
         PrimaryInfoRow(
-            primaryText = "My Doctors",
+            primaryText = stringResource(R.string.my_doctors),
             leadingIconRes = R.drawable.ic_doctor,
             trailingIconRes = R.drawable.ic_onboarding_next_arrow,
             onClick = { onAction(ProfileAction.OnMyDoctorsClicked) },
@@ -214,9 +238,13 @@ fun ProfileRoot(
         Spacer(modifier = Modifier.height(20.dp))
 
         InfoRow(enabled = false) {
-            Column(
-            ) {
-                OnBoardingItem(text = "Age")
+            Column {
+                AgePersonalItem(
+                    selectedDate = dateOfBirth,
+                    onButtonClicked = {
+                        onAction(ProfileAction.OnDateOfBirthButtonClicked(it))
+                    }
+                )
                 OnBoardingItem(
                     text = stringResource(R.string.pregnancy_stats),
                     options = PregnancyStatus.entries,
@@ -236,7 +264,7 @@ fun ProfileRoot(
                     },
                 )
 
-                HeightItem(
+                HeightPersonalItem(
                     height = TextFieldValue(selectedHeight),
                     onButtonClicked = {
                         onAction(ProfileAction.OnHeightButtonClicked(it.text))
@@ -244,7 +272,7 @@ fun ProfileRoot(
                     isValid = isHeightValid,
                 )
 
-                WeightItem(
+                WeightPersonalItem(
                     weight = TextFieldValue(selectedWeight),
                     onButtonClicked = {
                         onAction(ProfileAction.OnWeightButtonClicked(it.text))
@@ -253,7 +281,21 @@ fun ProfileRoot(
                 )
 
 
-                OnBoardingItem(text = "Vitamins")
+                MedVitsPersonalItem(
+                    description = medVitsDescription,
+                    isEnabled = hasTakenMedVits,
+                    onButtonClicked = { enabled, description ->
+                        onAction(ProfileAction.OnChangeMedvitsClicked(enabled, description))
+                    }
+                )
+
+                GynosurgeryPersonalItem(
+                    description = gynosurgeryDescription,
+                    isEnabled = hasDoneGynosurgery,
+                    onButtonClicked = { enabled, description ->
+                        onAction(ProfileAction.OnChangeGynosurgeryClicked(enabled, description))
+                    }
+                )
                 OnBoardingItem(
                     text = stringResource(R.string.contraceptives),
                     options = ContraceptiveMethod.entries,
@@ -263,7 +305,13 @@ fun ProfileRoot(
                         onAction(ProfileAction.OnContraceptiveMethodsButtonClicked(it))
                     },
                 )
-                OnBoardingItem(text = "Average Cycle")
+                AverageCyclePersonalItem(
+                    title = stringResource(R.string.average_cycle),
+                    day = selectedAverageCycleDays,
+                    onButtonClicked = {
+                        onAction(ProfileAction.OnAverageCycleDaysButtonClicked(it))
+                    }
+                )
             }
         }
 
@@ -272,7 +320,12 @@ fun ProfileRoot(
 
         PrimaryInfoButton(
             brush = getPrimaryHorizontalBrush(),
-            text = if (isLoggedIn) "Login" else "Logout",
+            text = stringResource(
+                if (isLoggedIn)
+                    R.string.login
+                else
+                    R.string.logout,
+            ),
             onClick = {},
             color = MaterialTheme.colorScheme.onPrimary,
         )
@@ -476,5 +529,4 @@ fun Preview(modifier: Modifier = Modifier) {
             )
         }
     }
-
 }

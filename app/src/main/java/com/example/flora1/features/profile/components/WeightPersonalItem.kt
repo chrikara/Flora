@@ -12,7 +12,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.example.flora1.R
 
 @Composable
-internal fun WeightItem(
+internal fun WeightPersonalItem(
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
     weight: TextFieldValue,

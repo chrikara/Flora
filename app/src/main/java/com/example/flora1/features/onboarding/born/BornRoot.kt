@@ -61,7 +61,7 @@ private fun BornRoot(
 }
 
 @Composable
-private fun BornRootContent(
+internal fun BornRootContent(
     datePickerState: DatePickerState = rememberFloraDatePickerState()
 ) {
     BornDatePicker(datePickerState = datePickerState)

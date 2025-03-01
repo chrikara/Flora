@@ -47,12 +47,7 @@ fun <T : Enum<T>> OnBoardingItem(
         state = sheetState,
         options = options,
         optionName = optionName,
-        onButtonClicked = {
-            onButtonClicked(it)
-            scope.launch {
-                sheetState.hide()
-            }
-        },
+        onButtonClicked = onButtonClicked,
         selectedOption = selectedOption,
     )
 }
@@ -83,12 +78,7 @@ fun <T : Enum<T>> OnBoardingItem(
         state = sheetState,
         options = options,
         optionName = optionName,
-        onButtonClicked = {
-            onButtonClicked(it)
-            scope.launch {
-                sheetState.hide()
-            }
-        },
+        onButtonClicked = onButtonClicked,
         selectedOptions = selectedOptions,
     )
 }

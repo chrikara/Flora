@@ -17,5 +17,17 @@ sealed interface ProfileAction {
 
     data class OnHeightButtonClicked(val text: String) : ProfileAction
     data class OnWeightButtonClicked(val text: String) : ProfileAction
+    data class OnAverageCycleDaysButtonClicked(val day: Int) : ProfileAction
+    data class OnChangeMedvitsClicked(
+        val enabled: Boolean,
+        val description: String,
+    ) : ProfileAction
+
+    data class OnChangeGynosurgeryClicked(
+        val enabled: Boolean,
+        val description: String,
+    ) : ProfileAction
+
+    data class OnDateOfBirthButtonClicked(val date: Long) : ProfileAction
 
 }

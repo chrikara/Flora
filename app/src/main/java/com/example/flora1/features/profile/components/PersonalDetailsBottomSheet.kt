@@ -54,8 +54,7 @@ fun <T : Enum<T>> SingleChoicePersonalDetailsBottomSheet(
     state: SheetState = rememberModalBottomSheetState(),
     options: List<T>,
     optionName: (T) -> String,
-    buttonEnabled: Boolean = true,
-    onButtonClicked: (T?) -> Unit,
+    onButtonClicked: suspend (T?) -> Unit,
     selectedOption: T?,
 ) {
     if (state.isVisible) {
@@ -75,7 +74,6 @@ fun <T : Enum<T>> SingleChoicePersonalDetailsBottomSheet(
             onButtonClicked = {
                 onButtonClicked(temporarySelectedOption)
             },
-            buttonEnabled = buttonEnabled,
             onOptionClicked = {
                 temporarySelectedOption = if (selected(it)) null else it
             },
@@ -91,8 +89,7 @@ fun <T : Enum<T>> MultiChoicePersonalDetailsBottomSheet(
     state: SheetState = rememberModalBottomSheetState(),
     options: List<T>,
     optionName: (T) -> String,
-    onButtonClicked: (List<T>) -> Unit,
-    buttonEnabled: Boolean = true,
+    onButtonClicked: suspend (List<T>) -> Unit,
     selectedOptions: List<T>,
 ) {
     if (state.isVisible) {
@@ -111,7 +108,6 @@ fun <T : Enum<T>> MultiChoicePersonalDetailsBottomSheet(
             onButtonClicked = {
                 onButtonClicked(temporarySelectedOptions)
             },
-            buttonEnabled = buttonEnabled,
             onOptionClicked = {
                 temporarySelectedOptions = if (selected(it))
                     temporarySelectedOptions - it
@@ -130,8 +126,7 @@ private fun <T : Enum<T>> PersonalDetailsBottomSheet(
     state: SheetState = rememberModalBottomSheetState(),
     options: List<T>,
     optionName: (T) -> String,
-    onButtonClicked: () -> Unit,
-    buttonEnabled: Boolean = true,
+    onButtonClicked: suspend () -> Unit,
     onOptionClicked: (T) -> Unit,
     onOptionIsSelected: (T) -> Boolean,
 ) {
@@ -140,7 +135,6 @@ private fun <T : Enum<T>> PersonalDetailsBottomSheet(
         state = state,
         title = title,
         onButtonClicked = onButtonClicked,
-        buttonEnabled = buttonEnabled,
     ) {
         FlowRow(
             verticalArrangement = Arrangement.spacedBy(0.dp),
@@ -184,19 +178,25 @@ private fun <T : Enum<T>> PersonalDetailsBottomSheet(
 @Composable
 internal fun PersonalDetailsBottomSheet(
     modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit = {},
+    contentModifier: Modifier = Modifier,
     title: String,
-    onButtonClicked: () -> Unit,
-    buttonEnabled: Boolean = true,
+    onButtonClicked: suspend () -> Unit,
     state: SheetState = rememberModalBottomSheetState(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
+    var buttonEnabled by remember {
+        mutableStateOf(true)
+    }
     ModalBottomSheet(
         modifier = modifier,
         onDismissRequest = {
             scope.launch {
+                onDismissRequest()
                 state.hide()
+
             }
         },
         sheetState = state,
@@ -204,10 +204,12 @@ internal fun PersonalDetailsBottomSheet(
             topEnd = 8.dp,
             topStart = 8.dp
         ),
+        tonalElevation = 12.dp,
         windowInsets = WindowInsets.statusBars,
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = contentModifier
+                .padding(horizontal = 16.dp)
         ) {
             Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -215,16 +217,21 @@ internal fun PersonalDetailsBottomSheet(
                 style = MaterialTheme.typography.titleLarge,
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             content()
 
             Spacer(modifier = Modifier.height(32.dp))
 
             Button(
-                modifier = Modifier.padding(horizontal = 16.dp),
                 text = stringResource(R.string.done),
-                onClick = onButtonClicked,
+                onClick = {
+                    scope.launch {
+                        buttonEnabled = false
+                        onButtonClicked()
+                        state.hide()
+                    }
+                },
                 textColor = MaterialTheme.colorScheme.onPrimary,
                 textStyle = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.ExtraBold,
@@ -235,7 +242,7 @@ internal fun PersonalDetailsBottomSheet(
                         FloraButtonProgressIndicator()
                     }
                 },
-                brush = getPrimaryHorizontalBrush(),
+                brush = getPrimaryHorizontalBrush(isEnabled = buttonEnabled),
             )
             Spacer(modifier = Modifier.height(16.dp))
             Spacer(modifier = Modifier.navigationBarsPadding())
