@@ -33,7 +33,7 @@ fun NavigationRoot(
                     navController.popBackStack()
                     navController.navigate(
                         if (context.shouldShowOnBoarding)
-                            Screen.UsernameAge
+                            Screen.Login
                         else
                             Screen.Main
                     )

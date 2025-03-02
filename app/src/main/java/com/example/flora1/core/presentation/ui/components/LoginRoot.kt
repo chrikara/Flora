@@ -2,14 +2,20 @@ package com.example.flora1.core.presentation.ui.components
 
 import android.util.Patterns
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -27,15 +33,68 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.DisabledAlphaBackground
+import com.example.flora1.core.presentation.designsystem.Flora1Theme
+import com.example.flora1.core.presentation.ui.observers.ObserveAsEvents
 import com.example.flora1.core.presentation.ui.toast.showSingleToast
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
 import com.example.flora1.core.presentation.ui.uikit.checkboxes.CheckboxWithTitle
+import com.example.flora1.features.onboarding.usernameage.UsernameAgeEvent
+import com.example.flora1.features.onboarding.usernameage.UsernameAgeViewModel
+
+@Composable
+fun LoginRoot(
+    onNext: () -> Unit,
+    viewModel: UsernameAgeViewModel = hiltViewModel(),
+) {
+    val context = LocalContext.current
+    val isRunning by viewModel.isRunning.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            UsernameAgeEvent.RegistrationSuccessful -> {
+                context.showSingleToast(context.getString(R.string.registration_was_successful))
+                onNext()
+            }
+
+            is UsernameAgeEvent.RegistrationFailed -> context.showSingleToast(event.message)
+            is UsernameAgeEvent.LoginFailed -> context.showSingleToast(event.message)
+            UsernameAgeEvent.LoginSuccessful -> {
+                context.showSingleToast(context.getString(R.string.login_was_successful))
+                onNext()
+            }
+        }
+    }
+
+    LoginRoot(
+        modifier = Modifier.fillMaxSize(),
+        onRegisterClicked = { username, email, password, isConsentGranted ->
+            viewModel.onRegister(
+                username = username,
+                email = email,
+                password = password,
+                isConsentGranted = isConsentGranted,
+            )
+        },
+        onLoginClicked = { username, password ->
+            viewModel.onLogin(
+                username = username,
+                password = password,
+            )
+        },
+        onContinueAsAnonymous = onNext,
+        isRunning = isRunning,
+    )
+}
 
 @Composable
 fun LoginRoot(
@@ -53,23 +112,30 @@ fun LoginRoot(
         enabled = isRegistering,
         onBack = { isRegistering = false }
     )
-    Column(
+    Box(
         modifier = modifier
-            .imePadding(),
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+            .safeDrawingPadding(),
     ) {
-        if (isRegistering)
-            RegisterContent(
-                onRegisterClicked = onRegisterClicked,
-                onBackToLogin = { isRegistering = false },
-                isRunning = isRunning,
-            )
-        else
-            LoginContent(
-                onRegisterTextClicked = { isRegistering = true },
-                onLoginClicked = onLoginClicked,
-                onContinueAsAnonymous = onContinueAsAnonymous,
-                isRunning = isRunning,
-            )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+        ) {
+            if (isRegistering)
+                RegisterContent(
+                    onRegisterClicked = onRegisterClicked,
+                    onBackToLogin = { isRegistering = false },
+                    isRunning = isRunning,
+                )
+            else
+                LoginContent(
+                    onRegisterTextClicked = { isRegistering = true },
+                    onLoginClicked = onLoginClicked,
+                    onContinueAsAnonymous = onContinueAsAnonymous,
+                    isRunning = isRunning,
+                )
+        }
     }
 
 }
@@ -90,79 +156,104 @@ private fun ColumnScope.LoginContent(
     var password by remember {
         mutableStateOf("")
     }
+    Spacer(modifier = Modifier.height(32.dp))
 
-    OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = username,
-        singleLine = true,
-        onValueChange = { username = it },
-        label = {
-            Text(text = "Username")
-        }
-    )
-    Spacer(modifier = Modifier.height(10.dp))
-
-    PasswordTextField(
-        password = password,
-        onPasswordChanged = { password = it },
-        labelText = "Password"
+    Image(
+        modifier = Modifier
+            .size(75.dp)
+            .align(Alignment.CenterHorizontally),
+        painter = painterResource(id = R.drawable.flora_logo_new),
+        contentDescription = ""
     )
 
-    Spacer(modifier = Modifier.height(10.dp))
+    Spacer(modifier = Modifier.height(32.dp))
 
     Text(
-        modifier = Modifier
-            .align(Alignment.CenterHorizontally)
-            .clickable(onClick = onRegisterTextClicked),
-        text = "Not yet registered? Register now.",
-        style = MaterialTheme.typography.titleMedium,
-        textAlign = TextAlign.Center,
-    )
-    Spacer(modifier = Modifier.height(100.dp))
-
-    PrimaryButton(
-        text = "Login",
-        leadingIcon = if (!isRunning) null else {
-            {
-                FloraButtonProgressIndicator()
-            }
-        },
-        enabled = !isRunning,
-        onClick = {
-            when {
-                password.length <= 8 -> context.showSingleToast("Password should have more than 8 chars")
-                else -> onLoginClicked(username.trim(), password.trim())
-            }
-        }
+        modifier = Modifier.align(Alignment.CenterHorizontally),
+        text = stringResource(id = R.string.login_with_your_account),
+        style = MaterialTheme.typography.headlineSmall,
+        color = MaterialTheme.colorScheme.onBackground,
     )
 
-    Spacer(modifier = Modifier.height(20.dp))
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
     ) {
-        HorizontalDivider(modifier = Modifier.weight(1f))
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = username,
+            singleLine = true,
+            onValueChange = { username = it },
+            label = {
+                Text(text = "Username")
+            }
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+
+        PasswordTextField(
+            password = password,
+            onPasswordChanged = { password = it },
+            labelText = "Password"
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
         Text(
-            modifier = Modifier.weight(1f),
-            text = "Or",
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .clickable(onClick = onRegisterTextClicked),
+            text = stringResource(R.string.register_now),
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
         )
-        HorizontalDivider(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(100.dp))
+
+        PrimaryButton(
+            text = "Login",
+            leadingIcon = if (!isRunning) null else {
+                {
+                    FloraButtonProgressIndicator()
+                }
+            },
+            enabled = !isRunning,
+            onClick = {
+                when {
+                    password.length <= 8 -> context.showSingleToast("Password should have more than 8 chars")
+                    else -> onLoginClicked(username.trim(), password.trim())
+                }
+            }
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            HorizontalDivider(modifier = Modifier.weight(1f))
+            Text(
+                modifier = Modifier.weight(1f),
+                text = "Or",
+                textAlign = TextAlign.Center,
+            )
+            HorizontalDivider(modifier = Modifier.weight(1f))
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .clickable(onClick = onContinueAsAnonymous),
+            text = "Continue as an anonymous user",
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.primary
+        )
+
     }
-
-    Spacer(modifier = Modifier.height(20.dp))
-
-    Text(
-        modifier = Modifier
-            .align(Alignment.CenterHorizontally)
-            .clickable(onClick = onContinueAsAnonymous),
-        text = "Continue as an anonymous user",
-        style = MaterialTheme.typography.titleMedium,
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.primary
-    )
 
 }
 
@@ -237,6 +328,7 @@ private fun ColumnScope.RegisterContent(
         onClick = { isConsentGranted = !isConsentGranted },
         text = "By signing up, I consent to giving my information for machine learning purposes (will not actually send in testing environment).",
         style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onBackground,
     )
     Spacer(modifier = Modifier.height(100.dp))
 
@@ -334,4 +426,19 @@ fun FloraButtonProgressIndicator() {
         modifier = Modifier.size(30.dp),
         color = MaterialTheme.colorScheme.primary.copy(DisabledAlphaBackground)
     )
+}
+
+@PreviewLightDark
+@Composable
+private fun Preview() {
+    Flora1Theme {
+        LoginRoot(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
+            onRegisterClicked = { s: String, s1: String, s2: String, b: Boolean -> },
+            onLoginClicked = { s: String, s1: String -> },
+            onContinueAsAnonymous = {},
+            isRunning = false,
+        )
+    }
+
 }

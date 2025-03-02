@@ -3,6 +3,7 @@ package com.example.flora1.navigationroot.onboarding
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.flora1.core.presentation.ui.components.LoginRoot
 import com.example.flora1.features.onboarding.GetStartedRoot
 import com.example.flora1.features.onboarding.MinorAgeRoot
 import com.example.flora1.features.onboarding.averagecycle.AverageCycleRoot
@@ -17,7 +18,6 @@ import com.example.flora1.features.onboarding.race.RaceRoot
 import com.example.flora1.features.onboarding.sleepqualitytilllastperiod.SleepQualityTillLastPeriodRoot
 import com.example.flora1.features.onboarding.stresstilllastperiod.StressTillLastPeriodRoot
 import com.example.flora1.features.onboarding.usernameage.HeightRoot
-import com.example.flora1.features.onboarding.usernameage.UsernameAgeRoot
 import com.example.flora1.features.onboarding.weight.WeightRoot
 import com.example.flora1.navigationroot.Screen
 
@@ -25,8 +25,8 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     navController: NavController,
 ) {
 
-    composable<Screen.UsernameAge> {
-        UsernameAgeRoot(
+    composable<Screen.Login> {
+        LoginRoot(
             onNext = {
                 navController.navigate(Screen.Born)
             }

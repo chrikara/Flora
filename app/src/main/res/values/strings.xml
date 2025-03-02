@@ -5,7 +5,7 @@
     <string name="must_be_less_than_eligible_age_description">You must be at least %d years old to use Flora as per European instructions. Sorry for any inconvenience but everyone should abide by the law for a happy life :)</string>
     <string name="born_screen_title">When were you born?</string>
     <string name="born_screen_description">Since cycles can change over time, this helps us customize the app for you.</string>
-    <string name="welcome_and_login_or_register_screen_title">Hello! You may optionally register or login with your account</string>
+    <string name="login_with_your_account">Login with your account</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="yesterday">Yesterday</string>
@@ -58,6 +58,7 @@
     <string name="login">Login</string>
     <string name="logout">Logout</string>
     <string name="version_flora">Version: 2025.02.12 (5)</string>
+    <string name="register_now">Not yet registered? Register now.</string>
     <plurals name="my_doctors_description">
         <item quantity="one">"%d doctor requested to help you. You may accept, revoke or decline each doctor\'s status at any point."</item>
         <item quantity="other">%d doctors requested to help you. You may accept, revoke or decline each doctor\'s status at any point.</item>
