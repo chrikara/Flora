@@ -15,8 +15,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -46,6 +46,7 @@ import com.example.flora1.core.presentation.designsystem.DisabledAlphaBackground
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.ui.observers.ObserveAsEvents
 import com.example.flora1.core.presentation.ui.toast.showSingleToast
+import com.example.flora1.core.presentation.ui.uikit.buttons.BackButton
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
 import com.example.flora1.core.presentation.ui.uikit.checkboxes.CheckboxWithTitle
 import com.example.flora1.features.onboarding.usernameage.UsernameAgeEvent
@@ -54,6 +55,7 @@ import com.example.flora1.features.onboarding.usernameage.UsernameAgeViewModel
 @Composable
 fun LoginRoot(
     onNext: () -> Unit,
+    onBackClicked: (() -> Unit)?,
     viewModel: UsernameAgeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -93,6 +95,7 @@ fun LoginRoot(
         },
         onContinueAsAnonymous = onNext,
         isRunning = isRunning,
+        onBackClicked = onBackClicked,
     )
 }
 
@@ -102,6 +105,7 @@ fun LoginRoot(
     onRegisterClicked: (String, String, String, Boolean) -> Unit,
     onLoginClicked: (String, String) -> Unit,
     onContinueAsAnonymous: () -> Unit,
+    onBackClicked: (() -> Unit)? = null,
     isRunning: Boolean,
 ) {
     var isRegistering by remember {
@@ -116,7 +120,7 @@ fun LoginRoot(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
-            .safeDrawingPadding(),
+            .systemBarsPadding(),
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -133,6 +137,7 @@ fun LoginRoot(
                     onRegisterTextClicked = { isRegistering = true },
                     onLoginClicked = onLoginClicked,
                     onContinueAsAnonymous = onContinueAsAnonymous,
+                    onBackClicked = onBackClicked,
                     isRunning = isRunning,
                 )
         }
@@ -146,6 +151,7 @@ private fun ColumnScope.LoginContent(
     onRegisterTextClicked: () -> Unit,
     onLoginClicked: (String, String) -> Unit,
     onContinueAsAnonymous: () -> Unit,
+    onBackClicked: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
 
@@ -158,13 +164,21 @@ private fun ColumnScope.LoginContent(
     }
     Spacer(modifier = Modifier.height(32.dp))
 
-    Image(
-        modifier = Modifier
-            .size(75.dp)
-            .align(Alignment.CenterHorizontally),
-        painter = painterResource(id = R.drawable.flora_logo_new),
-        contentDescription = ""
-    )
+    Box(modifier = Modifier.fillMaxWidth()) {
+        if (onBackClicked != null)
+            BackButton(
+                onClick = onBackClicked,
+            )
+
+        Image(
+            modifier = Modifier
+                .size(75.dp)
+                .align(Alignment.Center),
+            painter = painterResource(id = R.drawable.flora_logo_new),
+            contentDescription = ""
+        )
+    }
+
 
     Spacer(modifier = Modifier.height(32.dp))
 
@@ -235,8 +249,9 @@ private fun ColumnScope.LoginContent(
             HorizontalDivider(modifier = Modifier.weight(1f))
             Text(
                 modifier = Modifier.weight(1f),
-                text = "Or",
+                text = stringResource(R.string.or),
                 textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground,
             )
             HorizontalDivider(modifier = Modifier.weight(1f))
         }
@@ -247,7 +262,7 @@ private fun ColumnScope.LoginContent(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .clickable(onClick = onContinueAsAnonymous),
-            text = "Continue as an anonymous user",
+            text = stringResource(R.string.continue_as_an_anonymous_user),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.primary

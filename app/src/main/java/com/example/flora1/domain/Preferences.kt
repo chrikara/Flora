@@ -28,6 +28,7 @@ interface Preferences2 {
 
     suspend fun saveToken(token: String)
     val token: Flow<String>
+    suspend fun logout()
 
     suspend fun saveHasGivenDataConsent(hasGivenDataConsent: Boolean)
     val hasGivenDataConsent: Flow<Boolean>
@@ -265,11 +266,15 @@ class FloraDataStorePreferences(
 
     override val isLoggedIn: Flow<Boolean> =
         dataStore.data.map { preferences ->
-            preferences[TOKEN_KEY]?.isNotEmpty() ?: false
+            preferences[TOKEN]?.isNotEmpty() ?: false
         }
 
     override suspend fun saveToken(token: String) {
         dataStore.edit { it[TOKEN] = token }
+    }
+
+    override suspend fun logout() {
+        dataStore.edit { it[TOKEN] = "" }
     }
 
     override val token: Flow<String>
@@ -362,7 +367,6 @@ class FloraDataStorePreferences(
             stringPreferencesKey("stress_level_till_last_period")
         private val SLEEP_QUALITY_TILL_LAST_PERIOD_KEY =
             stringPreferencesKey("sleep_quality_till_last_period")
-        private val TOKEN_KEY = stringPreferencesKey("auth_token")
 
 
     }

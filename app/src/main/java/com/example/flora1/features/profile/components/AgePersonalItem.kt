@@ -11,6 +11,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -38,6 +39,14 @@ internal fun AgePersonalItem(
         datePickerState.displayMode = DisplayMode.Picker
     }
 
+    val enabled = remember(datePickerState.selectedDateMillis) {
+        with(datePickerState.selectableDates) {
+            datePickerState.selectedDateMillis?.let {
+                isSelectableDate(it)
+            } ?: false
+        }
+    }
+
     LaunchedEffect(key1 = selectedDate) {
         resetDate()
     }
@@ -57,8 +66,11 @@ internal fun AgePersonalItem(
             onDismissRequest = resetDate,
             title = stringResource(id = R.string.age),
             state = sheetState,
+            enabled = enabled,
             onButtonClicked = {
-                onButtonClicked(datePickerState.selectedDateMillis!!)
+                datePickerState.selectedDateMillis?.let {
+                    onButtonClicked(it)
+                }
             },
         ) {
             BornRootContent(

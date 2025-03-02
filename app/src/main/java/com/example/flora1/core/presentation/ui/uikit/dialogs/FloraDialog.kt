@@ -37,8 +37,10 @@ fun FloraDialog(
     desc: String? = null,
     onAccept: () -> Unit,
     onDismiss: () -> Unit,
+    dismissOnBackPress: Boolean = false,
+    dismissOnClickOutside: Boolean = false,
     headerImage: (@Composable BoxScope.() -> Unit)? = null,
-    @StringRes testTag : Int = R.string.flora_dialog_test_tag,
+    @StringRes testTag: Int = R.string.flora_dialog_test_tag,
 ) {
     FloraDialog(
         modifier = modifier,
@@ -47,6 +49,8 @@ fun FloraDialog(
         onAccept = onAccept,
         onDismiss = onDismiss,
         headerImage = headerImage,
+        dismissOnBackPress = dismissOnBackPress,
+        dismissOnClickOutside = dismissOnClickOutside,
         testTag = testTag,
     )
 }
@@ -61,7 +65,7 @@ fun FloraDialog(
     dismissOnBackPress: Boolean = false,
     dismissOnClickOutside: Boolean = false,
     headerImage: (@Composable BoxScope.() -> Unit)? = null,
-    @StringRes testTag : Int = R.string.flora_dialog_test_tag,
+    @StringRes testTag: Int = R.string.flora_dialog_test_tag,
 ) {
     Dialog(
         onDismissRequest = onDismiss,

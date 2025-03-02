@@ -8,6 +8,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.flora1.core.presentation.ui.components.LoginRoot
 import com.example.flora1.features.calendar.CalendarRoot
 import com.example.flora1.features.main.MainRoot
 import com.example.flora1.features.profile.ProfileRoot
@@ -16,7 +17,6 @@ import com.example.flora1.features.profile.mydoctors.MyDoctorsRoot
 import com.example.flora1.navigationroot.Screen
 
 internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
-
     composable<Screen.Main> {
         MainRoot(
             onCalendarClick = { navController.navigate(Screen.Calendar) },
@@ -41,6 +41,7 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
             onBack = navController::popBackStack,
             onNavigateToManageConsent = { navController.navigate(Screen.ManageConsent) },
             onNavigateToMyDoctors = { navController.navigate(Screen.MyDoctors) },
+            onNavigateToLogin = { navController.navigate(Screen.LoginProfile) }
         )
     }
 
@@ -59,6 +60,16 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
     ) {
         MyDoctorsRoot(
             onBack = navController::popBackStack
+        )
+    }
+
+    composable<Screen.LoginProfile>(
+        enterTransition = { enterToRight() },
+        exitTransition = { exitFromRight() },
+    ) {
+        LoginRoot(
+            onNext = navController::popBackStack,
+            onBackClicked = navController::popBackStack,
         )
     }
 }

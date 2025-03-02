@@ -7,10 +7,7 @@ sealed interface Screen {
     data object Splash : Screen
 
     @Serializable
-    data object Login : Screen
-
-    @Serializable
-    data object UsernameAge : Screen
+    data object LoginOnBoarding : Screen
 
     @Serializable
     data object Height : Screen
@@ -71,6 +68,9 @@ sealed interface Screen {
 
     @Serializable
     data object MyDoctors : Screen
+
+    @Serializable
+    data object LoginProfile : Screen
 
     companion object {
         val startDestination = Splash

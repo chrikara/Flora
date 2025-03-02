@@ -29,5 +29,7 @@ sealed interface ProfileAction {
     ) : ProfileAction
 
     data class OnDateOfBirthButtonClicked(val date: Long) : ProfileAction
+    data object OnLoginClicked : ProfileAction
+    data class OnAcceptLogout(val onLogout: () -> Unit) : ProfileAction
 
 }

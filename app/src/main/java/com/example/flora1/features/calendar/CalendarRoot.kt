@@ -178,18 +178,20 @@ fun CalendarRoot(
                         if (!isEditing)
                             NonEditingDay(
                                 value,
-                                isSaved = value.date in periodDates.mapTo(HashSet<LocalDate>()) {
-                                    it.date
-                                },
+                                isSaved = value.date in periodDates.mapTo(
+                                    destination = HashSet(),
+                                    transform = Period::date,
+                                ),
                                 enabled = value.date <= today,
                                 today = today == value.date,
                             )
                         else {
                             EditingDay(
                                 day = value,
-                                isSaved = value.date in temporarySelectedPeriodDates.mapTo(HashSet<LocalDate>()) {
-                                    it.date
-                                },
+                                isSaved = value.date in temporarySelectedPeriodDates.mapTo(
+                                    destination = HashSet(),
+                                    transform = Period::date,
+                                ),
                                 enabled = value.date <= today,
                                 today = today == value.date,
                                 onClick = {

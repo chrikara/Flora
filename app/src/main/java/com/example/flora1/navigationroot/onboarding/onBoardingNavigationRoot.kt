@@ -25,11 +25,12 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     navController: NavController,
 ) {
 
-    composable<Screen.Login> {
+    composable<Screen.LoginOnBoarding> {
         LoginRoot(
             onNext = {
                 navController.navigate(Screen.Born)
-            }
+            },
+            onBackClicked = null
         )
     }
 
@@ -150,14 +151,11 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.GetStarted> {
         GetStartedRoot(
             onPrimaryClicked = {
-                /*
-                Will have to test if popBackStack overloads work
-                 */
-                navController.popBackStack(Screen.UsernameAge, inclusive = true)
+                navController.popBackStack(Screen.LoginOnBoarding, inclusive = true)
                 navController.navigate(Screen.Main)
             },
             onSecondaryClicked = {
-                navController.popBackStack(Screen.UsernameAge, inclusive = false)
+                navController.popBackStack(Screen.Born, inclusive = false)
             }
         )
     }

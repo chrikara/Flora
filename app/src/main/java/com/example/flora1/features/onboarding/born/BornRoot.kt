@@ -55,6 +55,7 @@ private fun BornRoot(
         else
             datePickerState.selectedDateMillis!! < System.currentTimeMillis(),
         selectedScreen = OnBoardingScreen.BORN,
+        isBackEnabled = false,
     ) {
         BornRootContent(datePickerState = datePickerState)
     }

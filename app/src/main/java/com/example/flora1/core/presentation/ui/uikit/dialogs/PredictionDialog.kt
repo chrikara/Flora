@@ -1,6 +1,5 @@
 package com.example.flora1.core.presentation.ui.uikit.dialogs
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -11,6 +10,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -89,4 +89,14 @@ private fun HeaderImage(modifier: Modifier) {
         progress = { progress.value },
         modifier = modifier
     )
+}
+
+@PreviewLightDark
+@Composable
+private fun Preview() {
+
+    PredictionDialog(onAccept = { /*TODO*/ }) {
+
+    }
+
 }

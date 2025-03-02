@@ -53,9 +53,7 @@ fun GynosurgeryRoot(
     ) {
         GynosurgeryContent(
             selectedOption = hasDoneGynosurgery,
-            onSelectedOptionChanged = {
-                viewModel.onIsTakingMedVitsChanged(hasDoneGynosurgery)
-            },
+            onSelectedOptionChanged = viewModel::onIsTakingMedVitsChanged,
             description = description,
             onDescriptionChanged = viewModel::onDescriptionChanged,
         )

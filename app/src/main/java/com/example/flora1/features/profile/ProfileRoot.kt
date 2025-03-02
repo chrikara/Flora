@@ -30,6 +30,9 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,6 +62,7 @@ import com.example.flora1.features.profile.components.AgePersonalItem
 import com.example.flora1.features.profile.components.AverageCyclePersonalItem
 import com.example.flora1.features.profile.components.GynosurgeryPersonalItem
 import com.example.flora1.features.profile.components.HeightPersonalItem
+import com.example.flora1.features.profile.components.LogoutDialog
 import com.example.flora1.features.profile.components.MedVitsPersonalItem
 import com.example.flora1.features.profile.components.OnBoardingItem
 import com.example.flora1.features.profile.components.WeightPersonalItem
@@ -69,6 +73,7 @@ fun ProfileRoot(
     onBack: () -> Unit,
     onNavigateToManageConsent: () -> Unit,
     onNavigateToMyDoctors: () -> Unit,
+    onNavigateToLogin: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -93,7 +98,12 @@ fun ProfileRoot(
             ProfileEvent.NavigateToManageConsent -> onNavigateToManageConsent()
             ProfileEvent.NavigateToMyDoctorsSuccess -> onNavigateToMyDoctors()
             is ProfileEvent.NavigateToMyDoctorsFailed -> context.showSingleToast(
-                context.getString(R.string.enable_manage_data_consent)
+                context.getString(R.string.enable_manage_data_consent),
+            )
+
+            ProfileEvent.NavigateToLogin -> onNavigateToLogin()
+            ProfileEvent.LogoutSuccessful -> context.showSingleToast(
+                context.getString(R.string.logout_was_successful),
             )
         }
     }
@@ -318,20 +328,39 @@ fun ProfileRoot(
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        var shouldShowLogoutDialog by remember {
+            mutableStateOf(false)
+        }
         PrimaryInfoButton(
             brush = getPrimaryHorizontalBrush(),
             text = stringResource(
                 if (isLoggedIn)
-                    R.string.login
+                    R.string.logout
                 else
-                    R.string.logout,
+                    R.string.login,
             ),
-            onClick = {},
+            onClick = {
+                if (!isLoggedIn)
+                    onAction(ProfileAction.OnLoginClicked)
+                else
+                    shouldShowLogoutDialog = true
+            },
             color = MaterialTheme.colorScheme.onPrimary,
         )
 
-        Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
+        if (shouldShowLogoutDialog)
+            LogoutDialog(
+                onAccept = {
+                    onAction(
+                        ProfileAction.OnAcceptLogout {
+                            shouldShowLogoutDialog = false
+                        }
+                    )
+                },
+                onDismiss = { shouldShowLogoutDialog = false },
+            )
 
+        Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
     }
 }
 

@@ -181,15 +181,19 @@ internal fun PersonalDetailsBottomSheet(
     onDismissRequest: () -> Unit = {},
     contentModifier: Modifier = Modifier,
     title: String,
+    enabled: Boolean = true,
     onButtonClicked: suspend () -> Unit,
     state: SheetState = rememberModalBottomSheetState(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
-    var buttonEnabled by remember {
-        mutableStateOf(true)
+    var isLoading by remember {
+        mutableStateOf(false)
     }
+    println("mpike isLoading $isLoading enabled $enabled")
+    println("mpike isEnabled $enabled || !isLoading")
+
     ModalBottomSheet(
         modifier = modifier,
         onDismissRequest = {
@@ -205,6 +209,9 @@ internal fun PersonalDetailsBottomSheet(
             topStart = 8.dp
         ),
         tonalElevation = 12.dp,
+        scrimColor = MaterialTheme.colorScheme.scrim.copy(
+            alpha = 0.7f,
+        ),
         windowInsets = WindowInsets.statusBars,
     ) {
         Column(
@@ -227,7 +234,7 @@ internal fun PersonalDetailsBottomSheet(
                 text = stringResource(R.string.done),
                 onClick = {
                     scope.launch {
-                        buttonEnabled = false
+                        isLoading = true
                         onButtonClicked()
                         state.hide()
                     }
@@ -236,18 +243,17 @@ internal fun PersonalDetailsBottomSheet(
                 textStyle = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.ExtraBold,
                 ),
-                enabled = buttonEnabled,
-                leadingIcon = if (buttonEnabled) null else {
+                enabled = enabled && !isLoading,
+                leadingIcon = if (!isLoading) null else {
                     {
                         FloraButtonProgressIndicator()
                     }
                 },
-                brush = getPrimaryHorizontalBrush(isEnabled = buttonEnabled),
+                brush = getPrimaryHorizontalBrush(isEnabled = enabled && !isLoading),
             )
             Spacer(modifier = Modifier.height(16.dp))
             Spacer(modifier = Modifier.navigationBarsPadding())
         }
-
     }
 }
 

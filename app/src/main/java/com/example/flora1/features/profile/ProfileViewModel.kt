@@ -184,6 +184,21 @@ class ProfileViewModel @Inject constructor(
                         preferences2.saveDateOfBirth(action.date)
                     }
                 }
+
+                ProfileAction.OnLoginClicked -> {
+                    if (!isLoggedIn.value)
+                        viewModelScope.launch {
+                            _events.send(ProfileEvent.NavigateToLogin)
+                        }
+                }
+
+                is ProfileAction.OnAcceptLogout -> {
+                    viewModelScope.launch {
+                        preferences2.logout()
+                        _events.send(ProfileEvent.LogoutSuccessful)
+                        action.onLogout()
+                    }
+                }
             }
         }
     }

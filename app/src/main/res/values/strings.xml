@@ -59,6 +59,11 @@
     <string name="logout">Logout</string>
     <string name="version_flora">Version: 2025.02.12 (5)</string>
     <string name="register_now">Not yet registered? Register now.</string>
+    <string name="want_to_logout_title">Logout?</string>
+    <string name="want_to_logout_description">Click Yes to log out. You can log in whenever you want.</string>
+    <string name="logout_was_successful">Logout was successful</string>
+    <string name="or">Or</string>
+    <string name="continue_as_an_anonymous_user">Continue as an anonymous user</string>
     <plurals name="my_doctors_description">
         <item quantity="one">"%d doctor requested to help you. You may accept, revoke or decline each doctor\'s status at any point."</item>
         <item quantity="other">%d doctors requested to help you. You may accept, revoke or decline each doctor\'s status at any point.</item>
