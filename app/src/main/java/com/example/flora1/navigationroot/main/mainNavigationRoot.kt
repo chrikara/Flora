@@ -8,10 +8,13 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.example.flora1.core.presentation.navigation.performActionOnce
 import com.example.flora1.core.presentation.ui.components.LoginRoot
 import com.example.flora1.features.calendar.CalendarRoot
 import com.example.flora1.features.main.MainRoot
 import com.example.flora1.features.profile.ProfileRoot
+import com.example.flora1.features.profile.ProfileViewModel
 import com.example.flora1.features.profile.consent.ManageConsentRoot
 import com.example.flora1.features.profile.mydoctors.MyDoctorsRoot
 import com.example.flora1.navigationroot.Screen
@@ -41,8 +44,15 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
             onBack = navController::popBackStack,
             onNavigateToManageConsent = { navController.navigate(Screen.ManageConsent) },
             onNavigateToMyDoctors = { navController.navigate(Screen.MyDoctors) },
-            onNavigateToLogin = { navController.navigate(Screen.LoginProfile) }
+            onNavigateToLogin = { id ->
+                navController.navigate(Screen.LoginProfile(id))
+            }
         )
+
+        it.performActionOnce<Int>(savedStateKey = LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_KEY) { manageConsentId ->
+            if (manageConsentId == LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_SUCCESS)
+                navController.navigate(Screen.ManageConsent)
+        }
     }
 
     composable<Screen.ManageConsent>(
@@ -66,9 +76,20 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
     composable<Screen.LoginProfile>(
         enterTransition = { enterToRight() },
         exitTransition = { exitFromRight() },
-    ) {
+    ) { backstackEntry ->
+
+        val id = backstackEntry.toRoute<Screen.LoginProfile>().id
+
         LoginRoot(
-            onNext = navController::popBackStack,
+            onSuccessfulLogin = {
+                if (id == ProfileViewModel.MANAGE_DATA_CONSENT_ID)
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_KEY,
+                        LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_SUCCESS,
+                    )
+                navController.popBackStack()
+            },
+            onContinueAsAnonymous = navController::popBackStack,
             onBackClicked = navController::popBackStack,
         )
     }
@@ -95,3 +116,5 @@ private fun AnimatedContentTransitionScope<NavBackStackEntry>.exitFromLeft() =
         towards = AnimatedContentTransitionScope.SlideDirection.Start
     )
 
+const val LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_SUCCESS = 14
+const val LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_KEY = "manageDataConsent"

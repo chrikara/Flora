@@ -73,7 +73,7 @@ fun ProfileRoot(
     onBack: () -> Unit,
     onNavigateToManageConsent: () -> Unit,
     onNavigateToMyDoctors: () -> Unit,
-    onNavigateToLogin: () -> Unit,
+    onNavigateToLogin: (String) -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -101,7 +101,7 @@ fun ProfileRoot(
                 context.getString(R.string.enable_manage_data_consent),
             )
 
-            ProfileEvent.NavigateToLogin -> onNavigateToLogin()
+            is ProfileEvent.NavigateToLogin -> onNavigateToLogin(event.id)
             ProfileEvent.LogoutSuccessful -> context.showSingleToast(
                 context.getString(R.string.logout_was_successful),
             )
@@ -550,7 +550,7 @@ fun InfoRow(
 
 @Composable
 @PreviewLightDark
-fun Preview(modifier: Modifier = Modifier) {
+private fun Preview() {
     Flora1Theme {
         Surface(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             ProfileRoot(

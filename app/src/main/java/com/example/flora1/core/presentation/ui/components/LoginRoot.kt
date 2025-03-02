@@ -54,7 +54,8 @@ import com.example.flora1.features.onboarding.usernameage.UsernameAgeViewModel
 
 @Composable
 fun LoginRoot(
-    onNext: () -> Unit,
+    onSuccessfulLogin: () -> Unit,
+    onContinueAsAnonymous: () -> Unit,
     onBackClicked: (() -> Unit)?,
     viewModel: UsernameAgeViewModel = hiltViewModel(),
 ) {
@@ -65,14 +66,14 @@ fun LoginRoot(
         when (event) {
             UsernameAgeEvent.RegistrationSuccessful -> {
                 context.showSingleToast(context.getString(R.string.registration_was_successful))
-                onNext()
+                onSuccessfulLogin()
             }
 
             is UsernameAgeEvent.RegistrationFailed -> context.showSingleToast(event.message)
             is UsernameAgeEvent.LoginFailed -> context.showSingleToast(event.message)
             UsernameAgeEvent.LoginSuccessful -> {
                 context.showSingleToast(context.getString(R.string.login_was_successful))
-                onNext()
+                onSuccessfulLogin()
             }
         }
     }
@@ -93,7 +94,7 @@ fun LoginRoot(
                 password = password,
             )
         },
-        onContinueAsAnonymous = onNext,
+        onContinueAsAnonymous = onContinueAsAnonymous,
         isRunning = isRunning,
         onBackClicked = onBackClicked,
     )

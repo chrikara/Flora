@@ -27,7 +27,10 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
 
     composable<Screen.LoginOnBoarding> {
         LoginRoot(
-            onNext = {
+            onSuccessfulLogin = {
+                navController.navigate(Screen.Born)
+            },
+            onContinueAsAnonymous = {
                 navController.navigate(Screen.Born)
             },
             onBackClicked = null

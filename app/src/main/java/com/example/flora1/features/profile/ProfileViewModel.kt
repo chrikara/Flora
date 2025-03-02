@@ -2,6 +2,7 @@ package com.example.flora1.features.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.flora1.core.flow.stateIn
 import com.example.flora1.domain.Preferences2
 import com.example.flora1.domain.Theme
 import com.example.flora1.domain.personaldetails.HeightValidator
@@ -11,12 +12,8 @@ import com.example.flora1.features.onboarding.weight.PregnancyStatus
 import com.example.flora1.features.profile.consent.ProfileEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,50 +25,46 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     val isLoggedIn = preferences2.isLoggedIn
-        .stateIn(false)
+        .stateIn(this, false)
 
     val pregnancyStatus = preferences2.pregnancyStatus
-        .stateIn(PregnancyStatus.NOT_PREGNANT)
+        .stateIn(this, PregnancyStatus.NOT_PREGNANT)
 
     val race = preferences2.race
-        .stateIn(Race.NO_COMMENT)
+        .stateIn(this, Race.NO_COMMENT)
 
     val contraceptiveMethods = preferences2.contraceptiveMethods
-        .stateIn(emptyList())
+        .stateIn(this, emptyList())
 
     val height = preferences2.height
-        .stateIn("150")
+        .stateIn(this, "150")
 
     val weight = preferences2.weight
-        .stateIn("80")
+        .stateIn(this, "80")
 
     val averageCycleDays = preferences2.averageCycleDays
-        .stateIn(0)
+        .stateIn(this, 0)
 
     val medVitsDescription = preferences2.medVitsDescription
-        .stateIn("")
+        .stateIn(this, "")
 
     val hasTakenMedvits = preferences2.hasTakenMedVits
-        .stateIn(false)
+        .stateIn(this, false)
 
     val gynosurgeryDescription = preferences2.gyncosurgeryDescription
-        .stateIn("")
+        .stateIn(this, "")
 
     val hasDoneGynosurgery = preferences2.hasDoneGynecosurgery
-        .stateIn(false)
+        .stateIn(this, false)
 
     val isPredictionModeEnabled = preferences2.isPredictionModeEnabled
-        .stateIn(false)
+        .stateIn(this, false)
 
     val dateOfBirth = preferences2.dateOfBirth
-        .stateIn(10L)
+        .stateIn(this, 10L)
 
     val theme = preferences2.theme
-        .stateIn(Theme.AUTO)
-
-    private fun <T> Flow<T>.stateIn(
-        initialValue: T
-    ): StateFlow<T> = stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), initialValue)
+        .stateIn(this, Theme.AUTO)
 
     private val _events = Channel<ProfileEvent>()
     val events = _events.receiveAsFlow()
@@ -84,11 +77,18 @@ class ProfileViewModel @Inject constructor(
                 }
 
                 ProfileAction.OnManageConsentClicked -> {
-                    _events.send(ProfileEvent.NavigateToManageConsent)
+                    if (isLoggedIn.value)
+                        _events.send(ProfileEvent.NavigateToManageConsent)
+                    else
+                        _events.send(
+                            ProfileEvent.NavigateToLogin(
+                                id = MANAGE_DATA_CONSENT_ID,
+                            )
+                        )
                 }
 
                 ProfileAction.OnMyDoctorsClicked -> {
-                    if (preferences2.hasGivenDataConsent.firstOrNull() == true)
+                    if (preferences2.hasGivenDataConsent.firstOrNull() == true && isLoggedIn.value)
                         _events.send(ProfileEvent.NavigateToMyDoctorsSuccess)
                     else
                         _events.send(ProfileEvent.NavigateToMyDoctorsFailed)
@@ -188,7 +188,7 @@ class ProfileViewModel @Inject constructor(
                 ProfileAction.OnLoginClicked -> {
                     if (!isLoggedIn.value)
                         viewModelScope.launch {
-                            _events.send(ProfileEvent.NavigateToLogin)
+                            _events.send(ProfileEvent.NavigateToLogin(id = LOGIN_ACTION_ID))
                         }
                 }
 
@@ -201,5 +201,10 @@ class ProfileViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    companion object {
+        const val MANAGE_DATA_CONSENT_ID = "manageDataConsentId"
+        const val LOGIN_ACTION_ID = "loginId"
     }
 }
