@@ -16,14 +16,34 @@ import com.example.flora1.features.main.MainRoot
 import com.example.flora1.features.profile.ProfileRoot
 import com.example.flora1.features.profile.ProfileViewModel
 import com.example.flora1.features.profile.consent.ManageConsentRoot
+import com.example.flora1.features.profile.duthstats.DuthStatsRoot
 import com.example.flora1.features.profile.mydoctors.MyDoctorsRoot
 import com.example.flora1.navigationroot.Screen
+import com.google.firebase.Firebase
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ServerValue
+import com.google.firebase.database.database
+
+val myDatabase =
+    Firebase.database("https://luxo-baf4a-default-rtdb.europe-west1.firebasedatabase.app/")
+
+val databaseRef =
+    myDatabase.reference
+
+fun DatabaseReference.incrementClick(key: String) =
+    updateChildren(mapOf(key to ServerValue.increment(1)))
 
 internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
     composable<Screen.Main> {
         MainRoot(
-            onCalendarClick = { navController.navigate(Screen.Calendar) },
-            onProfileClick = { navController.navigate(Screen.Settings) }
+            onCalendarClick = {
+                databaseRef.incrementClick("calendarClicked")
+                navController.navigate(Screen.Calendar)
+            },
+            onProfileClick = {
+                databaseRef.incrementClick("profileClicked")
+                navController.navigate(Screen.Settings)
+            }
         )
     }
 
@@ -32,7 +52,10 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
         exitTransition = { exitFromRight() },
     ) {
         CalendarRoot(
-            onNavigateBack = navController::popBackStack,
+            onNavigateBack = {
+                databaseRef.incrementClick("calendarBack")
+                navController.popBackStack()
+            },
         )
     }
 
@@ -42,16 +65,30 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
     ) {
         ProfileRoot(
             onBack = navController::popBackStack,
-            onNavigateToManageConsent = { navController.navigate(Screen.ManageConsent) },
-            onNavigateToMyDoctors = { navController.navigate(Screen.MyDoctors) },
+            onNavigateToManageConsent = {
+                databaseRef.incrementClick("navigateToManageConsent")
+                navController.navigate(Screen.ManageConsent)
+            },
+            onNavigateToMyDoctors = {
+                databaseRef.incrementClick("navigateToMyDoctors")
+                navController.navigate(Screen.MyDoctors)
+            },
             onNavigateToLogin = { id ->
+                databaseRef.incrementClick("navigateToLogin")
                 navController.navigate(Screen.LoginProfile(id))
+            },
+            onNavigateToDuthStats = {
+                databaseRef.incrementClick("navigateDuthStats")
+                navController.navigate(Screen.DuthStats)
+
             }
         )
 
         it.performActionOnce<Int>(savedStateKey = LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_KEY) { manageConsentId ->
-            if (manageConsentId == LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_SUCCESS)
+            if (manageConsentId == LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_SUCCESS) {
+                databaseRef.incrementClick("navigateToManageConsent")
                 navController.navigate(Screen.ManageConsent)
+            }
         }
     }
 
@@ -60,7 +97,10 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
         exitTransition = { exitFromRight() },
     ) {
         ManageConsentRoot(
-            onBack = navController::popBackStack
+            onBack = {
+                databaseRef.incrementClick("navigateBackFromManageConsent")
+                navController.popBackStack()
+            }
         )
     }
 
@@ -69,8 +109,18 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
         exitTransition = { exitFromRight() },
     ) {
         MyDoctorsRoot(
-            onBack = navController::popBackStack
+            onBack = {
+                databaseRef.incrementClick("navigateBackFromMyDoctors")
+                navController.popBackStack()
+            }
         )
+    }
+
+    composable<Screen.DuthStats>(
+        enterTransition = { enterToRight() },
+        exitTransition = { exitFromRight() },
+    ) {
+        DuthStatsRoot()
     }
 
     composable<Screen.LoginProfile>(
@@ -87,6 +137,7 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
                         LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_KEY,
                         LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_SUCCESS,
                     )
+                databaseRef.incrementClick("navigateBackFromLogin")
                 navController.popBackStack()
             },
             onContinueAsAnonymous = navController::popBackStack,

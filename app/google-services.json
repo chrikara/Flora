@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "757533030179",
+    "project_id": "luxo-baf4a",
+    "storage_bucket": "luxo-baf4a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757533030179:android:b9ebc93b44ae7aa8d67e96",
+        "android_client_info": {
+          "package_name": "com.example.flora1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUKa6HgAWPJ24yeSA7z5HTaMuY4dvXV4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

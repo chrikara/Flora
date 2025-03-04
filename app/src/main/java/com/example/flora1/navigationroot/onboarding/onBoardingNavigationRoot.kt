@@ -20,6 +20,8 @@ import com.example.flora1.features.onboarding.stresstilllastperiod.StressTillLas
 import com.example.flora1.features.onboarding.usernameage.HeightRoot
 import com.example.flora1.features.onboarding.weight.WeightRoot
 import com.example.flora1.navigationroot.Screen
+import com.example.flora1.navigationroot.main.databaseRef
+import com.example.flora1.navigationroot.main.incrementClick
 
 fun NavGraphBuilder.onBoardingNavigationRoot(
     navController: NavController,
@@ -28,9 +30,11 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.LoginOnBoarding> {
         LoginRoot(
             onSuccessfulLogin = {
+                databaseRef.incrementClick("navigateToBorn")
                 navController.navigate(Screen.Born)
             },
             onContinueAsAnonymous = {
+                databaseRef.incrementClick("navigateToBorn")
                 navController.navigate(Screen.Born)
             },
             onBackClicked = null
@@ -40,10 +44,14 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.Born> {
         BornRoot(
             onNext = { isEligibleForFlora ->
-                if (isEligibleForFlora)
+                if (isEligibleForFlora) {
+                    databaseRef.incrementClick("navigateToHeight")
                     navController.navigate(Screen.Height)
-                else
+
+                } else {
+                    databaseRef.incrementClick("navigateToMinorAge")
                     navController.navigate(Screen.MinorAge)
+                }
             }
         )
     }
@@ -57,6 +65,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.Height> {
         HeightRoot(
             onNext = {
+                databaseRef.incrementClick("navigateToWeight")
                 navController.navigate(Screen.Weight)
             }
         )
@@ -65,6 +74,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.Weight> {
         WeightRoot(
             onNext = {
+                databaseRef.incrementClick("navigateToPregnancy")
                 navController.navigate(Screen.Pregnancy)
             }
         )
@@ -73,10 +83,14 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.Pregnancy> {
         PregnancyRoot(
             onNext = { hasBeenPregnant ->
-                if (hasBeenPregnant)
+                if (hasBeenPregnant) {
+                    databaseRef.incrementClick("navigateToPregnancyStats")
                     navController.navigate(Screen.PregnancyStats)
-                else
+
+                } else {
+                    databaseRef.incrementClick("navigateToRace")
                     navController.navigate(Screen.Race)
+                }
             }
         )
     }
@@ -84,6 +98,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.PregnancyStats> {
         PregnancyStatsRoot(
             onNext = {
+                databaseRef.incrementClick("navigateToRace")
                 navController.navigate(Screen.Race)
             },
             onBack = navController::navigateUp,
@@ -93,6 +108,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.Race> {
         RaceRoot(
             onNext = {
+                databaseRef.incrementClick("navigateMedVits")
                 navController.navigate(Screen.MedVits)
             },
         )
@@ -101,6 +117,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.MedVits> {
         MedVitsRoot(
             onNext = {
+                databaseRef.incrementClick("navigateToGynosurgery")
                 navController.navigate(Screen.Gynecosurgery)
             },
         )
@@ -109,6 +126,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.Gynecosurgery> {
         GynosurgeryRoot(
             onNext = {
+                databaseRef.incrementClick("navigateToContraceptives")
                 navController.navigate(Screen.Contraceptives)
             },
         )
@@ -117,6 +135,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.Contraceptives> {
         ContraceptivesRoot(
             onNext = {
+                databaseRef.incrementClick("navigateToStress")
                 navController.navigate(Screen.StressLevelTillLastPeriod)
             },
         )
@@ -125,6 +144,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.StressLevelTillLastPeriod> {
         StressTillLastPeriodRoot(
             onNext = {
+                databaseRef.incrementClick("navigateToSleep")
                 navController.navigate(Screen.SleepQualityTillLastPeriod)
             },
         )
@@ -133,6 +153,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.SleepQualityTillLastPeriod> {
         SleepQualityTillLastPeriodRoot(
             onNext = {
+                databaseRef.incrementClick("navigateToAverageCycle")
                 navController.navigate(Screen.AverageCycle)
             },
             onBack = navController::navigateUp,
@@ -141,23 +162,31 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
 
     composable<Screen.AverageCycle> {
         AverageCycleRoot(
-            onNext = { navController.navigate(Screen.LastPeriod) },
+            onNext = {
+                databaseRef.incrementClick("navigateToLastPeriod")
+                navController.navigate(Screen.LastPeriod)
+            },
         )
     }
 
     composable<Screen.LastPeriod> {
         LastPeriodRoot(
-            onNext = { navController.navigate(Screen.GetStarted) },
+            onNext = {
+                databaseRef.incrementClick("navigateToGetStarted")
+                navController.navigate(Screen.GetStarted)
+            },
         )
     }
 
     composable<Screen.GetStarted> {
         GetStartedRoot(
             onPrimaryClicked = {
+                databaseRef.incrementClick("navigateToMainScreen")
                 navController.popBackStack(Screen.LoginOnBoarding, inclusive = true)
                 navController.navigate(Screen.Main)
             },
             onSecondaryClicked = {
+                databaseRef.incrementClick("navigateAllTheWayBackToOnBoarding")
                 navController.popBackStack(Screen.Born, inclusive = false)
             }
         )

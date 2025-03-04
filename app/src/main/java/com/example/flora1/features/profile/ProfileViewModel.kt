@@ -10,6 +10,8 @@ import com.example.flora1.domain.personaldetails.WeightValidator
 import com.example.flora1.features.onboarding.race.Race
 import com.example.flora1.features.onboarding.weight.PregnancyStatus
 import com.example.flora1.features.profile.consent.ProfileEvent
+import com.example.flora1.navigationroot.main.databaseRef
+import com.example.flora1.navigationroot.main.incrementClick
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.firstOrNull
@@ -71,6 +73,7 @@ class ProfileViewModel @Inject constructor(
 
     fun onAction(action: ProfileAction) {
         viewModelScope.launch {
+            databaseRef.incrementClick("profileAction ${action}")
             when (action) {
                 ProfileAction.OnBackClicked -> {
                     _events.send(ProfileEvent.NavigateBack)
@@ -197,6 +200,12 @@ class ProfileViewModel @Inject constructor(
                         preferences2.logout()
                         _events.send(ProfileEvent.LogoutSuccessful)
                         action.onLogout()
+                    }
+                }
+
+                ProfileAction.OnDuthStats -> {
+                    viewModelScope.launch {
+                        _events.send(ProfileEvent.NavigateToDuthStats)
                     }
                 }
             }

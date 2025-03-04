@@ -74,6 +74,7 @@ fun ProfileRoot(
     onNavigateToManageConsent: () -> Unit,
     onNavigateToMyDoctors: () -> Unit,
     onNavigateToLogin: (String) -> Unit,
+    onNavigateToDuthStats: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -105,6 +106,8 @@ fun ProfileRoot(
             ProfileEvent.LogoutSuccessful -> context.showSingleToast(
                 context.getString(R.string.logout_was_successful),
             )
+
+            ProfileEvent.NavigateToDuthStats -> onNavigateToDuthStats()
         }
     }
 
@@ -243,6 +246,14 @@ fun ProfileRoot(
             leadingIconRes = R.drawable.ic_doctor,
             trailingIconRes = R.drawable.ic_onboarding_next_arrow,
             onClick = { onAction(ProfileAction.OnMyDoctorsClicked) },
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        PrimaryInfoRow(
+            primaryText = stringResource(R.string.duth_stats),
+            trailingIconRes = R.drawable.ic_onboarding_next_arrow,
+            onClick = { onAction(ProfileAction.OnDuthStats) },
         )
 
         Spacer(modifier = Modifier.height(20.dp))

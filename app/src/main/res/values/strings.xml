@@ -64,6 +64,7 @@
     <string name="logout_was_successful">Logout was successful</string>
     <string name="or">Or</string>
     <string name="continue_as_an_anonymous_user">Continue as an anonymous user</string>
+    <string name="duth_stats">Duth Stats</string>
     <plurals name="my_doctors_description">
         <item quantity="one">"%d doctor requested to help you. You may accept, revoke or decline each doctor\'s status at any point."</item>
         <item quantity="other">%d doctors requested to help you. You may accept, revoke or decline each doctor\'s status at any point.</item>

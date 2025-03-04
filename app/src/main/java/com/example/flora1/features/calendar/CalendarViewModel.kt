@@ -6,6 +6,8 @@ import com.example.flora1.domain.db.DeletePeriodUseCase
 import com.example.flora1.domain.db.GetAllPeriodsUseCase
 import com.example.flora1.domain.db.SavePeriodUseCase
 import com.example.flora1.domain.db.model.Period
+import com.example.flora1.navigationroot.main.databaseRef
+import com.example.flora1.navigationroot.main.incrementClick
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,16 +43,19 @@ class CalendarViewModel @Inject constructor(
     val temporarySelectedPeriodDates = _temporarySelectedPeriodDates.asStateFlow()
 
     fun edit() {
+        databaseRef.incrementClick("editPeriod")
         _temporarySelectedPeriodDates.update { periods.value }
         _isEditing.update { true }
     }
 
     fun cancel() {
+        databaseRef.incrementClick("cancelPeriod")
         _temporarySelectedPeriodDates.update { periods.value }
         _isEditing.update { false }
     }
 
     fun onTemporaryPeriodSelected(selectedPeriod: Period) {
+        databaseRef.incrementClick("selectPeriod")
         _temporarySelectedPeriodDates.update { temporaryPeriods ->
             if (selectedPeriod in temporaryPeriods)
                 temporaryPeriods - selectedPeriod
@@ -60,6 +65,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun save() {
+        databaseRef.incrementClick("savePeriod")
         if (temporarySelectedPeriodDates.value == periods.value) {
             _isEditing.update { false }
             return
@@ -83,6 +89,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun close() {
+        databaseRef.incrementClick("closeCalendar")
         viewModelScope.launch {
             _events.send(CalendarEvent.NavigateBack)
         }

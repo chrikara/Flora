@@ -8,6 +8,7 @@ sealed interface ProfileAction {
     data object OnManageConsentClicked : ProfileAction
     data object OnBackClicked : ProfileAction
     data object OnMyDoctorsClicked : ProfileAction
+    data object OnDuthStats : ProfileAction
     data object OnChangeTheme : ProfileAction
     data object OnEnablePredictionModeClicked : ProfileAction
     data class OnPregnancyStatButtonClicked(val pregnancyStatus: PregnancyStatus?) : ProfileAction

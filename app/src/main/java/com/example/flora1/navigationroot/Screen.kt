@@ -70,9 +70,12 @@ sealed interface Screen {
     data object MyDoctors : Screen
 
     @Serializable
+    data object DuthStats : Screen
+
+    @Serializable
     data class LoginProfile(val id: String) : Screen
 
     companion object {
-        val startDestination = Main
+        val startDestination = Splash
     }
 }

@@ -2,6 +2,7 @@
 agp = "8.5.1"
 hiltNavigationComposeVersion = "1.2.0"
 kotlin = "2.0.0"
+googleServices = "4.4.2"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 ktor = '2.3.7'
@@ -79,5 +80,6 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 

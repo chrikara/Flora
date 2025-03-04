@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.flora1.R
+import com.example.flora1.navigationroot.main.databaseRef
+import com.example.flora1.navigationroot.main.incrementClick
 import kotlinx.coroutines.launch
 
 @Composable
@@ -93,7 +95,10 @@ fun OnBoardingItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(onClick = {
+                databaseRef.incrementClick("bottomSheet ${text}")
+                onClick()
+            })
             .padding(vertical = 10.dp)
             .padding(start = 12.dp),
         verticalAlignment = Alignment.CenterVertically,

@@ -37,6 +37,8 @@ import com.example.flora1.core.presentation.ui.date.toFloraText
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
 import com.example.flora1.core.presentation.ui.uikit.dialogs.PredictionDialog
 import com.example.flora1.features.main.components.PeriodSphere
+import com.example.flora1.navigationroot.main.databaseRef
+import com.example.flora1.navigationroot.main.incrementClick
 
 @Composable
 fun MainRoot(
@@ -111,7 +113,14 @@ fun MainRoot(
                 dateText = selectedDateFormatted,
                 primaryText = primaryText,
                 periodDays = periodDays,
-                onArcClicked = viewModel::onArcClicked,
+                onArcClicked = { offsetClicked, circlePositions, circleRadius ->
+                    databaseRef.incrementClick("arcClicked")
+                    viewModel.onArcClicked(
+                        offsetClicked,
+                        circlePositions,
+                        circleRadius
+                    )
+                },
             )
         }
 
@@ -131,7 +140,10 @@ fun MainRoot(
 
             PrimaryButton(
                 text = if (isConnectedToSocket) "Stop Federated Learning" else "Start Federated Learning",
-                onClick = viewModel::manageWebSocketConnection,
+                onClick = {
+                    databaseRef.incrementClick("startFederatedLearning")
+                    viewModel.manageWebSocketConnection()
+                },
             )
         }
 
