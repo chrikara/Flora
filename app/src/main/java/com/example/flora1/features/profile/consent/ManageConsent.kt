@@ -23,26 +23,58 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
+import com.example.flora1.core.presentation.ui.uikit.ErrorScreen
+import com.example.flora1.core.presentation.ui.uikit.LoadingScreen
 import com.example.flora1.core.presentation.ui.uikit.buttons.BackButton
+import com.example.flora1.domain.util.Result
+import com.example.flora1.domain.util.getOrNull
 
 @Composable
-fun ManageConsentRoot(
+fun ManageConsentContent(
     onBack: () -> Unit,
     viewModel: ManageConsentViewModel = hiltViewModel(),
 ) {
-    val hasGivenDataConsent by viewModel.isDataConsentGiven.collectAsStateWithLifecycle()
+    val hasGivenConsentResult by viewModel.hasGivenConsent.collectAsStateWithLifecycle()
 
     ManageConsentRoot(
         onBack = onBack,
-        enabled = hasGivenDataConsent,
+        hasGivenConsent = hasGivenConsentResult.getOrNull() == true,
+        isRunning = hasGivenConsentResult is Result.Running,
         onSwitched = viewModel::onToggleDataConsent,
+        onRetry = viewModel::onRetry,
+        isError = hasGivenConsentResult is Result.Error
     )
 }
 
 @Composable
 fun ManageConsentRoot(
+    isError: Boolean = false,
+    isRunning: Boolean = false,
+    hasGivenConsent: Boolean = false,
+    onRetry: () -> Unit,
     onBack: () -> Unit = {},
-    enabled: Boolean = true,
+    onSwitched: ((Boolean) -> Unit)? = null,
+) {
+    when {
+        isError -> ErrorScreen(
+            onRetryButtonClicked = onRetry,
+        )
+
+        isRunning -> LoadingScreen()
+
+        else -> ManageConsentContent(
+            onBack = onBack,
+            checked = hasGivenConsent,
+            onSwitched = onSwitched,
+        )
+    }
+}
+
+
+@Composable
+fun ManageConsentContent(
+    onBack: () -> Unit = {},
+    checked: Boolean = true,
     onSwitched: ((Boolean) -> Unit)? = null,
 ) {
     Column(
@@ -80,7 +112,8 @@ fun ManageConsentRoot(
             )
 
             Switch(
-                checked = enabled,
+                enabled = !checked,
+                checked = checked,
                 onCheckedChange = onSwitched,
             )
         }
@@ -115,6 +148,6 @@ fun ManageConsentRow(
 @PreviewLightDark
 private fun Preview(modifier: Modifier = Modifier) {
     Flora1Theme {
-        ManageConsentRoot()
+        ManageConsentContent()
     }
 }

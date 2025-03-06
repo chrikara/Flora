@@ -28,10 +28,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.getPrimaryHorizontalBrush
 import com.example.flora1.core.presentation.ui.date.toFloraText
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
@@ -131,8 +133,9 @@ fun MainRoot(
 
             PrimaryButton(
                 text = if (isConnectedToSocket) "Stop Federated Learning" else "Start Federated Learning",
-                onClick = viewModel::manageWebSocketConnection,
+                onClick = viewModel::ownerSign,
             )
+
         }
 
     }

@@ -66,6 +66,8 @@ class UsernameAgeViewModel @Inject constructor(
                     preferences.saveHasGivenDataConsent(isConsentGranted)
                     _events.send(UsernameAgeEvent.RegistrationSuccessful)
                 }
+
+                Result.Running -> Unit
             }
         }
     }
@@ -98,6 +100,8 @@ class UsernameAgeViewModel @Inject constructor(
                     preferences.saveToken(token = result.data)
                     _events.send(UsernameAgeEvent.LoginSuccessful)
                 }
+
+                Result.Running -> Unit
             }
         }
     }

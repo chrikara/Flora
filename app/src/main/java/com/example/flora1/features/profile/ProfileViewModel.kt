@@ -7,12 +7,14 @@ import com.example.flora1.domain.Preferences2
 import com.example.flora1.domain.Theme
 import com.example.flora1.domain.personaldetails.HeightValidator
 import com.example.flora1.domain.personaldetails.WeightValidator
+import com.example.flora1.features.main.EthereumWrapper
 import com.example.flora1.features.onboarding.race.Race
 import com.example.flora1.features.onboarding.weight.PregnancyStatus
 import com.example.flora1.features.profile.consent.ProfileEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,6 +24,7 @@ class ProfileViewModel @Inject constructor(
     private val preferences2: Preferences2,
     internal val heightValidator: HeightValidator,
     internal val weightValidator: WeightValidator,
+    private val ethereumWrapper: EthereumWrapper,
 ) : ViewModel() {
 
     val isLoggedIn = preferences2.isLoggedIn
@@ -66,6 +69,10 @@ class ProfileViewModel @Inject constructor(
     val theme = preferences2.theme
         .stateIn(this, Theme.AUTO)
 
+    val isConnectedToMetamask = ethereumWrapper.selectedAddress
+        .map { selectedAddress -> selectedAddress.isNotBlank() }
+        .stateIn(this, false)
+
     private val _events = Channel<ProfileEvent>()
     val events = _events.receiveAsFlow()
 
@@ -77,14 +84,13 @@ class ProfileViewModel @Inject constructor(
                 }
 
                 ProfileAction.OnManageConsentClicked -> {
-                    if (isLoggedIn.value)
-                        _events.send(ProfileEvent.NavigateToManageConsent)
-                    else
-                        _events.send(
-                            ProfileEvent.NavigateToLogin(
-                                id = MANAGE_DATA_CONSENT_ID,
-                            )
-                        )
+                    _events.send(
+                        when {
+                            !isConnectedToMetamask.value -> ProfileEvent.MetamaskNotConnected
+                            !isLoggedIn.value -> ProfileEvent.NavigateToLogin(id = MANAGE_DATA_CONSENT_ID)
+                            else -> ProfileEvent.NavigateToManageConsent
+                        }
+                    )
                 }
 
                 ProfileAction.OnMyDoctorsClicked -> {
@@ -105,99 +111,85 @@ class ProfileViewModel @Inject constructor(
                 }
 
                 ProfileAction.OnEnablePredictionModeClicked -> {
-                    viewModelScope.launch {
-                        preferences2.saveIsPredictionModeEnabled(isPredictionModeEnabled = !isPredictionModeEnabled.value)
-                    }
+                    preferences2.saveIsPredictionModeEnabled(isPredictionModeEnabled = !isPredictionModeEnabled.value)
+
                 }
 
                 is ProfileAction.OnPregnancyStatButtonClicked -> {
-                    viewModelScope.launch {
-                        preferences2.savePregnancyStatus(
-                            action.pregnancyStatus ?: PregnancyStatus.NO_COMMENT
-                        )
-                    }
+                    preferences2.savePregnancyStatus(
+                        action.pregnancyStatus ?: PregnancyStatus.NO_COMMENT
+                    )
+
                 }
 
                 is ProfileAction.OnRaceButtonClicked -> {
-                    viewModelScope.launch {
-                        preferences2.saveRace(
-                            action.race ?: Race.NO_COMMENT,
-                        )
-                    }
+                    preferences2.saveRace(
+                        action.race ?: Race.NO_COMMENT,
+                    )
                 }
 
                 is ProfileAction.OnContraceptiveMethodsButtonClicked -> {
-                    viewModelScope.launch {
-                        preferences2.saveContraceptiveMethods(
-                            action.methods,
-                        )
-                    }
+                    preferences2.saveContraceptiveMethods(
+                        action.methods,
+                    )
                 }
 
                 is ProfileAction.OnHeightButtonClicked -> {
-                    viewModelScope.launch {
-                        preferences2.saveHeight(
-                            action.text.toFloatOrNull() ?: 0f
-                        )
-                    }
+                    preferences2.saveHeight(
+                        action.text.toFloatOrNull() ?: 0f
+                    )
                 }
 
                 is ProfileAction.OnWeightButtonClicked -> {
-                    viewModelScope.launch {
-                        preferences2.saveWeight(
-                            action.text.toFloatOrNull() ?: 0f
-                        )
-                    }
+                    preferences2.saveWeight(
+                        action.text.toFloatOrNull() ?: 0f
+                    )
                 }
 
                 is ProfileAction.OnAverageCycleDaysButtonClicked -> {
-                    viewModelScope.launch {
-                        preferences2.saveAverageCycle(
-                            action.day,
-                        )
+                    preferences2.saveAverageCycle(
+                        action.day,
+                    )
+                }
+
+                is ProfileAction.OnChangeMedvitsClicked -> {
+                    launch {
+                        preferences2.saveMedVitsDescription(action.description)
+                    }
+                    launch {
+                        preferences2.saveHasTakenMedVits(action.enabled)
                     }
                 }
 
-                is ProfileAction.OnChangeMedvitsClicked ->
-                    viewModelScope.launch {
-                        launch {
-                            preferences2.saveMedVitsDescription(action.description)
-                        }
-                        launch {
-                            preferences2.saveHasTakenMedVits(action.enabled)
-                        }
-                    }
-
                 is ProfileAction.OnChangeGynosurgeryClicked -> {
-                    viewModelScope.launch {
-                        launch {
-                            preferences2.saveGyncosurgeryDescription(action.description)
-                        }
-                        launch {
-                            preferences2.saveHasDoneGynecosurgery(action.enabled)
-                        }
+                    launch {
+                        preferences2.saveGyncosurgeryDescription(action.description)
+                    }
+                    launch {
+                        preferences2.saveHasDoneGynecosurgery(action.enabled)
                     }
                 }
 
                 is ProfileAction.OnDateOfBirthButtonClicked -> {
-                    viewModelScope.launch {
-                        preferences2.saveDateOfBirth(action.date)
-                    }
+                    preferences2.saveDateOfBirth(action.date)
                 }
 
                 ProfileAction.OnLoginClicked -> {
                     if (!isLoggedIn.value)
-                        viewModelScope.launch {
-                            _events.send(ProfileEvent.NavigateToLogin(id = LOGIN_ACTION_ID))
-                        }
+                        _events.send(ProfileEvent.NavigateToLogin(id = LOGIN_ACTION_ID))
                 }
 
                 is ProfileAction.OnAcceptLogout -> {
-                    viewModelScope.launch {
-                        preferences2.logout()
-                        _events.send(ProfileEvent.LogoutSuccessful)
-                        action.onLogout()
-                    }
+                    preferences2.logout()
+                    _events.send(ProfileEvent.LogoutSuccessful)
+                    action.onLogout()
+                }
+
+                ProfileAction.OnToggleMetamask -> {
+                    if (isConnectedToMetamask.value)
+                        ethereumWrapper.disconnect()
+                    else
+                        ethereumWrapper.connect()
                 }
             }
         }

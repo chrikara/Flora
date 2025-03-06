@@ -91,6 +91,7 @@ fun ProfileRoot(
     val gynosurgeryDescription by viewModel.gynosurgeryDescription.collectAsStateWithLifecycle()
     val hasDoneGynosurgery by viewModel.hasDoneGynosurgery.collectAsStateWithLifecycle()
     val dateOfBirth by viewModel.dateOfBirth.collectAsStateWithLifecycle()
+    val isConnectedToMetamask by viewModel.isConnectedToMetamask.collectAsStateWithLifecycle()
 
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
@@ -105,6 +106,10 @@ fun ProfileRoot(
             ProfileEvent.LogoutSuccessful -> context.showSingleToast(
                 context.getString(R.string.logout_was_successful),
             )
+
+            ProfileEvent.MetamaskNotConnected -> context.showSingleToast(
+                context.getString(R.string.you_have_to_enable_metamask)
+            )
         }
     }
 
@@ -113,6 +118,7 @@ fun ProfileRoot(
         theme = theme,
         isLoggedIn = isLoggedIn,
         isPredictionModeEnabled = isPredictionModeEnabled,
+        isConnectedToMetamask = isConnectedToMetamask,
         selectedPregnancyStatus = pregnancyStatus,
         selectedRace = race,
         selectedContraceptiveMethods = contraceptiveMethods,
@@ -135,6 +141,7 @@ fun ProfileRoot(
     isLoggedIn: Boolean = false,
     onAction: (ProfileAction) -> Unit = {},
     isPredictionModeEnabled: Boolean = false,
+    isConnectedToMetamask: Boolean = false,
     selectedPregnancyStatus: PregnancyStatus = PregnancyStatus.PREGNANT,
     selectedRace: Race = Race.NO_COMMENT,
     selectedHeight: String = "",
@@ -225,6 +232,21 @@ fun ProfileRoot(
             leadingIconRes = R.drawable.ic_didroom,
             checked = isPredictionModeEnabled,
             onClick = { onAction(ProfileAction.OnEnablePredictionModeClicked) }
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        PrimaryInfoRowWithSwitch(
+            primaryText = stringResource(
+                id = if (isConnectedToMetamask)
+                    R.string.disconnect_from_metamask
+                else
+                    R.string.connect_to_metamask,
+            ),
+            secondaryText = stringResource(R.string.metamask_description),
+            leadingIconRes = R.drawable.icon_metamask,
+            checked = isConnectedToMetamask,
+            onClick = { onAction(ProfileAction.OnToggleMetamask) }
         )
 
         Spacer(modifier = Modifier.height(20.dp))

@@ -5,6 +5,10 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
+import com.example.flora1.consent.data.ConsentApiHasGivenConsentUseCase
+import com.example.flora1.consent.data.DefaultGetOwnersService
+import com.example.flora1.consent.data.GetOwnersService
+import com.example.flora1.consent.domain.HasGivenConsentUseCase
 import com.example.flora1.core.network.clients.FLWebSocketClient
 import com.example.flora1.core.network.clients.WebSocketClient
 import com.example.flora1.data.auth.DefaultLoginService
@@ -28,12 +32,15 @@ import com.example.flora1.domain.personaldetails.DefaultHeightValidator
 import com.example.flora1.domain.personaldetails.DefaultWeightValidator
 import com.example.flora1.domain.personaldetails.HeightValidator
 import com.example.flora1.domain.personaldetails.WeightValidator
-import com.example.flora1.features.main.EthereumRepo
+import com.example.flora1.features.main.EthereumWrapper
 import com.example.flora1.features.main.SomeModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.metamask.androidsdk.DappMetadata
+import io.metamask.androidsdk.Ethereum
+import io.metamask.androidsdk.SDKOptions
 import javax.inject.Singleton
 
 private val Context.userDataStore by preferencesDataStore(
@@ -120,10 +127,22 @@ object FloraModule {
 
     @Provides
     @Singleton
-    fun providesEthereum(
+    fun providesEthereumInstance(
         app: Application,
-    ): EthereumRepo =
-        SomeModel(app.applicationContext)
+    ): Ethereum {
+        val dappMetadata = DappMetadata("Droid Dapp", "https://www.droiddapp.io")
+        val infuraAPIKey = "92a393fc2d4541e58dabc785f2e4d4f4"
+        return Ethereum(app.applicationContext, dappMetadata, SDKOptions(infuraAPIKey, null))
+    }
+
+    @Provides
+    @Singleton
+    fun providesEthereumWrapper(
+        ethereum: Ethereum,
+    ): EthereumWrapper =
+        SomeModel(
+            ethereum = ethereum
+        )
 
     @Provides
     @Singleton
@@ -149,4 +168,18 @@ object FloraModule {
         dataStore = dataStore,
         decimalConverter = decimalConverter,
     )
+
+    @Provides
+    @Singleton
+    fun providesGetOwnerService(): GetOwnersService = DefaultGetOwnersService()
+
+
+    @Provides
+    @Singleton
+    fun providesHasGivenConsentUseCase(
+        service: GetOwnersService,
+    ): HasGivenConsentUseCase = ConsentApiHasGivenConsentUseCase(
+        getOwnersService = service,
+    )
+
 }

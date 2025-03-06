@@ -10,6 +10,7 @@ sealed interface ProfileAction {
     data object OnMyDoctorsClicked : ProfileAction
     data object OnChangeTheme : ProfileAction
     data object OnEnablePredictionModeClicked : ProfileAction
+    data object OnToggleMetamask : ProfileAction
     data class OnPregnancyStatButtonClicked(val pregnancyStatus: PregnancyStatus?) : ProfileAction
     data class OnRaceButtonClicked(val race: Race?) : ProfileAction
     data class OnContraceptiveMethodsButtonClicked(val methods: List<ContraceptiveMethod>) :

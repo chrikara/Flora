@@ -1,19 +1,22 @@
 package com.example.flora1.features.main
 
-import android.content.Context
-import io.metamask.androidsdk.DappMetadata
+import androidx.lifecycle.asFlow
 import io.metamask.androidsdk.Ethereum
 import io.metamask.androidsdk.Result
-import io.metamask.androidsdk.SDKOptions
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
-interface EthereumRepo {
+interface EthereumWrapper {
     suspend fun connect()
+    fun disconnect()
+    val selectedAddress : Flow<String>
 }
 
-class SomeModel(context: Context) : EthereumRepo {
-    private val dappMetadata = DappMetadata("Droid Dapp", "https://www.droiddapp.io")
-    private val infuraAPIKey = "92a393fc2d4541e58dabc785f2e4d4f4"
-    private val ethereum = Ethereum(context, dappMetadata, SDKOptions(infuraAPIKey, null))
+class SomeModel(
+    private val ethereum: Ethereum,
+) : EthereumWrapper {
 
     override suspend fun connect() {
         ethereum.connect { result ->
@@ -62,4 +65,12 @@ class SomeModel(context: Context) : EthereumRepo {
             }
         }
     }
+
+    override fun disconnect() {
+        ethereum.clearSession()
+    }
+
+    override val selectedAddress: Flow<String>
+        get() = ethereum.ethereumState.asFlow()
+            .map { it.selectedAddress }
 }

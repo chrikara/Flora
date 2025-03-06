@@ -15,7 +15,7 @@ import com.example.flora1.features.calendar.CalendarRoot
 import com.example.flora1.features.main.MainRoot
 import com.example.flora1.features.profile.ProfileRoot
 import com.example.flora1.features.profile.ProfileViewModel
-import com.example.flora1.features.profile.consent.ManageConsentRoot
+import com.example.flora1.features.profile.consent.ManageConsentContent
 import com.example.flora1.features.profile.mydoctors.MyDoctorsRoot
 import com.example.flora1.navigationroot.Screen
 
@@ -59,7 +59,7 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
         enterTransition = { enterToRight() },
         exitTransition = { exitFromRight() },
     ) {
-        ManageConsentRoot(
+        ManageConsentContent(
             onBack = navController::popBackStack
         )
     }

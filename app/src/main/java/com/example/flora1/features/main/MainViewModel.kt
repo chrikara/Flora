@@ -2,7 +2,9 @@ package com.example.flora1.features.main
 
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
+import com.example.flora1.core.flow.stateIn
 import com.example.flora1.core.network.clients.WebSocketClient
 import com.example.flora1.data.auth.RefreshService
 import com.example.flora1.data.auth.UploadFloatsService
@@ -12,6 +14,7 @@ import com.example.flora1.domain.db.SavePeriodUseCase
 import com.example.flora1.domain.util.DataError
 import com.example.flora1.domain.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.metamask.androidsdk.Ethereum
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,22 +46,29 @@ class MainViewModel @Inject constructor(
     private val refreshService: RefreshService,
     private val uploadFloatsService: UploadFloatsService,
     private val webSocketClient: WebSocketClient,
-    ethereum: EthereumRepo,
 ) : ViewModel() {
     private val _selectedDay = MutableStateFlow(LocalDate.now().dayOfMonth)
     val selectedDay: StateFlow<Int> = _selectedDay
-
 
     private var _shouldShowPredictionDialog = MutableStateFlow(false)
     val shouldShowPredictionDialog: StateFlow<Boolean> = _shouldShowPredictionDialog
 
     init {
         viewModelScope.launch {
-            //    ethereum.connect()
             _shouldShowPredictionDialog.update {
                 preferences.shouldShowPredictionDialog.firstOrNull() ?: false
             }
         }
+    }
+
+    fun ownerSign() {
+//        viewModelScope.launch {
+//            DefaultOwnersSign().sign(
+//                ownerAddress = "0x976EA74026E726554dB657fA54763abd0C3a0aa9",
+//                signature = "0x4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b915621c",
+//                kyc = "zara0156@gmail.com",
+//            )
+//        }
     }
 
     fun onAccept() {
@@ -175,6 +185,7 @@ class MainViewModel @Inject constructor(
                             flow {
                                 emit(
                                     when (result) {
+
                                         is Result.Error -> when (result.error) {
                                             DataError.Network.SOCKET_ERROR -> "Cannot establish connection"
                                             else -> "Problem occurred"
@@ -184,6 +195,8 @@ class MainViewModel @Inject constructor(
                                             uploadFloatsService.uploadFloat()
                                             "Latest WS Msg: ${result.data}, $formattedTime"
                                         }
+
+                                        else -> "Pending..."
                                     }
                                 )
                             }
