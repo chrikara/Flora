@@ -31,7 +31,7 @@ interface Preferences2 {
     suspend fun logout()
 
     suspend fun saveHasGivenDataConsent(hasGivenDataConsent: Boolean)
-    val hasGivenDataConsent: Flow<Boolean>
+    val hasGivenDataConsent: Flow<Boolean?>
 
     suspend fun updateTheme(theme: Theme)
     val theme: Flow<Theme>
@@ -89,6 +89,9 @@ interface Preferences2 {
 
     suspend fun saveSleepQualityTillLastPeriod(sleepQuality: SleepQuality)
     val sleepQualityTillLastPeriod: Flow<SleepQuality>
+
+    suspend fun saveMetamaskSignature(metamaskSignature: String)
+    val metamaskSignature: Flow<String>
 
     val isLoggedIn: Flow<Boolean>
 }
@@ -264,6 +267,17 @@ class FloraDataStorePreferences(
             SleepQuality.fromString(preferences[SLEEP_QUALITY_TILL_LAST_PERIOD_KEY] ?: "")
         }
 
+    override suspend fun saveMetamaskSignature(metamaskSignature: String) {
+        dataStore.edit { preferences ->
+            preferences[SAVE_METAMASK_SIGNATURE_KEY] = metamaskSignature
+        }
+    }
+
+    override val metamaskSignature: Flow<String> =
+        dataStore.data.flowWithCatch().map { preferences ->
+            preferences[SAVE_METAMASK_SIGNATURE_KEY] ?: ""
+        }
+
     override val isLoggedIn: Flow<Boolean> =
         dataStore.data.map { preferences ->
             preferences[TOKEN]?.isNotEmpty() ?: false
@@ -284,8 +298,8 @@ class FloraDataStorePreferences(
         dataStore.edit { it[HAS_GIVEN_DATA_CONSENT] = hasGivenDataConsent }
     }
 
-    override val hasGivenDataConsent: Flow<Boolean>
-        get() = dataStore.data.flowWithCatch().map { it[HAS_GIVEN_DATA_CONSENT] ?: false }
+    override val hasGivenDataConsent: Flow<Boolean?>
+        get() = dataStore.data.flowWithCatch().map { it[HAS_GIVEN_DATA_CONSENT] }
 
     override suspend fun updateTheme(theme: Theme) {
         dataStore.edit { it[IS_DARK] = theme.ordinal }
@@ -367,6 +381,9 @@ class FloraDataStorePreferences(
             stringPreferencesKey("stress_level_till_last_period")
         private val SLEEP_QUALITY_TILL_LAST_PERIOD_KEY =
             stringPreferencesKey("sleep_quality_till_last_period")
+
+        private val SAVE_METAMASK_SIGNATURE_KEY =
+            stringPreferencesKey("saveMetamaskSignature")
 
 
     }

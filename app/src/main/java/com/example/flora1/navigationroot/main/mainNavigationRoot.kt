@@ -16,7 +16,7 @@ import com.example.flora1.features.main.MainRoot
 import com.example.flora1.features.profile.ProfileRoot
 import com.example.flora1.features.profile.ProfileViewModel
 import com.example.flora1.features.profile.consent.ManageConsentContent
-import com.example.flora1.features.profile.mydoctors.MyDoctorsRoot
+import com.example.flora1.features.profile.mydoctors.MyDoctorsContent
 import com.example.flora1.navigationroot.Screen
 
 internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
@@ -39,7 +39,7 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
     composable<Screen.Settings>(
         enterTransition = { enterToLeft() },
         exitTransition = { exitFromLeft() },
-    ) {
+    ) { backstackEntry ->
         ProfileRoot(
             onBack = navController::popBackStack,
             onNavigateToManageConsent = { navController.navigate(Screen.ManageConsent) },
@@ -49,7 +49,7 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
             }
         )
 
-        it.performActionOnce<Int>(savedStateKey = LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_KEY) { manageConsentId ->
+        backstackEntry.performActionOnce<Int>(savedStateKey = LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_KEY) { manageConsentId ->
             if (manageConsentId == LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_SUCCESS)
                 navController.navigate(Screen.ManageConsent)
         }
@@ -68,7 +68,7 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
         enterTransition = { enterToRight() },
         exitTransition = { exitFromRight() },
     ) {
-        MyDoctorsRoot(
+        MyDoctorsContent(
             onBack = navController::popBackStack
         )
     }

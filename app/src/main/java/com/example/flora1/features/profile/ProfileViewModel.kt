@@ -1,6 +1,7 @@
 package com.example.flora1.features.profile
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.example.flora1.core.flow.stateIn
 import com.example.flora1.domain.Preferences2
@@ -13,8 +14,6 @@ import com.example.flora1.features.onboarding.weight.PregnancyStatus
 import com.example.flora1.features.profile.consent.ProfileEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -69,8 +68,8 @@ class ProfileViewModel @Inject constructor(
     val theme = preferences2.theme
         .stateIn(this, Theme.AUTO)
 
-    val isConnectedToMetamask = ethereumWrapper.selectedAddress
-        .map { selectedAddress -> selectedAddress.isNotBlank() }
+    val isConnectedToMetamask = ethereumWrapper.isConnectedToMetamask
+        .asFlow()
         .stateIn(this, false)
 
     private val _events = Channel<ProfileEvent>()
@@ -94,7 +93,7 @@ class ProfileViewModel @Inject constructor(
                 }
 
                 ProfileAction.OnMyDoctorsClicked -> {
-                    if (preferences2.hasGivenDataConsent.firstOrNull() == true && isLoggedIn.value)
+                    if (isConnectedToMetamask.value && isLoggedIn.value)
                         _events.send(ProfileEvent.NavigateToMyDoctorsSuccess)
                     else
                         _events.send(ProfileEvent.NavigateToMyDoctorsFailed)

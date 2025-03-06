@@ -227,7 +227,12 @@ fun ProfileRoot(
 
 
         PrimaryInfoRowWithSwitch(
-            primaryText = stringResource(R.string.enable_predictions),
+            primaryText = stringResource(
+                if (isPredictionModeEnabled)
+                    R.string.disable_predictions
+                else
+                    R.string.enable_predictions,
+            ),
             secondaryText = stringResource(R.string.enable_predictions_description),
             leadingIconRes = R.drawable.ic_didroom,
             checked = isPredictionModeEnabled,

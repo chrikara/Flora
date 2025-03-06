@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,7 +28,11 @@ internal fun ErrorScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        Text(text = stringResource(R.string.something_went_wrong))
+        Text(
+            text = stringResource(R.string.something_went_wrong),
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodyLarge,
+        )
 
         Spacer(modifier = Modifier.height(30.dp))
 

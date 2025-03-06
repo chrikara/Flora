@@ -34,7 +34,6 @@ class UsernameAgeViewModel @Inject constructor(
         username: String,
         email: String,
         password: String,
-        isConsentGranted: Boolean,
     ) {
         viewModelScope.launch {
             _isRunning.update { true }
@@ -63,7 +62,6 @@ class UsernameAgeViewModel @Inject constructor(
                         preferences.saveToken(token = token)
                     }
                     _isRunning.update { false }
-                    preferences.saveHasGivenDataConsent(isConsentGranted)
                     _events.send(UsernameAgeEvent.RegistrationSuccessful)
                 }
 

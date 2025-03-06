@@ -16,6 +16,24 @@ inline fun <T, E : Error, R> Result<T, E>.map(map: (T) -> R): Result<R, E> {
     }
 }
 
+inline fun <T, E : Error> Result<T, E>.onIsSuccess(action: (value: T) -> Unit): Result<T, E> {
+    if (this is Result.Success)
+        action(data)
+    return this
+}
+
+inline fun <T, E : Error> Result<T, E>.onIsFailure(action: (value: E) -> Unit): Result<T, E> {
+    if (this is Result.Error)
+        action(error)
+    return this
+}
+
+val <T, E : Error> Result<T, E>.isRunning
+    get() = this is Result.Running
+
+val <T, E : Error> Result<T, E>.isError
+    get() = this is Result.Error
+
 fun <T, E : Error> Result<T, E>.getOrNull(): T? =
     when (this) {
         is Result.Error -> null

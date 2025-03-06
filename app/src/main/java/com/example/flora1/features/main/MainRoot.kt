@@ -133,7 +133,7 @@ fun MainRoot(
 
             PrimaryButton(
                 text = if (isConnectedToSocket) "Stop Federated Learning" else "Start Federated Learning",
-                onClick = viewModel::ownerSign,
+                onClick = viewModel::manageWebSocketConnection,
             )
 
         }

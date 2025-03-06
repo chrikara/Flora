@@ -73,6 +73,6 @@ sealed interface Screen {
     data class LoginProfile(val id: String) : Screen
 
     companion object {
-        val startDestination = Main
+        val startDestination = Splash
     }
 }

@@ -34,7 +34,7 @@ fun ManageConsentContent(
     onBack: () -> Unit,
     viewModel: ManageConsentViewModel = hiltViewModel(),
 ) {
-    val hasGivenConsentResult by viewModel.hasGivenConsent.collectAsStateWithLifecycle()
+    val hasGivenConsentResult by viewModel.hasGivenConsentResult.collectAsStateWithLifecycle()
 
     ManageConsentRoot(
         onBack = onBack,
@@ -53,7 +53,7 @@ fun ManageConsentRoot(
     hasGivenConsent: Boolean = false,
     onRetry: () -> Unit,
     onBack: () -> Unit = {},
-    onSwitched: ((Boolean) -> Unit)? = null,
+    onSwitched: () -> Unit = { },
 ) {
     when {
         isError -> ErrorScreen(
@@ -75,7 +75,7 @@ fun ManageConsentRoot(
 fun ManageConsentContent(
     onBack: () -> Unit = {},
     checked: Boolean = true,
-    onSwitched: ((Boolean) -> Unit)? = null,
+    onSwitched: () -> Unit = { },
 ) {
     Column(
         modifier = Modifier
@@ -114,7 +114,9 @@ fun ManageConsentContent(
             Switch(
                 enabled = !checked,
                 checked = checked,
-                onCheckedChange = onSwitched,
+                onCheckedChange = {
+                    onSwitched()
+                },
             )
         }
 

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -22,19 +21,14 @@ import androidx.compose.material3.SegmentedButtonDefaults.IconSize
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.designsystem.OpenSans
@@ -59,35 +53,23 @@ fun DoctorItem(
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surfaceVariant, itemShape)
             .clip(itemShape)
-            .padding(horizontal = 5.dp, vertical = 14.dp),
+            .padding(15.dp),
     ) {
         Row(
 
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            AsyncImage(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape),
-                model = ImageRequest.Builder(context)
-                    .data(data = doctor.image)
-                    .build(),
-                contentDescription = null,
-                fallback = painterResource(id = R.drawable.ic_doctor),
-                error = painterResource(id = R.drawable.ic_doctor),
-                placeholder = painterResource(id = R.drawable.ic_doctor),
-                contentScale = ContentScale.Crop,
-                alignment = Alignment.Center,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
-            )
 
             Column {
                 Text(
-                    text = doctor.name,
+                    modifier = Modifier.padding(end = 30.dp),
+                    text = stringResource(id = R.string.doctor_item_name_text, doctor.name),
                     color = MaterialTheme.colorScheme.onBackground,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2,
                 )
                 Text(
-                    text = doctor.lastUpdated.toDoctorText(),
+                    text = doctor.updatedAt.toDoctorText(),
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.bodyMedium,
                     fontFamily = OpenSans,
@@ -97,16 +79,14 @@ fun DoctorItem(
         Spacer(modifier = Modifier.height(20.dp))
 
         val buttonBackground = when (doctor.status) {
-            DoctorStatus.ACCEPTED -> Color(0xFF1BAA1B)
-            DoctorStatus.REVOKED -> Color.Blue
-            DoctorStatus.DECLINED -> MaterialTheme.colorScheme.primary
+            DoctorStatus.REVOKED -> MaterialTheme.colorScheme.primary
+            else -> Color(0xFF1BAA1B)
         }
-
 
         SingleChoiceSegmentedButtonRow(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            val statusList = DoctorStatus.entries.toTypedArray()
+            val statusList = DoctorStatus.uiDoctorStatuses
             statusList.forEachIndexed { index, doctorStatus ->
                 val selected = doctorStatus == doctor.status
                 SegmentedButton(
@@ -156,11 +136,12 @@ fun DoctorItem(
     }
 }
 
+@Composable
 private fun DoctorStatus.toResourceString() =
     when (this) {
-        DoctorStatus.ACCEPTED -> "Accepted"
-        DoctorStatus.REVOKED -> "Revoked"
-        DoctorStatus.DECLINED -> "Declined"
+        DoctorStatus.REQUESTED -> stringResource(id = R.string.requested)
+        DoctorStatus.GRANTED -> stringResource(R.string.granted)
+        DoctorStatus.REVOKED -> stringResource(R.string.revoked)
     }
 
 private fun LocalDateTime.toDoctorText() =
@@ -174,7 +155,7 @@ private fun LocalDateTime.toDoctorText() =
 private fun Preview() {
     Flora1Theme {
         DoctorItem(
-            doctor = MyDoctorsViewModel.mockDoctors[0],
+            doctor = MyDoctorsViewModel.mockDoctors[1],
             onButtonClicked = { a, b -> }
         )
     }

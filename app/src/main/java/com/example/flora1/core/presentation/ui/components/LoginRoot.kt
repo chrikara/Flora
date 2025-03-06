@@ -48,7 +48,6 @@ import com.example.flora1.core.presentation.ui.observers.ObserveAsEvents
 import com.example.flora1.core.presentation.ui.toast.showSingleToast
 import com.example.flora1.core.presentation.ui.uikit.buttons.BackButton
 import com.example.flora1.core.presentation.ui.uikit.buttons.PrimaryButton
-import com.example.flora1.core.presentation.ui.uikit.checkboxes.CheckboxWithTitle
 import com.example.flora1.features.onboarding.usernameage.UsernameAgeEvent
 import com.example.flora1.features.onboarding.usernameage.UsernameAgeViewModel
 
@@ -80,14 +79,7 @@ fun LoginRoot(
 
     LoginRoot(
         modifier = Modifier.fillMaxSize(),
-        onRegisterClicked = { username, email, password, isConsentGranted ->
-            viewModel.onRegister(
-                username = username,
-                email = email,
-                password = password,
-                isConsentGranted = isConsentGranted,
-            )
-        },
+        onRegisterClicked = viewModel::onRegister,
         onLoginClicked = { username, password ->
             viewModel.onLogin(
                 username = username,
@@ -103,7 +95,7 @@ fun LoginRoot(
 @Composable
 fun LoginRoot(
     modifier: Modifier = Modifier,
-    onRegisterClicked: (String, String, String, Boolean) -> Unit,
+    onRegisterClicked: (String, String, String) -> Unit,
     onLoginClicked: (String, String) -> Unit,
     onContinueAsAnonymous: () -> Unit,
     onBackClicked: (() -> Unit)? = null,
@@ -276,7 +268,7 @@ private fun ColumnScope.LoginContent(
 @Composable
 private fun ColumnScope.RegisterContent(
     isRunning: Boolean,
-    onRegisterClicked: (String, String, String, Boolean) -> Unit,
+    onRegisterClicked: (String, String, String) -> Unit,
     onBackToLogin: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -297,9 +289,6 @@ private fun ColumnScope.RegisterContent(
         mutableStateOf("")
     }
 
-    var isConsentGranted by remember {
-        mutableStateOf(false)
-    }
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = username,
@@ -336,16 +325,6 @@ private fun ColumnScope.RegisterContent(
         onPasswordChanged = { reTypedPassword = it },
         labelText = "Re-type password"
     )
-
-    Spacer(modifier = Modifier.height(10.dp))
-
-    CheckboxWithTitle(
-        checked = isConsentGranted,
-        onClick = { isConsentGranted = !isConsentGranted },
-        text = "By signing up, I consent to giving my information for machine learning purposes (will not actually send in testing environment).",
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onBackground,
-    )
     Spacer(modifier = Modifier.height(100.dp))
 
     PrimaryButton(
@@ -360,7 +339,6 @@ private fun ColumnScope.RegisterContent(
                     username.trim(),
                     email.trim(),
                     password.trim(),
-                    isConsentGranted
                 )
             }
         },
@@ -450,7 +428,7 @@ private fun Preview() {
     Flora1Theme {
         LoginRoot(
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
-            onRegisterClicked = { s: String, s1: String, s2: String, b: Boolean -> },
+            onRegisterClicked = { s: String, s1: String, s2: String -> },
             onLoginClicked = { s: String, s1: String -> },
             onContinueAsAnonymous = {},
             isRunning = false,

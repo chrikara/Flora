@@ -5,10 +5,24 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
+import com.example.flora1.consent.data.ConsentApiGetDoctorsConsentUseCase
+import com.example.flora1.consent.data.ConsentApiGrantConsentUseCase
 import com.example.flora1.consent.data.ConsentApiHasGivenConsentUseCase
+import com.example.flora1.consent.data.DefaultGetOwnersRequestsService
 import com.example.flora1.consent.data.DefaultGetOwnersService
+import com.example.flora1.consent.data.DefaultGrantConsentService
+import com.example.flora1.consent.data.DefaultOwnersSignService
+import com.example.flora1.consent.data.DefaultRevokeConsentService
+import com.example.flora1.consent.data.GetOwnersRequestsService
 import com.example.flora1.consent.data.GetOwnersService
+import com.example.flora1.consent.data.GrantConsentService
+import com.example.flora1.consent.data.OwnersSignService
+import com.example.flora1.consent.data.RevokeConsentService
+import com.example.flora1.consent.data.model.ConsentApiRevokeConsentUseCase
+import com.example.flora1.consent.domain.GetDoctorsUseCase
+import com.example.flora1.consent.domain.GrantConsentUseCase
 import com.example.flora1.consent.domain.HasGivenConsentUseCase
+import com.example.flora1.consent.domain.RevokeConsentUseCase
 import com.example.flora1.core.network.clients.FLWebSocketClient
 import com.example.flora1.core.network.clients.WebSocketClient
 import com.example.flora1.data.auth.DefaultLoginService
@@ -137,15 +151,6 @@ object FloraModule {
 
     @Provides
     @Singleton
-    fun providesEthereumWrapper(
-        ethereum: Ethereum,
-    ): EthereumWrapper =
-        SomeModel(
-            ethereum = ethereum
-        )
-
-    @Provides
-    @Singleton
     fun providesHeightValidator(): HeightValidator =
         DefaultHeightValidator()
 
@@ -171,6 +176,15 @@ object FloraModule {
 
     @Provides
     @Singleton
+    fun providesEthereumWrapper(
+        ethereum: Ethereum,
+    ): EthereumWrapper =
+        SomeModel(
+            ethereum = ethereum,
+        )
+
+    @Provides
+    @Singleton
     fun providesGetOwnerService(): GetOwnersService = DefaultGetOwnersService()
 
 
@@ -178,8 +192,59 @@ object FloraModule {
     @Singleton
     fun providesHasGivenConsentUseCase(
         service: GetOwnersService,
+        preferences: Preferences2,
+        ethereum: Ethereum,
     ): HasGivenConsentUseCase = ConsentApiHasGivenConsentUseCase(
         getOwnersService = service,
+        preferences = preferences,
+        ethereum = ethereum,
     )
+
+    @Provides
+    @Singleton
+    fun providesGetOwnersResponsesService(): GetOwnersRequestsService =
+        DefaultGetOwnersRequestsService()
+
+
+    @Provides
+    @Singleton
+    fun providesConsentApiGetDoctorsConsentUseCase(
+        service: GetOwnersRequestsService,
+    ): GetDoctorsUseCase =
+        ConsentApiGetDoctorsConsentUseCase(
+            getOwnersRequestsService = service,
+        )
+
+    @Provides
+    @Singleton
+    fun providesGrantConsentService(): GrantConsentService =
+        DefaultGrantConsentService()
+
+    @Provides
+    @Singleton
+    fun providesRevokeConsentService(): RevokeConsentService =
+        DefaultRevokeConsentService()
+
+
+    @Provides
+    @Singleton
+    fun providesGrantConsentUseCase(
+        service: GrantConsentService,
+    ): GrantConsentUseCase =
+        ConsentApiGrantConsentUseCase(service)
+
+    @Provides
+    @Singleton
+    fun providesRevokeConsentUseCase(
+        service: RevokeConsentService,
+    ): RevokeConsentUseCase =
+        ConsentApiRevokeConsentUseCase(service)
+
+
+    @Provides
+    @Singleton
+    fun providesOwnerSign(): OwnersSignService =
+        DefaultOwnersSignService()
+
 
 }
