@@ -40,6 +40,9 @@ sealed interface Screen {
     data object SleepQualityTillLastPeriod : Screen
 
     @Serializable
+    data object Dark : Screen
+
+    @Serializable
     data object Born : Screen
 
     @Serializable

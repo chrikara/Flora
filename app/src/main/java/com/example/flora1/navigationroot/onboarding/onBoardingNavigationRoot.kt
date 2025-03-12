@@ -9,6 +9,7 @@ import com.example.flora1.features.onboarding.MinorAgeRoot
 import com.example.flora1.features.onboarding.averagecycle.AverageCycleRoot
 import com.example.flora1.features.onboarding.born.BornRoot
 import com.example.flora1.features.onboarding.contraceptives.ContraceptivesRoot
+import com.example.flora1.features.onboarding.dark.DarkRoot
 import com.example.flora1.features.onboarding.gynosurgery.GynosurgeryRoot
 import com.example.flora1.features.onboarding.lastperiod.LastPeriodRoot
 import com.example.flora1.features.onboarding.medvits.MedVitsRoot
@@ -28,12 +29,31 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     composable<Screen.LoginOnBoarding> {
         LoginRoot(
             onSuccessfulLogin = {
-                navController.navigate(Screen.Born)
+                navController.navigate(Screen.Dark)
             },
             onContinueAsAnonymous = {
-                navController.navigate(Screen.Born)
+                navController.navigate(Screen.Dark)
             },
             onBackClicked = null
+        )
+    }
+
+    composable<Screen.Dark> {
+        DarkRoot(
+            onNextClick = {
+                navController.navigate(Screen.Born)
+            }
+        )
+    }
+
+    composable<Screen.Born> {
+        BornRoot(
+            onNext = { isEligibleForFlora ->
+                if (isEligibleForFlora)
+                    navController.navigate(Screen.Height)
+                else
+                    navController.navigate(Screen.MinorAge)
+            }
         )
     }
 

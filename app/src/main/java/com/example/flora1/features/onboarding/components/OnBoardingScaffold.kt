@@ -93,10 +93,10 @@ private fun OnBoardingScaffold(
     selectedScreen: OnBoardingScreen,
     middleContent: @Composable (ColumnScope.() -> Unit),
 ) {
-    BackHandler(
-        enabled = !isBackEnabled,
-        onBack = {},
-    )
+//    BackHandler(
+//        enabled = !isBackEnabled,
+//        onBack = {},
+//    )
 
     Scaffold(
         modifier = Modifier

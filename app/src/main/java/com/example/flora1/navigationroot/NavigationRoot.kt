@@ -42,7 +42,7 @@ fun NavigationRoot(
                             if (!isLoggedIn)
                                 Screen.LoginOnBoarding
                             else
-                                Screen.Born
+                                Screen.Dark
                         else
                             Screen.Main
                     )
