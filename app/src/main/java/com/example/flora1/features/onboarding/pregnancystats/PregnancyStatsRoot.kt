@@ -32,6 +32,7 @@ fun PregnancyStatsRoot(
     OnBoardingScaffold(
         verticalArrangement = Arrangement.Center,
         selectedScreen = OnBoardingScreen.PREGNANCY_STATS,
+        onBackClick = onBack,
         title = "Tell us some things about your pregnancy background",
         description = "This will help us better understand you and modify Flora according to your needs",
         onNextClick = {

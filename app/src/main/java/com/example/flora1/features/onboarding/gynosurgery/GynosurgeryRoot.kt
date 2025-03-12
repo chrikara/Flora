@@ -31,6 +31,7 @@ import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 @Composable
 fun GynosurgeryRoot(
     onNext: () -> Unit,
+    onBack: () -> Unit,
     viewModel: GynosurgeryViewModel = hiltViewModel(),
 ) {
     val hasDoneGynosurgery by viewModel.hasDoneGynosurgery.collectAsStateWithLifecycle()
@@ -40,6 +41,7 @@ fun GynosurgeryRoot(
         verticalArrangement = Arrangement.Top,
         selectedScreen = OnBoardingScreen.GYNECOSURGERY,
         title = stringResource(R.string.onboarding_title_gynosurgery),
+        onBackClick = onBack,
         onNextClick = {
             viewModel.onSaveHasDoneGynecosurgery(hasDoneGynosurgery)
             viewModel.onSaveGyncosurgeryDescription(

@@ -29,6 +29,7 @@ import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 @Composable
 fun AverageCycleRoot(
     onNext: () -> Unit,
+    onBack: () -> Unit,
     viewModel: AverageCycleViewModel = hiltViewModel(),
 ) {
 
@@ -41,6 +42,7 @@ fun AverageCycleRoot(
         selectedScreen = OnBoardingScreen.AVERAGE_CYCLE,
         title = "How long is your average cycle?",
         description = "A little hint - cycles usually last 24-35 days.",
+        onBackClick = onBack,
         onNextClick = {
             selectedNumber?.let {
                 viewModel.onSaveAverageCycleDays(it)

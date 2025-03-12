@@ -1,6 +1,5 @@
 package com.example.flora1.features.onboarding.components
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +43,6 @@ fun OnBoardingScaffold(
     isNextEnabled: Boolean = true,
     shouldShowNext: Boolean = true,
     onNextClick: () -> Unit = {},
-    isBackEnabled: Boolean = true,
     onBackClick: () -> Unit = {},
     title: String? = null,
     description: String? = null,
@@ -58,7 +56,6 @@ fun OnBoardingScaffold(
         horizontalAlignment = horizontalAlignment,
         isNextEnabled = isNextEnabled,
         onNextClick = onNextClick,
-        isBackEnabled = isBackEnabled,
         onBackClick = onBackClick,
         title = title,
         description = description,
@@ -85,7 +82,6 @@ private fun OnBoardingScaffold(
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     isNextEnabled: Boolean = true,
     onNextClick: () -> Unit,
-    isBackEnabled: Boolean = false,
     onBackClick: () -> Unit,
     title: String? = null,
     description: String? = null,
@@ -93,11 +89,6 @@ private fun OnBoardingScaffold(
     selectedScreen: OnBoardingScreen,
     middleContent: @Composable (ColumnScope.() -> Unit),
 ) {
-//    BackHandler(
-//        enabled = !isBackEnabled,
-//        onBack = {},
-//    )
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -109,7 +100,6 @@ private fun OnBoardingScaffold(
                 onNextClick = onNextClick,
                 title = title,
                 description = description,
-                isBackEnabled = isBackEnabled,
                 onBackClick = onBackClick,
                 selectedScreen = selectedScreen,
             )
@@ -131,7 +121,6 @@ private fun OnBoardingScaffold(
 
 @Composable
 private fun OnBoardingTopBar(
-    isBackEnabled: Boolean,
     onBackClick: () -> Unit,
     isNextEnabled: Boolean,
     onNextClick: () -> Unit,
@@ -163,9 +152,7 @@ private fun OnBoardingTopBar(
                 modifier = Modifier
                     .testTag(stringResource(R.string.icon_back_test_tag))
 //                    .size(size)
-                    .alpha(if (isBackEnabled) 1f else 0f)
                     .align(Alignment.Top),
-                enabled = isBackEnabled,
                 onClick = onBackClick,
             )
             Image(

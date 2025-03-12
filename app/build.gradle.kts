@@ -12,7 +12,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.flora1"
+        applicationId = "com.chriskaras.flora"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

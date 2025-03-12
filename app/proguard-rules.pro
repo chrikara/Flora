@@ -48,3 +48,14 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLParameters
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
+-keepattributes Signature
+-keep class io.metamask.androidsdk.** { *; }
+
+# GSON
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken
+
+# Coroutines
+-keepattributes Signature
+-keep class kotlin.coroutines.Continuation
+

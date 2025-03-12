@@ -1,6 +1,7 @@
 package com.example.flora1.features.onboarding
 
 enum class OnBoardingScreen {
+    DARK,
     USERNAME_AGE,
     BORN,
     MINOR_AGE,

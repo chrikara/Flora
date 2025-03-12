@@ -225,7 +225,7 @@ class FloraDataStorePreferences(
 
     override val isPredictionModeEnabled: Flow<Boolean> =
         dataStore.data.map { preferences ->
-            preferences[SHOULD_SHOW_PREDICTIONS_KEY] ?: true
+            preferences[SHOULD_SHOW_PREDICTIONS_KEY] ?: false
         }
 
     override suspend fun saveContraceptiveMethods(contraceptiveMethods: List<ContraceptiveMethod>) {

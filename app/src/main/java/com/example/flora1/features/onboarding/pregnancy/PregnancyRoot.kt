@@ -15,11 +15,13 @@ import com.example.flora1.features.onboarding.weight.PregnancyViewModel
 @Composable
 fun PregnancyRoot(
     onNext: (hasBeenPregnant: Boolean) -> Unit,
+    onBack: () -> Unit,
     viewModel: PregnancyViewModel = hiltViewModel(),
 ) {
     val selectedPregnancyStatus by viewModel.pregnancyStatus.collectAsStateWithLifecycle()
     OnBoardingScaffold(
         title = "Have you ever been pregnant (or are you right now) ?",
+        onBackClick = onBack,
         onNextClick = {
             viewModel.onSavePregnancyStatus(selectedPregnancyStatus)
 

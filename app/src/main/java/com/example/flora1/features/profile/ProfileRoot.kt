@@ -5,7 +5,6 @@ package com.example.flora1.features.profile
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -166,22 +165,10 @@ fun ProfileRoot(
             .padding(horizontal = 20.dp, vertical = 10.dp)
             .statusBarsPadding()
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            CircleCloseButton(
-                onClick = { onAction(ProfileAction.OnBackClicked) }
-            )
 
-            Text(
-                text = stringResource(R.string.version_flora),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-        }
-
+        CircleCloseButton(
+            onClick = { onAction(ProfileAction.OnBackClicked) }
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
 

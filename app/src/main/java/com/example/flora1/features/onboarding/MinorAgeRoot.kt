@@ -23,7 +23,6 @@ fun MinorAgeRoot(
     OnBoardingScaffold(
         verticalArrangement = Arrangement.Top,
         isNextEnabled = false,
-        isBackEnabled = true,
         onBackClick = onBack,
         selectedScreen = OnBoardingScreen.MINOR_AGE,
         title = stringResource(id = R.string.uh_oh),
@@ -32,7 +31,10 @@ fun MinorAgeRoot(
         Spacer(modifier = Modifier.height(15.dp))
 
         Text(
-            text = stringResource(R.string.must_be_less_than_eligible_age_description, MIN_ELIGIBLE_AGE_TO_USE_FLORA),
+            text = stringResource(
+                R.string.must_be_less_than_eligible_age_description,
+                MIN_ELIGIBLE_AGE_TO_USE_FLORA
+            ),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Justify,

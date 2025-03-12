@@ -21,6 +21,7 @@ import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 @Composable
 fun StressTillLastPeriodRoot(
     onNext: () -> Unit,
+    onBack: () -> Unit,
     viewModel: StressTillLastPeriodViewModel = hiltViewModel(),
 ) {
     val selectedStressLevel by viewModel.selectedStressLevel.collectAsStateWithLifecycle()
@@ -29,6 +30,7 @@ fun StressTillLastPeriodRoot(
         verticalArrangement = Arrangement.Top,
         selectedScreen = OnBoardingScreen.SLEEP_QUALITY_TILL_LAST_PERIOD,
         title = "What were your stress levels until your last or current period?",
+        onBackClick = onBack,
         onNextClick = {
             viewModel.onSaveStressLevel(selectedStressLevel)
             onNext()

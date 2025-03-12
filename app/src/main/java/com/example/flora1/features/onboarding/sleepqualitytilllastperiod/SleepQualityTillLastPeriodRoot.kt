@@ -28,6 +28,7 @@ fun SleepQualityTillLastPeriodRoot(
 
     OnBoardingScaffold(
         modifier = Modifier.verticalScroll(state = rememberScrollState()),
+        onBackClick = onBack,
         verticalArrangement = Arrangement.Top,
         selectedScreen = OnBoardingScreen.SLEEP_QUALITY_TILL_LAST_PERIOD,
         title = "What is your sleep quality until your last or current period?",

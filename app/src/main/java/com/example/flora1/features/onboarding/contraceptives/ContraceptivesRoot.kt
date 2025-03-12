@@ -3,7 +3,6 @@ package com.example.flora1.features.onboarding.contraceptives
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -14,9 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.R
@@ -31,6 +27,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ContraceptivesRoot(
     onNext: () -> Unit,
+    onBack: () -> Unit,
     viewModel: ContraceptivesViewModel = hiltViewModel(),
 ) {
     val selectedContraceptiveMethods by viewModel.selectedContraceptiveMethods.collectAsStateWithLifecycle()
@@ -42,6 +39,7 @@ fun ContraceptivesRoot(
         verticalArrangement = Arrangement.Top,
         title = "Are you using any contraceptive methods?",
         selectedScreen = OnBoardingScreen.CONTRACEPTIVES,
+        onBackClick = onBack,
         onNextClick = {
             viewModel.onSaveContraceptiveMethods(contraceptiveMethods = selectedContraceptiveMethods)
             onNext()

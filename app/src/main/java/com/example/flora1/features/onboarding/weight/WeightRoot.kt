@@ -17,6 +17,7 @@ import com.example.flora1.features.onboarding.usernameage.UnitTextFieldContent
 @Composable
 fun WeightRoot(
     onNext: () -> Unit,
+    onBack: () -> Unit,
     viewModel: WeightViewModel = hiltViewModel(),
 ) {
     val weight by viewModel.weight.collectAsStateWithLifecycle()
@@ -25,6 +26,7 @@ fun WeightRoot(
     OnBoardingScaffold(
         title = "What is your weight?",
         isNextEnabled = enabled,
+        onBackClick = onBack,
         selectedScreen = OnBoardingScreen.WEIGHT,
         onNextClick = {
             viewModel.onSaveWeight(weight.text.toFloat())

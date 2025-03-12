@@ -1,8 +1,11 @@
 package com.example.flora1.navigationroot.onboarding
 
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.flora1.core.presentation.activity.getActivity
 import com.example.flora1.core.presentation.ui.components.LoginRoot
 import com.example.flora1.features.onboarding.GetStartedRoot
 import com.example.flora1.features.onboarding.MinorAgeRoot
@@ -26,6 +29,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     navController: NavController,
 ) {
 
+
     composable<Screen.LoginOnBoarding> {
         LoginRoot(
             onSuccessfulLogin = {
@@ -39,26 +43,27 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     }
 
     composable<Screen.Dark> {
+        val context = LocalContext.current
+        val activity = remember {
+            context.getActivity
+        }
+
         DarkRoot(
             onNextClick = {
                 navController.navigate(Screen.Born)
-            }
-        )
-    }
-
-    composable<Screen.Born> {
-        BornRoot(
-            onNext = { isEligibleForFlora ->
-                if (isEligibleForFlora)
-                    navController.navigate(Screen.Height)
+            },
+            onBackClick = {
+                if (navController.previousBackStackEntry == null && activity != null)
+                    activity.finish()
                 else
-                    navController.navigate(Screen.MinorAge)
+                    navController.popBackStack()
             }
         )
     }
 
     composable<Screen.Born> {
         BornRoot(
+            onBack = navController::popBackStack,
             onNext = { isEligibleForFlora ->
                 if (isEligibleForFlora)
                     navController.navigate(Screen.Height)
@@ -69,16 +74,15 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
     }
 
     composable<Screen.MinorAge> {
-        MinorAgeRoot(onBack = {
-            navController.navigateUp()
-        })
+        MinorAgeRoot(onBack = navController::popBackStack)
     }
 
     composable<Screen.Height> {
         HeightRoot(
             onNext = {
                 navController.navigate(Screen.Weight)
-            }
+            },
+            onBack = navController::popBackStack
         )
     }
 
@@ -86,7 +90,8 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
         WeightRoot(
             onNext = {
                 navController.navigate(Screen.Pregnancy)
-            }
+            },
+            onBack = navController::popBackStack,
         )
     }
 
@@ -97,7 +102,8 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
                     navController.navigate(Screen.PregnancyStats)
                 else
                     navController.navigate(Screen.Race)
-            }
+            },
+            onBack = navController::popBackStack
         )
     }
 
@@ -106,7 +112,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
             onNext = {
                 navController.navigate(Screen.Race)
             },
-            onBack = navController::navigateUp,
+            onBack = navController::popBackStack,
         )
     }
 
@@ -115,6 +121,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
             onNext = {
                 navController.navigate(Screen.MedVits)
             },
+            onBack = navController::popBackStack
         )
     }
 
@@ -123,6 +130,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
             onNext = {
                 navController.navigate(Screen.Gynecosurgery)
             },
+            onBack = navController::popBackStack,
         )
     }
 
@@ -131,6 +139,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
             onNext = {
                 navController.navigate(Screen.Contraceptives)
             },
+            onBack = navController::popBackStack,
         )
     }
 
@@ -139,6 +148,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
             onNext = {
                 navController.navigate(Screen.StressLevelTillLastPeriod)
             },
+            onBack = navController::popBackStack
         )
     }
 
@@ -147,6 +157,7 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
             onNext = {
                 navController.navigate(Screen.SleepQualityTillLastPeriod)
             },
+            onBack = navController::popBackStack,
         )
     }
 
@@ -155,19 +166,21 @@ fun NavGraphBuilder.onBoardingNavigationRoot(
             onNext = {
                 navController.navigate(Screen.AverageCycle)
             },
-            onBack = navController::navigateUp,
+            onBack = navController::popBackStack,
         )
     }
 
     composable<Screen.AverageCycle> {
         AverageCycleRoot(
             onNext = { navController.navigate(Screen.LastPeriod) },
+            onBack = navController::popBackStack,
         )
     }
 
     composable<Screen.LastPeriod> {
         LastPeriodRoot(
             onNext = { navController.navigate(Screen.GetStarted) },
+            onBack = navController::popBackStack,
         )
     }
 

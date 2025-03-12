@@ -15,6 +15,7 @@ import com.example.flora1.features.onboarding.gynosurgery.ButtonsWithDescription
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun MedVitsRoot(
+    onBack: () -> Unit,
     onNext: () -> Unit,
     viewModel: MedVitsViewModel = hiltViewModel(),
 ) {
@@ -24,6 +25,7 @@ fun MedVitsRoot(
         verticalArrangement = Arrangement.Top,
         selectedScreen = OnBoardingScreen.MED_VITS,
         title = "Have you ever received any medication or vitamins?",
+        onBackClick = onBack,
         onNextClick = {
             viewModel.onSaveHasTakenMedVits(isTakingMedVits)
             viewModel.onSaveMedVitsDescription(

@@ -55,6 +55,8 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -62,6 +64,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.ui.modifier.applyIf
 import com.example.flora1.core.presentation.ui.observers.ObserveAsEvents
@@ -84,6 +87,9 @@ import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 import kotlin.LazyThreadSafetyMode.NONE
+
+private const val EASTER_EGG_TEXT = "APA4522"
+private val START_MONTH = YearMonth.of(2022, 12)
 
 @Composable
 fun CalendarRoot(
@@ -128,7 +134,7 @@ fun CalendarRoot(
     onTemporaryPeriodDateClicked: (Period) -> Unit = {},
 ) {
     val currentMonth = remember { YearMonth.now() }
-    val startMonth = remember { YearMonth.of(2022, 12) }
+    val startMonth = remember { START_MONTH }
     val scope = rememberCoroutineScope()
     val endMonth = remember { currentMonth.plusYears(2) }
     val daysOfWeek = remember { daysOfWeek() }
@@ -200,11 +206,20 @@ fun CalendarRoot(
                             )
                         }
                 },
-                monthContainer = { _, currentCalendarContent ->
+                monthContainer = { calendarMonth, currentCalendarContent ->
                     Column(
                         modifier = Modifier
                             .verticalCalendarModifier()
                     ) {
+                        if (calendarMonth.yearMonth == START_MONTH)
+                            Text(
+                                modifier = Modifier.padding(start = 15.dp),
+                                text = EASTER_EGG_TEXT,
+                                textAlign = TextAlign.Center,
+                                fontFamily = FontFamily(Font(R.font.opensans_extrabold)),
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
                         currentCalendarContent()
                     }
                     Spacer(

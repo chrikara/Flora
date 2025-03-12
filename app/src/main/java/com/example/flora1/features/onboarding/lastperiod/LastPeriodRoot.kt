@@ -19,17 +19,18 @@ import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 @Composable
 fun LastPeriodRoot(
     onNext: () -> Unit,
+    onBack: () -> Unit,
     viewModel: LastPeriodViewModel = hiltViewModel(),
 ) {
 
     val datePickerState = rememberFloraRangeDatePickerState()
     OnBoardingScaffold(
         verticalArrangement = Arrangement.Top,
+        onBackClick = onBack,
         isNextEnabled =
-        if (datePickerState.selectedStartDateMillis == null)
-            false
-        else
-            datePickerState.selectedStartDateMillis!! < System.currentTimeMillis(),
+        datePickerState.selectedStartDateMillis?.let {
+            it < System.currentTimeMillis()
+        } ?: false,
         selectedScreen = OnBoardingScreen.LAST_PERIOD,
         title = "When did your last period start?",
         description = "We can then predict your next period.",

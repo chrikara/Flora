@@ -15,6 +15,7 @@ import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 @Composable
 fun RaceRoot(
     onNext: () -> Unit,
+    onBack: () -> Unit,
     viewModel: RaceViewModel = hiltViewModel(),
 ) {
     val selectedRace by viewModel.selectedRace.collectAsStateWithLifecycle()
@@ -23,6 +24,7 @@ fun RaceRoot(
         verticalArrangement = Arrangement.Center,
         title = "What is your race?",
         selectedScreen = OnBoardingScreen.RACE,
+        onBackClick = onBack,
         onNextClick = {
             viewModel.onSaveRace(selectedRace)
             onNext()

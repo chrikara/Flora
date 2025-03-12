@@ -16,6 +16,7 @@ import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 fun DarkRoot(
     viewModel: DarkViewModel = hiltViewModel(),
     onNextClick: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val selectedTheme by viewModel.theme.collectAsStateWithLifecycle()
 
@@ -23,6 +24,7 @@ fun DarkRoot(
         selectedTheme = selectedTheme,
         onSelectedThemeChanged = viewModel::changeTheme,
         onNextClick = onNextClick,
+        onBackClick = onBackClick,
     )
 
 }
@@ -32,12 +34,14 @@ fun DarkRoot(
     selectedTheme: Theme,
     onSelectedThemeChanged: (Theme) -> Unit,
     onNextClick: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val context = LocalContext.current
     OnBoardingScaffold(
         title = "Select your theme",
         description = "You may choose light or dark mode for your preferred navigation of Flora!",
-        selectedScreen = OnBoardingScreen.HEIGHT,
+        selectedScreen = OnBoardingScreen.DARK,
+        onBackClick = onBackClick,
         onNextClick = onNextClick,
     ) {
         RadioGroup(

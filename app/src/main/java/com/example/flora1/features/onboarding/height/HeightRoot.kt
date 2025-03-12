@@ -23,6 +23,7 @@ import com.example.flora1.features.onboarding.height.HeightViewModel
 @Composable
 fun HeightRoot(
     onNext: () -> Unit,
+    onBack: () -> Unit,
     viewModel: HeightViewModel = hiltViewModel(),
 ) {
     val height by viewModel.height.collectAsStateWithLifecycle()
@@ -32,6 +33,7 @@ fun HeightRoot(
         title = "What is your height?",
         isNextEnabled = enabled,
         selectedScreen = OnBoardingScreen.HEIGHT,
+        onBackClick = onBack,
         onNextClick = {
             viewModel.onSaveHeight(height.text.toFloat())
             onNext()

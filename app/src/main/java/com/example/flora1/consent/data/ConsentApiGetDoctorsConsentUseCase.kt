@@ -21,6 +21,4 @@ internal class ConsentApiGetDoctorsConsentUseCase(
                     .sortedByDescending(Doctor::updatedAt)
             }
         }
-
-
 }

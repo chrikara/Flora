@@ -20,12 +20,14 @@ import com.example.flora1.features.onboarding.components.OnBoardingScaffold
 @Composable
 fun BornRoot(
     onNext: (isEligible: Boolean) -> Unit,
+    onBack: () -> Unit,
     viewModel: BornScreenViewModel = hiltViewModel(),
 ) {
     val datePickerState = rememberFloraDatePickerState()
 
     BornRoot(
         datePickerState = datePickerState,
+        onBackClick = onBack,
         onNextClick = {
             if (isCurrentDateLessThanYears(
                     dateSelected = datePickerState.selectedDateMillis!!,
@@ -44,18 +46,19 @@ fun BornRoot(
 @Composable
 private fun BornRoot(
     onNextClick: () -> Unit = {},
+    onBackClick: () -> Unit = {},
     datePickerState: DatePickerState = rememberFloraDatePickerState()
 ) {
     OnBoardingScaffold(
         title = stringResource(R.string.born_screen_title),
         description = stringResource(R.string.born_screen_description),
         onNextClick = onNextClick,
+        onBackClick = onBackClick,
         isNextEnabled = if (datePickerState.selectedDateMillis == null)
             false
         else
             datePickerState.selectedDateMillis!! < System.currentTimeMillis(),
         selectedScreen = OnBoardingScreen.BORN,
-        isBackEnabled = true,
     ) {
         BornRootContent(datePickerState = datePickerState)
     }
