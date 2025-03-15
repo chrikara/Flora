@@ -1,4 +1,4 @@
-package com.example.flora1.features.profile.consent
+package com.example.flora1.features.profile
 
 sealed interface ProfileEvent {
     data object NavigateBack : ProfileEvent

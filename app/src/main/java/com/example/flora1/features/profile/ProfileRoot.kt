@@ -24,7 +24,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,7 +45,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.designsystem.getPrimaryHorizontalBrush
@@ -65,7 +63,6 @@ import com.example.flora1.features.profile.components.LogoutDialog
 import com.example.flora1.features.profile.components.MedVitsPersonalItem
 import com.example.flora1.features.profile.components.OnBoardingItem
 import com.example.flora1.features.profile.components.WeightPersonalItem
-import com.example.flora1.features.profile.consent.ProfileEvent
 
 @Composable
 fun ProfileRoot(
@@ -76,22 +73,6 @@ fun ProfileRoot(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val theme by viewModel.theme.collectAsStateWithLifecycle()
-    val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
-    val isPredictionModeEnabled by viewModel.isPredictionModeEnabled.collectAsStateWithLifecycle()
-    val pregnancyStatus by viewModel.pregnancyStatus.collectAsStateWithLifecycle()
-    val race by viewModel.race.collectAsStateWithLifecycle()
-    val contraceptiveMethods by viewModel.contraceptiveMethods.collectAsStateWithLifecycle()
-    val height by viewModel.height.collectAsStateWithLifecycle()
-    val weight by viewModel.weight.collectAsStateWithLifecycle()
-    val averageCycleDays by viewModel.averageCycleDays.collectAsStateWithLifecycle()
-    val medVitsDescription by viewModel.medVitsDescription.collectAsStateWithLifecycle()
-    val hasTakenMedvits by viewModel.hasTakenMedvits.collectAsStateWithLifecycle()
-    val gynosurgeryDescription by viewModel.gynosurgeryDescription.collectAsStateWithLifecycle()
-    val hasDoneGynosurgery by viewModel.hasDoneGynosurgery.collectAsStateWithLifecycle()
-    val dateOfBirth by viewModel.dateOfBirth.collectAsStateWithLifecycle()
-    val isConnectedToMetamask by viewModel.isConnectedToMetamask.collectAsStateWithLifecycle()
-
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
             ProfileEvent.NavigateBack -> onBack()
@@ -114,46 +95,14 @@ fun ProfileRoot(
 
     ProfileRoot(
         onAction = viewModel::onAction,
-        theme = theme,
-        isLoggedIn = isLoggedIn,
-        isPredictionModeEnabled = isPredictionModeEnabled,
-        isConnectedToMetamask = isConnectedToMetamask,
-        selectedPregnancyStatus = pregnancyStatus,
-        selectedRace = race,
-        selectedContraceptiveMethods = contraceptiveMethods,
-        selectedHeight = height,
-        selectedWeight = weight,
-        selectedAverageCycleDays = averageCycleDays,
-        isHeightValid = viewModel.heightValidator::isHeightValid,
-        isWeightValid = viewModel.weightValidator::isWeightValid,
-        medVitsDescription = medVitsDescription,
-        hasTakenMedVits = hasTakenMedvits,
-        gynosurgeryDescription = gynosurgeryDescription,
-        hasDoneGynosurgery = hasDoneGynosurgery,
-        dateOfBirth = dateOfBirth,
+        state = viewModel.state,
     )
 }
 
 @Composable
 fun ProfileRoot(
-    theme: Theme = Theme.AUTO,
-    isLoggedIn: Boolean = false,
+    state: ProfileState = ProfileState(),
     onAction: (ProfileAction) -> Unit = {},
-    isPredictionModeEnabled: Boolean = false,
-    isConnectedToMetamask: Boolean = false,
-    selectedPregnancyStatus: PregnancyStatus = PregnancyStatus.PREGNANT,
-    selectedRace: Race = Race.NO_COMMENT,
-    selectedHeight: String = "",
-    selectedWeight: String = "",
-    medVitsDescription: String = "",
-    hasTakenMedVits: Boolean = false,
-    gynosurgeryDescription: String = "",
-    hasDoneGynosurgery: Boolean = false,
-    isHeightValid: (String) -> Boolean = { true },
-    isWeightValid: (String) -> Boolean = { true },
-    selectedContraceptiveMethods: List<ContraceptiveMethod> = emptyList(),
-    selectedAverageCycleDays: Int = 1,
-    dateOfBirth: Long = 10L,
 ) {
     val scrollState = rememberScrollState()
 
@@ -181,26 +130,14 @@ fun ProfileRoot(
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        /*
-        We don't know yet if greek language support is required.
-         */
-//
-//        PrimaryInfoRow(
-//            primaryText = stringResource(R.string.language),
-//            secondaryText = "Choose your preferred language",
-//            leadingIconRes = R.drawable.ic_language
-//        )
-//
-//        Spacer(modifier = Modifier.height(20.dp))
-
         PrimaryInfoRow(
-            primaryText = when (theme) {
+            primaryText = when (state.theme) {
                 Theme.AUTO -> stringResource(R.string.auto_mode)
                 Theme.LIGHT -> stringResource(R.string.light_mode)
                 Theme.DARK -> stringResource(R.string.dark_mode)
             },
             secondaryText = stringResource(R.string.tap_to_toggle),
-            leadingIconRes = when (theme) {
+            leadingIconRes = when (state.theme) {
                 Theme.AUTO -> R.drawable.person
                 Theme.LIGHT -> R.drawable.ic_light_mode
                 Theme.DARK -> R.drawable.ic_dark_mode
@@ -215,14 +152,14 @@ fun ProfileRoot(
 
         PrimaryInfoRowWithSwitch(
             primaryText = stringResource(
-                if (isPredictionModeEnabled)
+                if (state.isPredictionModeEnabled)
                     R.string.disable_predictions
                 else
                     R.string.enable_predictions,
             ),
             secondaryText = stringResource(R.string.enable_predictions_description),
             leadingIconRes = R.drawable.ic_didroom,
-            checked = isPredictionModeEnabled,
+            checked = state.isPredictionModeEnabled,
             onClick = { onAction(ProfileAction.OnEnablePredictionModeClicked) }
         )
 
@@ -230,14 +167,14 @@ fun ProfileRoot(
 
         PrimaryInfoRowWithSwitch(
             primaryText = stringResource(
-                id = if (isConnectedToMetamask)
+                id = if (state.isConnectedToMetamask)
                     R.string.disconnect_from_metamask
                 else
                     R.string.connect_to_metamask,
             ),
             secondaryText = stringResource(R.string.metamask_description),
             leadingIconRes = R.drawable.icon_metamask,
-            checked = isConnectedToMetamask,
+            checked = state.isConnectedToMetamask,
             onClick = { onAction(ProfileAction.OnToggleMetamask) }
         )
 
@@ -264,7 +201,7 @@ fun ProfileRoot(
         InfoRow(enabled = false) {
             Column {
                 AgePersonalItem(
-                    selectedDate = dateOfBirth,
+                    selectedDate = state.dateOfBirth,
                     onButtonClicked = {
                         onAction(ProfileAction.OnDateOfBirthButtonClicked(it))
                     }
@@ -272,7 +209,7 @@ fun ProfileRoot(
                 OnBoardingItem(
                     text = stringResource(R.string.pregnancy_stats),
                     options = PregnancyStatus.entries,
-                    selectedOption = selectedPregnancyStatus,
+                    selectedOption = state.pregnancyStatus,
                     optionName = PregnancyStatus::value,
                     onButtonClicked = {
                         onAction(ProfileAction.OnPregnancyStatButtonClicked(it))
@@ -281,7 +218,7 @@ fun ProfileRoot(
                 OnBoardingItem(
                     text = stringResource(R.string.race),
                     options = Race.entries,
-                    selectedOption = selectedRace,
+                    selectedOption = state.race,
                     optionName = Race::text,
                     onButtonClicked = {
                         onAction(ProfileAction.OnRaceButtonClicked(it))
@@ -289,33 +226,33 @@ fun ProfileRoot(
                 )
 
                 HeightPersonalItem(
-                    height = TextFieldValue(selectedHeight),
+                    height = TextFieldValue(state.height),
                     onButtonClicked = {
                         onAction(ProfileAction.OnHeightButtonClicked(it.text))
                     },
-                    isValid = isHeightValid,
+                    isValid = state.isHeightValid,
                 )
 
                 WeightPersonalItem(
-                    weight = TextFieldValue(selectedWeight),
+                    weight = TextFieldValue(state.weight),
                     onButtonClicked = {
                         onAction(ProfileAction.OnWeightButtonClicked(it.text))
                     },
-                    isValid = isWeightValid,
+                    isValid = state.isWeightValid,
                 )
 
 
                 MedVitsPersonalItem(
-                    description = medVitsDescription,
-                    isEnabled = hasTakenMedVits,
+                    description = state.medVitsDescription,
+                    isEnabled = state.hasTakenMedvits,
                     onButtonClicked = { enabled, description ->
                         onAction(ProfileAction.OnChangeMedvitsClicked(enabled, description))
                     }
                 )
 
                 GynosurgeryPersonalItem(
-                    description = gynosurgeryDescription,
-                    isEnabled = hasDoneGynosurgery,
+                    description = state.gynosurgeryDescription,
+                    isEnabled = state.hasDoneGynosurgery,
                     onButtonClicked = { enabled, description ->
                         onAction(ProfileAction.OnChangeGynosurgeryClicked(enabled, description))
                     }
@@ -323,7 +260,7 @@ fun ProfileRoot(
                 OnBoardingItem(
                     text = stringResource(R.string.contraceptives),
                     options = ContraceptiveMethod.entries,
-                    selectedOptions = selectedContraceptiveMethods,
+                    selectedOptions = state.contraceptiveMethods,
                     optionName = ContraceptiveMethod::text,
                     onButtonClicked = {
                         onAction(ProfileAction.OnContraceptiveMethodsButtonClicked(it))
@@ -331,7 +268,7 @@ fun ProfileRoot(
                 )
                 AverageCyclePersonalItem(
                     title = stringResource(R.string.average_cycle),
-                    day = selectedAverageCycleDays,
+                    day = state.averageCycleDays,
                     onButtonClicked = {
                         onAction(ProfileAction.OnAverageCycleDaysButtonClicked(it))
                     }
@@ -348,13 +285,13 @@ fun ProfileRoot(
         PrimaryInfoButton(
             brush = getPrimaryHorizontalBrush(),
             text = stringResource(
-                if (isLoggedIn)
+                if (state.isLoggedIn)
                     R.string.logout
                 else
                     R.string.login,
             ),
             onClick = {
-                if (!isLoggedIn)
+                if (!state.isLoggedIn)
                     onAction(ProfileAction.OnLoginClicked)
                 else
                     shouldShowLogoutDialog = true
@@ -566,10 +503,6 @@ fun InfoRow(
 @PreviewLightDark
 private fun Preview() {
     Flora1Theme {
-        Surface(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-            ProfileRoot(
-
-            )
-        }
+        ProfileRoot()
     }
 }
