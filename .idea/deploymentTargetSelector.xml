@@ -16,9 +16,6 @@
       <SelectionState runConfigName="daoUpdateItems_updatesItemsInDB()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="daoGetPeriodFromMonth_getsPeriodForMonth()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="Preview - Dark">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>

@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -13,6 +14,7 @@ import com.example.flora1.core.presentation.navigation.performActionOnce
 import com.example.flora1.core.presentation.ui.components.LoginRoot
 import com.example.flora1.features.calendar.CalendarRoot
 import com.example.flora1.features.main.MainRoot
+import com.example.flora1.features.profile.ProfileAction
 import com.example.flora1.features.profile.ProfileRoot
 import com.example.flora1.features.profile.ProfileViewModel
 import com.example.flora1.features.profile.consent.ManageConsentContent
@@ -40,18 +42,23 @@ internal fun NavGraphBuilder.mainNavigationRoot(navController: NavController) {
         enterTransition = { enterToLeft() },
         exitTransition = { exitFromLeft() },
     ) { backstackEntry ->
+        val viewModel: ProfileViewModel = hiltViewModel()
         ProfileRoot(
             onBack = navController::popBackStack,
             onNavigateToManageConsent = { navController.navigate(Screen.ManageConsent) },
             onNavigateToMyDoctors = { navController.navigate(Screen.MyDoctors) },
             onNavigateToLogin = { id ->
                 navController.navigate(Screen.LoginProfile(id))
-            }
+            },
+            viewModel = viewModel,
         )
+
+        // Alternatively, we could immediately call navController.navigate(Screen.LoginProfile)
+        // and don't pass viewModel to mainNavigationRoot.
 
         backstackEntry.performActionOnce<Int>(savedStateKey = LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_KEY) { manageConsentId ->
             if (manageConsentId == LOGIN_FROM_DATA_MANAGE_CONSENT_RESULT_SUCCESS)
-                navController.navigate(Screen.ManageConsent)
+                viewModel.onAction(ProfileAction.OnManageConsentClicked)
         }
     }
 
