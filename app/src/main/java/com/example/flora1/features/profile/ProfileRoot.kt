@@ -44,6 +44,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flora1.R
 import com.example.flora1.core.presentation.designsystem.Flora1Theme
 import com.example.flora1.core.presentation.designsystem.getPrimaryHorizontalBrush
@@ -69,7 +70,7 @@ fun ProfileRoot(
     onNavigateToManageConsent: () -> Unit,
     onNavigateToMyDoctors: () -> Unit,
     onNavigateToLogin: (String) -> Unit,
-    viewModel: ProfileViewModel,
+    viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     ObserveAsEvents(flow = viewModel.events) { event ->
